@@ -1249,6 +1249,134 @@
             color: var(--accent-gold);
             cursor: pointer;
         }
+
+        /* Settings Controls */
+        .settings-group {
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .settings-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .settings-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .settings-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            transition: 0.3s;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: var(--accent-purple);
+            border-color: var(--accent-purple);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+            background: white;
+        }
+
+        .voice-options {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .voice-option {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .voice-option:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .voice-option.selected {
+            border-color: var(--accent-gold);
+            background: rgba(212, 160, 23, 0.15);
+        }
+
+        .voice-option-icon {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .voice-test-btn {
+            margin-top: 0.75rem;
+            width: 100%;
+            padding: 0.625rem;
+            border: 1px solid var(--accent-purple);
+            border-radius: 0.5rem;
+            background: transparent;
+            color: var(--accent-purple);
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .voice-test-btn:hover {
+            background: var(--accent-purple);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -1416,6 +1544,45 @@
         </div>
     </div>
 
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-card" style="max-width: 400px;">
+            <h2 class="modal-title">Settings</h2>
+
+            <!-- DM Voice Settings -->
+            <div class="settings-group">
+                <div class="toggle-row">
+                    <div>
+                        <span class="settings-label">Dungeon Master Voice</span>
+                        <span class="settings-desc">Read DM responses aloud</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="setting-voice-enabled">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div id="voice-settings-detail" style="display: none;">
+                    <div class="voice-options">
+                        <button class="voice-option selected" data-voice="male">
+                            <span class="voice-option-icon">&#x1F9D9;&#x200D;&#x2642;&#xFE0F;</span>
+                            Old Wizard
+                        </button>
+                        <button class="voice-option" data-voice="female">
+                            <span class="voice-option-icon">&#x1F9D9;&#x200D;&#x2640;&#xFE0F;</span>
+                            Old Witch
+                        </button>
+                    </div>
+                    <button class="voice-test-btn" id="btn-test-voice">
+                        &#x1F50A; Test Voice
+                    </button>
+                </div>
+            </div>
+
+            <button class="menu-btn primary" id="btn-close-settings">Done</button>
+        </div>
+    </div>
+
     <!-- Game Screen -->
     <div id="game-screen">
         <!-- Header -->
@@ -1578,6 +1745,13 @@
             silenceThreshold: 15,      // Audio level below this = silence (0-128)
             silenceDuration: 1500,      // ms of silence before auto-submit
             minSpeechDuration: 300,     // Minimum ms of speech before considering it valid
+        };
+
+        // DM Voice (Text-to-Speech) settings
+        const dmVoice = {
+            enabled: localStorage.getItem('dmVoiceEnabled') === 'true',
+            gender: localStorage.getItem('dmVoiceGender') || 'male',
+            speaking: false,
         };
 
         // Elements
@@ -1777,6 +1951,9 @@
                 addDMEntry(fullContent);
             }
             scrollToBottom();
+
+            // Speak DM response if voice is enabled
+            speakDMText(fullContent);
         }
 
         function scrollToBottom() {
@@ -1787,6 +1964,75 @@
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+
+        // Text-to-Speech for DM voice
+        function speakDMText(text) {
+            if (!dmVoice.enabled || !('speechSynthesis' in window)) return;
+
+            // Cancel any ongoing speech
+            speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+
+            // Get available voices
+            const voices = speechSynthesis.getVoices();
+
+            // Try to find a suitable voice based on gender preference
+            let selectedVoice = null;
+            const genderKeywords = dmVoice.gender === 'male'
+                ? ['male', 'david', 'james', 'mark', 'paul', 'daniel', 'george']
+                : ['female', 'zira', 'susan', 'linda', 'samantha', 'karen', 'victoria'];
+
+            // First try to find English voice matching gender
+            for (const voice of voices) {
+                const nameLower = voice.name.toLowerCase();
+                if (voice.lang.startsWith('en')) {
+                    for (const keyword of genderKeywords) {
+                        if (nameLower.includes(keyword)) {
+                            selectedVoice = voice;
+                            break;
+                        }
+                    }
+                    if (selectedVoice) break;
+                }
+            }
+
+            // Fallback to any English voice
+            if (!selectedVoice) {
+                selectedVoice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+            }
+
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+            }
+
+            // Adjust for elderly voice effect
+            utterance.rate = 0.85;  // Slightly slower
+            utterance.pitch = dmVoice.gender === 'male' ? 0.8 : 0.9;  // Lower pitch
+
+            dmVoice.speaking = true;
+            utterance.onend = () => { dmVoice.speaking = false; };
+            utterance.onerror = () => { dmVoice.speaking = false; };
+
+            speechSynthesis.speak(utterance);
+        }
+
+        function testDMVoice() {
+            const testPhrases = [
+                "Welcome, brave adventurer, to the realm of endless possibilities.",
+                "Roll for initiative! The goblins are upon you!",
+                "You find a dusty tome in the ancient library.",
+                "The dragon's eyes gleam with ancient wisdom.",
+            ];
+            const phrase = testPhrases[Math.floor(Math.random() * testPhrases.length)];
+            speakDMText(phrase);
+        }
+
+        // Initialize voices (needed for some browsers)
+        if ('speechSynthesis' in window) {
+            speechSynthesis.getVoices();
+            speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
         }
 
         function updatePlayersList(players) {
@@ -2515,6 +2761,51 @@
                 adjustAbility(btn.dataset.ability, btn.dataset.dir);
             });
         });
+
+        // ===== SETTINGS =====
+        const settingsModal = document.getElementById('settings-modal');
+        const voiceEnabledToggle = document.getElementById('setting-voice-enabled');
+        const voiceSettingsDetail = document.getElementById('voice-settings-detail');
+
+        // Initialize settings UI from saved state
+        function initSettings() {
+            voiceEnabledToggle.checked = dmVoice.enabled;
+            voiceSettingsDetail.style.display = dmVoice.enabled ? 'block' : 'none';
+
+            // Set selected voice option
+            document.querySelectorAll('.voice-option').forEach(btn => {
+                btn.classList.toggle('selected', btn.dataset.voice === dmVoice.gender);
+            });
+        }
+
+        document.getElementById('btn-settings').addEventListener('click', () => {
+            initSettings();
+            settingsModal.classList.add('visible');
+        });
+
+        document.getElementById('btn-close-settings').addEventListener('click', () => {
+            settingsModal.classList.remove('visible');
+        });
+
+        // Voice enabled toggle
+        voiceEnabledToggle.addEventListener('change', () => {
+            dmVoice.enabled = voiceEnabledToggle.checked;
+            localStorage.setItem('dmVoiceEnabled', dmVoice.enabled);
+            voiceSettingsDetail.style.display = dmVoice.enabled ? 'block' : 'none';
+        });
+
+        // Voice gender selection
+        document.querySelectorAll('.voice-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.voice-option').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                dmVoice.gender = btn.dataset.voice;
+                localStorage.setItem('dmVoiceGender', dmVoice.gender);
+            });
+        });
+
+        // Test voice button
+        document.getElementById('btn-test-voice').addEventListener('click', testDMVoice);
 
         // Initialize
         checkStatus();
