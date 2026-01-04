@@ -13,13 +13,13 @@ class TitleArt(Static):
     """ASCII art title display."""
 
     TITLE_ART = """
-    ╔══════════════════════════════════════╗
-    ║                                      ║
-    ║       ⚔️  AI DUNGEON MASTER  ⚔️       ║
-    ║                                      ║
-    ║        Pathfinder 1st Edition        ║
-    ║                                      ║
-    ╚══════════════════════════════════════╝
+    +======================================+
+    |                                      |
+    |      [/] AI DUNGEON MASTER [/]       |
+    |                                      |
+    |       Pathfinder 1st Edition         |
+    |                                      |
+    +======================================+
     """
 
     def compose(self) -> ComposeResult:

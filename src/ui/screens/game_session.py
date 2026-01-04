@@ -84,7 +84,7 @@ class PartyStatusWidget(Static):
             # HP bar
             bar_width = 10
             filled = int((hp_pct / 100) * bar_width)
-            hp_bar = "█" * filled + "░" * (bar_width - filled)
+            hp_bar = "#" * filled + "-" * (bar_width - filled)
 
             text += f"[bold]{Icons.CHARACTER} {name}[/bold]\n"
             text += f"  [dim]{race} {cls} {level}[/dim]\n"

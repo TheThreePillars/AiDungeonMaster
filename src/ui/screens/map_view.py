@@ -187,9 +187,9 @@ class MapViewScreen(Screen):
 
         for loc_id, loc_data in LOCATIONS.items():
             if loc_id in self.visited_locations:
-                status = "✓ Visited" if loc_id != self.current_location_id else "★ Here"
+                status = "[+] Visited" if loc_id != self.current_location_id else "[*] Here"
             elif self._is_adjacent(loc_id):
-                status = "→ Adjacent"
+                status = "-> Adjacent"
             else:
                 status = "? Unknown"
 
@@ -212,13 +212,13 @@ class MapViewScreen(Screen):
             x, y = loc_data["map_pos"]
             if x < width and y < height:
                 if loc_id == self.current_location_id:
-                    char = "★"
+                    char = "*"
                 elif loc_id in self.visited_locations:
-                    char = "●"
+                    char = "@"
                 elif self._is_adjacent(loc_id):
-                    char = "○"
+                    char = "o"
                 else:
-                    char = "·"
+                    char = "."
                 grid[y][x] = char
 
         # Draw connections (simplified)
@@ -239,24 +239,24 @@ class MapViewScreen(Screen):
                 if y1 == y2:
                     for x in range(min(x1, x2) + 1, max(x1, x2)):
                         if grid[y1][x] == " ":
-                            grid[y1][x] = "─"
+                            grid[y1][x] = "-"
 
                 # Draw vertical line
                 elif x1 == x2:
                     for y in range(min(y1, y2) + 1, max(y1, y2)):
                         if grid[y][x1] == " ":
-                            grid[y][x1] = "│"
+                            grid[y][x1] = "|"
 
         # Build map string
-        border = "┌" + "─" * width + "┐\n"
+        border = "+" + "-" * width + "+\n"
         result = border
 
         for row in grid:
-            result += "│" + "".join(row) + "│\n"
+            result += "|" + "".join(row) + "|\n"
 
-        result += "└" + "─" * width + "┘\n\n"
+        result += "+" + "-" * width + "+\n\n"
         result += "[bold]Legend:[/bold]\n"
-        result += "★ = Current  ● = Visited  ○ = Adjacent  · = Unknown"
+        result += "* = Current  @ = Visited  o = Adjacent  . = Unknown"
 
         return result
 
@@ -285,7 +285,7 @@ class MapViewScreen(Screen):
         if npcs:
             text += "[bold]NPCs:[/bold]\n"
             for npc in npcs:
-                text += f"  • {npc}\n"
+                text += f"  - {npc}\n"
 
         connections = loc_data.get("connections", [])
         if connections:
@@ -293,7 +293,7 @@ class MapViewScreen(Screen):
             for conn_id in connections:
                 conn_data = LOCATIONS.get(conn_id, {})
                 conn_name = conn_data.get("name", conn_id)
-                text += f"  → {conn_name}\n"
+                text += f"  -> {conn_name}\n"
 
         info.update(text)
 

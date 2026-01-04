@@ -77,85 +77,82 @@ ICON_FIRE = "󰈸"  # fire
 ICON_REST = "󰒲"  # sleep/moon
 
 
-# Fallback ASCII icons for terminals without Nerd Font support
+# Terminal-safe Unicode icons (avoid emoji for Windows compatibility)
 class Icons:
-    """Icon set with fallback support."""
-
-    # Try to detect if terminal supports special characters
-    # For now, use simple Unicode that works everywhere
+    """Icon set using ASCII/basic Unicode for maximum terminal compatibility."""
 
     # Navigation
-    BACK = "◀"
-    FORWARD = "▶"
-    UP = "▲"
-    DOWN = "▼"
-    MENU = "☰"
-    CLOSE = "✕"
-    CHECK = "✓"
-    CANCEL = "✗"
+    BACK = "<-"
+    FORWARD = "->"
+    UP = "^"
+    DOWN = "v"
+    MENU = "="
+    CLOSE = "x"
+    CHECK = "[+]"
+    CANCEL = "[x]"
 
     # Game Actions
-    PLAY = "▶"
-    NEW = "+"
-    SAVE = "💾"
-    LOAD = "📂"
-    SETTINGS = "⚙"
-    QUIT = "⏻"
+    PLAY = "[>]"
+    NEW = "[+]"
+    SAVE = "[S]"
+    LOAD = "[L]"
+    SETTINGS = "[*]"
+    QUIT = "[Q]"
 
     # Character & Party
-    CHARACTER = "👤"
-    PARTY = "👥"
-    LEVEL_UP = "⬆"
-    EDIT = "✏"
-    DELETE = "🗑"
+    CHARACTER = "[C]"
+    PARTY = "[P]"
+    LEVEL_UP = "[^]"
+    EDIT = "[E]"
+    DELETE = "[D]"
 
     # Combat
-    SWORD = "⚔"
-    SHIELD = "🛡"
-    HEART = "♥"
-    SKULL = "💀"
-    DICE = "🎲"
-    TARGET = "◎"
+    SWORD = "[/]"
+    SHIELD = "[O]"
+    HEART = "<3"
+    SKULL = "[X]"
+    DICE = "[d20]"
+    TARGET = "(o)"
 
     # Magic & Items
-    MAGIC = "✨"
-    POTION = "🧪"
-    SCROLL = "📜"
-    BOOK = "📖"
-    CHEST = "📦"
-    GOLD = "💰"
+    MAGIC = "[*]"
+    POTION = "[!]"
+    SCROLL = "[~]"
+    BOOK = "[#]"
+    CHEST = "[ ]"
+    GOLD = "[$]"
 
     # Exploration
-    MAP = "🗺"
-    COMPASS = "🧭"
-    LOCATION = "📍"
-    TRAVEL = "🚶"
-    HOUSE = "🏠"
-    CASTLE = "🏰"
+    MAP = "[M]"
+    COMPASS = "[@]"
+    LOCATION = "[.]"
+    TRAVEL = "[>]"
+    HOUSE = "[H]"
+    CASTLE = "[C]"
 
     # NPCs & Quests
-    NPC = "💬"
-    QUEST = "🚩"
-    CHAT = "💭"
-    TRADE = "🔄"
+    NPC = "[?]"
+    QUEST = "[!]"
+    CHAT = "[.]"
+    TRADE = "[<>]"
 
     # Status
-    INFO = "ℹ"
-    WARNING = "⚠"
-    ERROR = "⛔"
-    SUCCESS = "✅"
-    HELP = "❓"
-    TIME = "🕐"
+    INFO = "(i)"
+    WARNING = "(!)"
+    ERROR = "(X)"
+    SUCCESS = "(+)"
+    HELP = "(?)"
+    TIME = "[@]"
 
     # Monsters
-    MONSTER = "👹"
-    DRAGON = "🐉"
-    UNDEAD = "💀"
+    MONSTER = "[M]"
+    DRAGON = "[D]"
+    UNDEAD = "[U]"
 
     # Misc
-    STAR = "★"
-    FIRE = "🔥"
-    REST = "🌙"
+    STAR = "*"
+    FIRE = "~"
+    REST = "zzz"
 
 
 # Simple ASCII fallback for maximum compatibility

@@ -266,9 +266,9 @@ class QuestLogScreen(Screen):
                 if isinstance(obj, dict):
                     completed = obj.get("completed", False)
                     text = obj.get("description", f"Objective {i + 1}")
-                    marker = "[green]✓[/green]" if completed else "○"
+                    marker = "[green][+][/green]" if completed else "[ ]"
                 else:
-                    marker = "○"
+                    marker = "[ ]"
                     text = str(obj)
                 obj_text += f"{marker} {text}\n"
             obj_list.update(obj_text.strip())
@@ -300,7 +300,7 @@ class QuestLogScreen(Screen):
         if clues:
             notes_text += "[bold]Clues:[/bold]\n"
             for clue in clues:
-                notes_text += f"• {clue}\n"
+                notes_text += f"- {clue}\n"
         notes_display.update(notes_text.strip() if notes_text else "[dim]No notes or clues.[/dim]")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:

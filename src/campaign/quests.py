@@ -228,11 +228,11 @@ class Quest:
     def get_summary(self) -> str:
         """Get a brief summary of the quest."""
         status_icon = {
-            QuestStatus.AVAILABLE: "○",
-            QuestStatus.ACTIVE: "●",
-            QuestStatus.COMPLETED: "✓",
-            QuestStatus.FAILED: "✗",
-            QuestStatus.ABANDONED: "—",
+            QuestStatus.AVAILABLE: "[ ]",
+            QuestStatus.ACTIVE: "[>]",
+            QuestStatus.COMPLETED: "[+]",
+            QuestStatus.FAILED: "[x]",
+            QuestStatus.ABANDONED: "[-]",
         }
 
         icon = status_icon.get(self.status, "?")
@@ -493,7 +493,7 @@ class QuestTracker:
             for quest in active:
                 lines.append(f"  {quest.get_summary()}")
                 for i, obj in enumerate(quest.visible_objectives):
-                    status = "✓" if obj.is_complete else "○"
+                    status = "[+]" if obj.is_complete else "[ ]"
                     optional = " (optional)" if obj.is_optional else ""
                     progress = f" [{obj.progress}/{obj.target}]" if obj.target > 1 else ""
                     lines.append(f"    {status} {obj.description}{progress}{optional}")
