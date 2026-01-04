@@ -49,7 +49,7 @@ class BestiaryScreen(Screen):
         background: $primary 20%;
     }
 
-    #filter-row {
+    #search-row, #filter-row {
         height: 3;
         padding: 0 1;
     }
@@ -140,7 +140,7 @@ class BestiaryScreen(Screen):
         with Container(id="monster-list-panel"):
             yield Label(f"{i.MONSTER}  Bestiary", classes="panel-header")
 
-            with Horizontal(id="filter-row"):
+            with Horizontal(id="search-row"):
                 yield Input(placeholder="Search...", id="search-input")
 
             with Horizontal(id="filter-row"):
