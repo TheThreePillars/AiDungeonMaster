@@ -1,154 +1,205 @@
 # AI Dungeon Master
 
-An AI-powered Game Master for Pathfinder 1st Edition tabletop RPG, running locally with Ollama.
+A text-based RPG experience for **Pathfinder 1st Edition**, powered by local LLMs via [Ollama](https://ollama.ai). Create characters, form parties, and embark on AI-narrated adventures with full combat, spellcasting, and exploration systems.
 
 ## Features
 
-- **AI-Guided Character Creation**: Interactive character creation wizard powered by LLM
-- **Full Pathfinder 1e Support**: Complete rules engine with skills, saves, combat, and conditions
-- **Multiplayer Ready**: Party system supporting multiple player characters
-- **Combat Tracker**: Initiative management, HP tracking, and condition management
-- **Campaign Management**: Session tracking, NPC management, and quest logs
-- **Terminal UI**: Clean Textual-based interface (work in progress)
+### Character Management
+- **Character Creation** - Build characters with race, class, abilities, and equipment
+- **Point Buy System** - Standard Pathfinder point buy (10/15/20/25 points)
+- **Level Up** - Gain HP, BAB, saves, skill points, and ability increases
+- **Party Management** - Form and manage adventuring parties
+
+### Combat System
+- **Initiative Tracking** - Automatic initiative rolls and turn order
+- **Attack Resolution** - Full attack rolls with critical threats and confirmation
+- **Damage & HP** - Track damage, healing, and character status
+- **Bestiary** - 21 monsters from CR 1/4 to CR 12 with full stat blocks
+
+### Magic & Spells
+- **Spellcasting** - Prepare and cast spells by class
+- **Spell Database** - Core spells for Wizard, Cleric, and more
+- **Spell Slots** - Track daily spell preparation and usage
+
+### Exploration & Quests
+- **World Map** - ASCII map of Sandpoint with travel between locations
+- **Quest Tracking** - Track objectives, rewards, and progress
+- **NPC Interactions** - Meet NPCs, build relationships, trade items
+- **Save/Load** - Persist your campaign progress
+
+### AI Narration
+- **Dynamic Storytelling** - AI-generated narrative responses
+- **Context Awareness** - AI knows your party, location, and situation
+- **Offline Mode** - Works without AI (manual narration)
 
 ## Requirements
 
 - Python 3.11+
-- Ollama with Hermes 3B or 7B model
-- SQLite (included with Python)
+- [Ollama](https://ollama.ai) (for AI features)
+- Recommended model: `mistral:latest` or `llama3:latest`
 
 ## Installation
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd ai-dungeon-master
-```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/TheThreePillars/AiDungeonMaster.git
+   cd AiDungeonMaster
+   ```
 
-2. Install dependencies:
-```bash
-pip install -e .
-```
+2. **Create a virtual environment** (recommended)
+   ```bash
+   python -m venv venv
 
-3. Ensure Ollama is running with the Hermes model:
-```bash
-ollama pull hermes3:latest
-ollama serve
-```
+   # Windows
+   venv\Scripts\activate
 
-4. Run the application:
+   # Linux/Mac
+   source venv/bin/activate
+   ```
+
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Install Ollama** (for AI features)
+   - Download from [ollama.ai](https://ollama.ai)
+   - Pull a model:
+     ```bash
+     ollama pull mistral:latest
+     ```
+
+## Usage
+
+### Run the Application
 ```bash
 python -m src.main
 ```
 
-## Project Structure
+Or run the TUI directly:
+```bash
+python -m src.ui.app
+```
 
-```
-ai-dungeon-master/
-├── src/
-│   ├── main.py              # Entry point
-│   ├── config.py            # Configuration management
-│   ├── llm/                 # LLM integration
-│   │   ├── client.py        # Ollama client wrapper
-│   │   ├── memory.py        # Conversation memory
-│   │   └── prompts.py       # System prompts
-│   ├── game/                # Game mechanics
-│   │   ├── dice.py          # Dice rolling engine
-│   │   ├── rules.py         # PF1e rules engine
-│   │   ├── combat.py        # Combat tracker
-│   │   └── conditions.py    # Status effects
-│   ├── characters/          # Character system
-│   │   ├── sheet.py         # Character sheet model
-│   │   ├── creator.py       # Character creation
-│   │   ├── inventory.py     # Equipment management
-│   │   ├── races.py         # Race definitions
-│   │   └── classes.py       # Class definitions
-│   ├── campaign/            # Campaign management
-│   │   ├── generator.py     # Campaign generation
-│   │   ├── world.py         # World state
-│   │   ├── npcs.py          # NPC management
-│   │   └── quests.py        # Quest tracking
-│   ├── database/            # Persistence
-│   │   ├── models.py        # SQLAlchemy models
-│   │   └── session.py       # DB session management
-│   └── ui/                  # Terminal UI (Textual)
-│       ├── app.py           # Main app
-│       ├── screens/         # UI screens
-│       └── widgets/         # Custom widgets
-├── data/
-│   ├── srd/                 # Pathfinder SRD data
-│   │   ├── classes.json
-│   │   ├── races.json
-│   │   ├── spells.json
-│   │   ├── equipment.json
-│   │   └── monsters.json
-│   └── prompts/             # LLM prompt templates
-├── saves/                   # Save files
-├── tests/                   # Test suite
-├── config.yaml              # User configuration
-└── pyproject.toml           # Project dependencies
-```
+### Navigation
+- **Arrow Keys** - Navigate menus
+- **Enter** - Select option
+- **Escape** - Go back
+- **Q** - Quit
+- **F1** - Help
+
+### Main Menu Options
+- **New Game** - Start a new adventure
+- **Continue Game** - Load a saved campaign
+- **Create Character** - Build a new character
+- **Manage Party** - View and edit your party
+- **Bestiary** - Browse monster database
+- **Settings** - Configure AI and game options
+
+### In-Game Commands
+Type commands in the game session:
+- `/roll 1d20+5` - Roll dice
+- `/save` - Save your game
+- `/combat` - Enter combat mode
+- `/inventory` - Open inventory
+- `/rest` - Take a rest
+- `/map` - View world map
+- `/quests` - View quest log
 
 ## Configuration
 
-Edit `config.yaml` to customize:
+Settings can be configured in-app via **Settings** menu:
 
-```yaml
-llm:
-  model: hermes3:latest     # Or hermes3:7b for better responses
-  temperature: 0.8
-  max_tokens: 1024
+### AI Settings
+- **Model** - Ollama model to use (default: `mistral:latest`)
+- **Base URL** - Ollama server URL (default: `http://localhost:11434`)
 
-game:
-  ruleset: pf1e
-  difficulty: normal
-  narration_style: detailed
-  max_party_size: 6
+### Game Settings
+- **XP Track** - Slow/Medium/Fast progression
+- **Point Buy** - 10/15/20/25 point builds
+- **Flanking Rules** - Enable/disable flanking bonuses
+- **Critical Confirmation** - Require confirmation rolls
 
-combat:
-  initiative_style: individual
-  confirm_criticals: true    # PF1e critical confirmation
+## Project Structure
+
 ```
-
-## Dice Notation
-
-The dice engine supports full PF1e notation:
-
-```python
-from src.game.dice import roll
-
-roll("1d20+5")              # Standard roll with modifier
-roll("2d6+4")               # Multiple dice
-roll("1d20 advantage")      # Roll twice, take higher
-roll("4d6 drop lowest")     # Ability score rolling
-roll("1d20 disadvantage")   # Roll twice, take lower
+AiDungeonMaster/
+├── src/
+│   ├── main.py              # Application entry point
+│   ├── config.py            # Configuration management
+│   ├── database/
+│   │   ├── models.py        # SQLAlchemy models
+│   │   └── session.py       # Database session handling
+│   ├── game/
+│   │   ├── bestiary.py      # Monster definitions (21 monsters)
+│   │   ├── combat.py        # Combat tracker
+│   │   ├── dice.py          # Dice rolling engine
+│   │   ├── inventory.py     # Item management
+│   │   ├── rest.py          # Rest mechanics
+│   │   └── spells.py        # Spell database and casting
+│   ├── llm/
+│   │   ├── client.py        # Ollama API client
+│   │   ├── memory.py        # Conversation memory
+│   │   └── prompts.py       # AI prompt templates
+│   └── ui/
+│       ├── app.py           # Main Textual app
+│       ├── screens/         # UI screens (14 screens)
+│       └── widgets/         # Reusable widgets
+├── tests/                   # Test suite (148 tests)
+├── requirements.txt
+└── README.md
 ```
 
 ## Running Tests
 
 ```bash
-pytest tests/ -v
+# Run all tests
+python -m pytest tests/ -v
+
+# Run with coverage
+python -m pytest tests/ --cov=src --cov-report=term-missing
 ```
 
-## Development
+## Bestiary
 
-Install development dependencies:
-```bash
-pip install -e ".[dev]"
+| CR | Monsters |
+|----|----------|
+| 1/4 - 1/2 | Giant Rat, Goblin, Skeleton, Zombie, Orc, Hobgoblin |
+| 1 | Wolf, Ghoul, Giant Spider |
+| 2-3 | Bugbear, Dire Wolf, Ogre, Wight |
+| 4-5 | Owlbear, Minotaur, Troll, Wraith |
+| 7+ | Hill Giant, Vampire, Young Red Dragon, Lich |
+
+## Dice Notation
+
+The dice engine supports full Pathfinder notation:
+
+```python
+from src.game.dice import DiceRoller
+
+roller = DiceRoller()
+roller.roll("1d20+5")           # Standard roll with modifier
+roller.roll("2d6+4")            # Multiple dice
+roller.roll("1d20", advantage=True)   # Roll twice, take higher
+roller.roll("4d6", drop_lowest=1)     # Ability score rolling
 ```
 
-Run linting:
-```bash
-ruff check src/
-black src/
-mypy src/
-```
+## Tech Stack
+
+- **[Textual](https://textual.textualize.io/)** - Terminal UI framework
+- **[SQLAlchemy](https://www.sqlalchemy.org/)** - Database ORM
+- **[Ollama](https://ollama.ai)** - Local LLM inference
+- **[Pydantic](https://docs.pydantic.dev/)** - Data validation
 
 ## License
 
 MIT License
 
+## Contributing
+
+Contributions welcome! Please open an issue or submit a pull request.
+
 ## Acknowledgments
 
 - Pathfinder is a trademark of Paizo Inc.
-- This project uses the Pathfinder Roleplaying Game Reference Document (PRD) under the Open Game License.
+- This project uses the Pathfinder Roleplaying Game Reference Document under the Open Game License.
