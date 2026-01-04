@@ -77,8 +77,12 @@ class OllamaClient:
             True if server is available and model exists
         """
         try:
-            models = self._client.list()
-            model_names = [m["name"] for m in models.get("models", [])]
+            response = self._client.list()
+            # Handle both dict and object responses from ollama client
+            if hasattr(response, 'models'):
+                model_names = [m.model for m in response.models]
+            else:
+                model_names = [m.get("name", m.get("model", "")) for m in response.get("models", [])]
             # Check for exact match or base name match
             base_model = self.model.split(":")[0]
             return any(
@@ -95,8 +99,12 @@ class OllamaClient:
             List of model names
         """
         try:
-            models = self._client.list()
-            return [m["name"] for m in models.get("models", [])]
+            response = self._client.list()
+            # Handle both dict and object responses from ollama client
+            if hasattr(response, 'models'):
+                return [m.model for m in response.models]
+            else:
+                return [m.get("name", m.get("model", "")) for m in response.get("models", [])]
         except Exception:
             return []
 
