@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>AI Dungeon Master</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #1a1a2e;
+            --bg-tertiary: #252542;
+            --accent: #4f46e5;
+            --accent-light: #6366f1;
+            --accent-dark: #3730a3;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #334155;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Login Screen */
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+        }
+
+        .login-card {
+            background: var(--bg-secondary);
+            border-radius: 1rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 25px 50px -12px var(--shadow);
+        }
+
+        .login-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 0.875rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 10px 20px -10px var(--accent);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.offline {
+            background: var(--error);
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Game Screen */
+        #game-screen {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            height: 100dvh;
+        }
+
+        /* Header */
+        .game-header {
+            background: var(--bg-secondary);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .location-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .location-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .location-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 0.5rem;
+            background: var(--bg-tertiary);
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: var(--accent);
+        }
+
+        /* Chat Area */
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 0.875rem 1rem;
+            border-radius: 1rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-dm {
+            background: var(--bg-secondary);
+            align-self: flex-start;
+            border-bottom-left-radius: 0.25rem;
+        }
+
+        .message-player {
+            background: var(--accent);
+            align-self: flex-end;
+            border-bottom-right-radius: 0.25rem;
+        }
+
+        .message-system {
+            background: var(--bg-tertiary);
+            align-self: center;
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+        }
+
+        .message-dice {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            align-self: center;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .message-header {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .message-player .message-header {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .message-content {
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 1rem;
+        }
+
+        .typing-indicator.visible {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-6px); }
+        }
+
+        /* Input Area */
+        .input-area {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        #action-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 1.5rem;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 1rem;
+            resize: none;
+            min-height: 48px;
+            max-height: 120px;
+            line-height: 1.4;
+        }
+
+        #action-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .send-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: none;
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s, background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover {
+            background: var(--accent-light);
+        }
+
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+
+        .voice-btn {
+            background: var(--success);
+        }
+
+        .voice-btn.recording {
+            background: var(--error);
+            animation: recording 1s infinite;
+        }
+
+        @keyframes recording {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            overflow-x: auto;
+            padding-bottom: 0.25rem;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .quick-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .quick-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* Dice Panel */
+        .dice-panel {
+            display: none;
+            background: var(--bg-tertiary);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .dice-panel.visible {
+            display: block;
+        }
+
+        .dice-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .dice-btn {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dice-btn:hover {
+            border-color: var(--warning);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        /* Players Panel */
+        .players-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 280px;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border);
+            padding: 1rem;
+            z-index: 100;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .players-panel.visible {
+            display: block;
+            transform: translateX(0);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        .player-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg-tertiary);
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .player-info {
+            flex: 1;
+        }
+
+        .player-name {
+            font-weight: 500;
+        }
+
+        .player-status {
+            font-size: 0.75rem;
+            color: var(--success);
+        }
+
+        /* Utility */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .login-card {
+                padding: 3rem;
+            }
+
+            .message {
+                max-width: 70%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen">
+        <div class="login-card">
+            <h1 class="login-title">AI Dungeon Master</h1>
+            <p class="login-subtitle">Pathfinder 1st Edition</p>
+
+            <div class="form-group">
+                <label class="form-label" for="player-name">Your Name</label>
+                <input type="text" id="player-name" class="form-input" placeholder="Enter your character name" autocomplete="off">
+            </div>
+
+            <button class="btn btn-primary" id="join-btn">Join Game</button>
+
+            <div class="status-indicator">
+                <span class="status-dot" id="status-dot"></span>
+                <span id="status-text">Connecting...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen">
+        <!-- Header -->
+        <header class="game-header">
+            <div class="location-info">
+                <span class="location-name" id="location-name">The Rusty Dragon Inn</span>
+                <span class="location-time" id="location-time">Evening</span>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" id="dice-toggle" title="Dice">🎲</button>
+                <button class="icon-btn" id="players-toggle" title="Players">👥</button>
+            </div>
+        </header>
+
+        <!-- Chat -->
+        <div class="chat-container" id="chat-container">
+            <div class="message message-dm">
+                <div class="message-header">Dungeon Master</div>
+                <div class="message-content">Welcome, adventurer! You find yourself in the common room of the Rusty Dragon Inn. The smell of roasting meat and fresh bread fills the air. What would you like to do?</div>
+            </div>
+            <div class="typing-indicator" id="typing-indicator">
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <div class="dice-panel" id="dice-panel">
+                <div class="dice-grid">
+                    <button class="dice-btn" data-dice="1d4">d4</button>
+                    <button class="dice-btn" data-dice="1d6">d6</button>
+                    <button class="dice-btn" data-dice="1d8">d8</button>
+                    <button class="dice-btn" data-dice="1d10">d10</button>
+                    <button class="dice-btn" data-dice="1d12">d12</button>
+                    <button class="dice-btn" data-dice="1d20">d20</button>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <button class="quick-btn" data-action="Look around">Look Around</button>
+                <button class="quick-btn" data-action="Check inventory">Inventory</button>
+                <button class="quick-btn" data-action="Talk to the bartender">Talk to NPC</button>
+                <button class="quick-btn" data-action="Rest">Rest</button>
+            </div>
+
+            <div class="input-row">
+                <div class="input-wrapper">
+                    <textarea id="action-input" placeholder="What do you do?" rows="1"></textarea>
+                </div>
+                <button class="send-btn voice-btn" id="voice-btn" title="Hold to speak">🎤</button>
+                <button class="send-btn" id="send-btn" title="Send">➤</button>
+            </div>
+        </div>
+
+        <!-- Players Panel -->
+        <div class="players-panel" id="players-panel">
+            <div class="panel-header">
+                <span class="panel-title">Players</span>
+                <button class="icon-btn" id="close-players">✕</button>
+            </div>
+            <div id="players-list"></div>
+        </div>
+    </div>
+
+    <script>
+        // App State
+        const state = {
+            playerName: '',
+            ws: null,
+            connected: false,
+            aiAvailable: false,
+            recording: false,
+            mediaRecorder: null,
+            audioChunks: [],
+        };
+
+        // DOM Elements
+        const loginScreen = document.getElementById('login-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const playerNameInput = document.getElementById('player-name');
+        const joinBtn = document.getElementById('join-btn');
+        const statusDot = document.getElementById('status-dot');
+        const statusText = document.getElementById('status-text');
+        const chatContainer = document.getElementById('chat-container');
+        const actionInput = document.getElementById('action-input');
+        const sendBtn = document.getElementById('send-btn');
+        const voiceBtn = document.getElementById('voice-btn');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const dicePanel = document.getElementById('dice-panel');
+        const playersPanel = document.getElementById('players-panel');
+        const playersList = document.getElementById('players-list');
+
+        // Check server status
+        async function checkStatus() {
+            try {
+                const res = await fetch('/api/status');
+                const data = await res.json();
+                state.aiAvailable = data.ai_available;
+                state.speechAvailable = data.speech_available;
+                statusDot.classList.toggle('offline', !data.ai_available);
+                statusText.textContent = data.ai_available ? 'AI Online' : 'AI Offline';
+                // Show/hide voice button based on speech availability
+                voiceBtn.style.opacity = data.speech_available ? '1' : '0.5';
+                voiceBtn.title = data.speech_available ? 'Hold to speak' : 'Voice unavailable - install faster-whisper';
+            } catch (e) {
+                statusDot.classList.add('offline');
+                statusText.textContent = 'Server Offline';
+            }
+        }
+
+        // Connect WebSocket
+        function connect() {
+            const wsUrl = `ws://${window.location.host}/ws/${state.playerName}`;
+            state.ws = new WebSocket(wsUrl);
+
+            state.ws.onopen = () => {
+                state.connected = true;
+                console.log('Connected to server');
+            };
+
+            state.ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                handleMessage(data);
+            };
+
+            state.ws.onclose = () => {
+                state.connected = false;
+                console.log('Disconnected');
+                // Try to reconnect
+                setTimeout(connect, 3000);
+            };
+
+            state.ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+        }
+
+        // Handle incoming messages
+        function handleMessage(data) {
+            switch (data.type) {
+                case 'connected':
+                    document.getElementById('location-name').textContent = data.location || 'Unknown';
+                    break;
+
+                case 'player_joined':
+                    addSystemMessage(`${data.player_name} joined the game`);
+                    updatePlayersList(data.players || []);
+                    break;
+
+                case 'player_left':
+                    addSystemMessage(`${data.player_name} left the game`);
+                    updatePlayersList(data.players || []);
+                    break;
+
+                case 'player_action':
+                    if (data.player !== state.playerName) {
+                        addMessage(data.player, data.action, 'player');
+                    }
+                    break;
+
+                case 'dm_typing':
+                    typingIndicator.classList.toggle('visible', data.status);
+                    scrollToBottom();
+                    break;
+
+                case 'dm_response_stream':
+                    // Handle streaming tokens
+                    updateStreamingMessage(data.token);
+                    break;
+
+                case 'dm_response':
+                    typingIndicator.classList.remove('visible');
+                    finalizeStreamingMessage(data.content);
+                    break;
+
+                case 'dice_roll':
+                    addDiceMessage(data.player, data.notation, data.result, data.rolls);
+                    break;
+
+                case 'chat':
+                    addMessage(data.player, data.content, data.player === state.playerName ? 'player' : 'other');
+                    break;
+
+                case 'error':
+                    addSystemMessage(`Error: ${data.message}`);
+                    break;
+            }
+        }
+
+        // Message helpers
+        let streamingMessageEl = null;
+
+        function addMessage(sender, content, type = 'dm') {
+            const msg = document.createElement('div');
+            msg.className = `message message-${type === 'player' ? 'player' : 'dm'}`;
+            msg.innerHTML = `
+                <div class="message-header">${sender}</div>
+                <div class="message-content">${escapeHtml(content)}</div>
+            `;
+            chatContainer.insertBefore(msg, typingIndicator);
+            scrollToBottom();
+        }
+
+        function addSystemMessage(content) {
+            const msg = document.createElement('div');
+            msg.className = 'message message-system';
+            msg.innerHTML = `<div class="message-content">${escapeHtml(content)}</div>`;
+            chatContainer.insertBefore(msg, typingIndicator);
+            scrollToBottom();
+        }
+
+        function addDiceMessage(player, notation, result, rolls) {
+            const msg = document.createElement('div');
+            msg.className = 'message message-dice';
+            msg.innerHTML = `
+                <div class="message-content">🎲 ${player} rolled ${notation}: <strong>${result}</strong> [${rolls.join(', ')}]</div>
+            `;
+            chatContainer.insertBefore(msg, typingIndicator);
+            scrollToBottom();
+        }
+
+        function updateStreamingMessage(token) {
+            if (!streamingMessageEl) {
+                streamingMessageEl = document.createElement('div');
+                streamingMessageEl.className = 'message message-dm';
+                streamingMessageEl.innerHTML = `
+                    <div class="message-header">Dungeon Master</div>
+                    <div class="message-content"></div>
+                `;
+                chatContainer.insertBefore(streamingMessageEl, typingIndicator);
+            }
+            const content = streamingMessageEl.querySelector('.message-content');
+            content.textContent += token;
+            scrollToBottom();
+        }
+
+        function finalizeStreamingMessage(fullContent) {
+            if (streamingMessageEl) {
+                const content = streamingMessageEl.querySelector('.message-content');
+                content.textContent = fullContent;
+                streamingMessageEl = null;
+            } else {
+                addMessage('Dungeon Master', fullContent, 'dm');
+            }
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function updatePlayersList(players) {
+            playersList.innerHTML = players.map(name => `
+                <div class="player-item">
+                    <div class="player-avatar">${name.charAt(0).toUpperCase()}</div>
+                    <div class="player-info">
+                        <div class="player-name">${escapeHtml(name)}</div>
+                        <div class="player-status">Online</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Send action
+        function sendAction() {
+            const action = actionInput.value.trim();
+            if (!action || !state.connected) return;
+
+            addMessage(state.playerName, action, 'player');
+            state.ws.send(JSON.stringify({
+                type: 'player_action',
+                action: action,
+            }));
+
+            actionInput.value = '';
+            actionInput.style.height = 'auto';
+        }
+
+        // Roll dice
+        function rollDice(notation) {
+            if (!state.connected) return;
+            state.ws.send(JSON.stringify({
+                type: 'dice_roll',
+                notation: notation,
+            }));
+        }
+
+        // Voice recording
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                state.mediaRecorder = new MediaRecorder(stream);
+                state.audioChunks = [];
+
+                state.mediaRecorder.ondataavailable = (e) => {
+                    state.audioChunks.push(e.data);
+                };
+
+                state.mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(state.audioChunks, { type: 'audio/webm' });
+                    stream.getTracks().forEach(track => track.stop());
+
+                    // Send to server for transcription
+                    addSystemMessage('Transcribing voice...');
+                    try {
+                        const formData = new FormData();
+                        formData.append('audio', audioBlob, 'voice.webm');
+
+                        const res = await fetch('/api/transcribe', {
+                            method: 'POST',
+                            body: formData,
+                        });
+
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (data.text && data.text.trim()) {
+                                // Put transcribed text in input and send
+                                actionInput.value = data.text.trim();
+                                sendAction();
+                            } else {
+                                addSystemMessage('No speech detected');
+                            }
+                        } else if (res.status === 503) {
+                            addSystemMessage('Voice not available - install faster-whisper');
+                        } else {
+                            addSystemMessage('Transcription failed');
+                        }
+                    } catch (e) {
+                        console.error('Transcription error:', e);
+                        addSystemMessage('Transcription error');
+                    }
+                };
+
+                state.mediaRecorder.start();
+                state.recording = true;
+                voiceBtn.classList.add('recording');
+            } catch (e) {
+                console.error('Recording error:', e);
+                addSystemMessage('Microphone access denied');
+            }
+        }
+
+        function stopRecording() {
+            if (state.mediaRecorder && state.recording) {
+                state.mediaRecorder.stop();
+                state.recording = false;
+                voiceBtn.classList.remove('recording');
+            }
+        }
+
+        // Event Listeners
+        joinBtn.addEventListener('click', () => {
+            const name = playerNameInput.value.trim();
+            if (!name) {
+                playerNameInput.focus();
+                return;
+            }
+            state.playerName = name;
+            loginScreen.style.display = 'none';
+            gameScreen.style.display = 'flex';
+            connect();
+        });
+
+        playerNameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') joinBtn.click();
+        });
+
+        sendBtn.addEventListener('click', sendAction);
+
+        actionInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendAction();
+            }
+        });
+
+        // Auto-resize textarea
+        actionInput.addEventListener('input', () => {
+            actionInput.style.height = 'auto';
+            actionInput.style.height = Math.min(actionInput.scrollHeight, 120) + 'px';
+        });
+
+        // Voice button
+        voiceBtn.addEventListener('mousedown', startRecording);
+        voiceBtn.addEventListener('mouseup', stopRecording);
+        voiceBtn.addEventListener('mouseleave', stopRecording);
+        voiceBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startRecording();
+        });
+        voiceBtn.addEventListener('touchend', stopRecording);
+
+        // Dice panel toggle
+        document.getElementById('dice-toggle').addEventListener('click', () => {
+            dicePanel.classList.toggle('visible');
+        });
+
+        // Dice buttons
+        document.querySelectorAll('.dice-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                rollDice(btn.dataset.dice);
+                dicePanel.classList.remove('visible');
+            });
+        });
+
+        // Quick actions
+        document.querySelectorAll('.quick-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                actionInput.value = btn.dataset.action;
+                sendAction();
+            });
+        });
+
+        // Players panel
+        document.getElementById('players-toggle').addEventListener('click', () => {
+            playersPanel.classList.add('visible');
+        });
+
+        document.getElementById('close-players').addEventListener('click', () => {
+            playersPanel.classList.remove('visible');
+        });
+
+        // Initialize
+        checkStatus();
+        setInterval(checkStatus, 30000);
+    </script>
+</body>
+</html>
