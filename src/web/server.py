@@ -3,6 +3,8 @@
 import asyncio
 import json
 import logging
+import random
+import string
 from datetime import datetime
 from typing import Optional
 from contextlib import asynccontextmanager
@@ -25,11 +27,18 @@ from ..characters.classes import CLASSES
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Generate session codes
+def generate_session_code() -> str:
+    """Generate a random 4-letter session code."""
+    return ''.join(random.choices(string.ascii_uppercase, k=4))
+
+
 # Game state
 class GameSession:
     """Manages a single game session."""
 
-    def __init__(self):
+    def __init__(self, code: str):
+        self.code = code
         self.players: dict[str, WebSocket] = {}
         self.dm_socket: Optional[WebSocket] = None
         self.current_location = "The Rusty Dragon Inn"
@@ -39,6 +48,7 @@ class GameSession:
         self.initiative_order: list[str] = []
         self.current_turn: int = 0
         self.in_combat = False
+        self.created_at = datetime.now()
 
     async def broadcast(self, message: dict):
         """Send message to all connected clients."""
@@ -53,9 +63,61 @@ class GameSession:
             except:
                 pass
 
+    def is_empty(self) -> bool:
+        """Check if session has no players."""
+        return len(self.players) == 0 and self.dm_socket is None
+
+
+class SessionManager:
+    """Manages multiple game sessions."""
+
+    def __init__(self):
+        self.sessions: dict[str, GameSession] = {}
+
+    def create_session(self) -> GameSession:
+        """Create a new session with a unique code."""
+        code = generate_session_code()
+        while code in self.sessions:
+            code = generate_session_code()
+        session = GameSession(code)
+        self.sessions[code] = session
+        logger.info(f"Created session: {code}")
+        return session
+
+    def get_session(self, code: str) -> Optional[GameSession]:
+        """Get a session by code."""
+        return self.sessions.get(code.upper())
+
+    def get_or_create_session(self, code: Optional[str] = None) -> GameSession:
+        """Get existing session or create new one."""
+        if code:
+            session = self.get_session(code)
+            if session:
+                return session
+        return self.create_session()
+
+    def remove_empty_sessions(self):
+        """Clean up empty sessions."""
+        empty = [code for code, session in self.sessions.items() if session.is_empty()]
+        for code in empty:
+            del self.sessions[code]
+            logger.info(f"Removed empty session: {code}")
+
+    def list_sessions(self) -> list[dict]:
+        """List all active sessions."""
+        return [
+            {
+                "code": session.code,
+                "players": len(session.players),
+                "location": session.current_location,
+                "created_at": session.created_at.isoformat(),
+            }
+            for session in self.sessions.values()
+        ]
+
 
 # Global state
-game_session = GameSession()
+session_manager = SessionManager()
 llm_client: Optional[OllamaClient] = None
 
 
@@ -168,15 +230,45 @@ async def get_index():
 async def get_status():
     """Get server and AI status."""
     ai_available = llm_client.is_available() if llm_client else False
+    total_players = sum(len(s.players) for s in session_manager.sessions.values())
     return {
         "status": "online",
         "ai_available": ai_available,
         "ai_model": "hermes3:3b" if ai_available else None,
         "speech_available": speech_available(),
-        "players_connected": len(game_session.players),
-        "in_combat": game_session.in_combat,
-        "current_location": game_session.current_location,
+        "active_sessions": len(session_manager.sessions),
+        "total_players": total_players,
     }
+
+
+@app.post("/api/sessions")
+async def create_session():
+    """Create a new game session."""
+    session = session_manager.create_session()
+    return {
+        "code": session.code,
+        "location": session.current_location,
+    }
+
+
+@app.get("/api/sessions/{code}")
+async def get_session(code: str):
+    """Get session info by code."""
+    session = session_manager.get_session(code)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    return {
+        "code": session.code,
+        "players": list(session.players.keys()),
+        "location": session.current_location,
+        "in_combat": session.in_combat,
+    }
+
+
+@app.get("/api/sessions")
+async def list_sessions():
+    """List all active sessions."""
+    return {"sessions": session_manager.list_sessions()}
 
 
 @app.post("/api/transcribe")
@@ -346,44 +438,32 @@ async def delete_character(character_id: int):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/api/roll")
-async def roll_dice(request: DiceRollRequest):
-    """Roll dice and broadcast result."""
-    result = roll(request.notation)
-
-    message = {
-        "type": "dice_roll",
-        "player": request.player_name,
-        "notation": request.notation,
-        "result": result.total,
-        "rolls": result.rolls,
-        "reason": request.reason,
-        "timestamp": datetime.now().isoformat(),
-    }
-
-    await game_session.broadcast(message)
-    return message
-
-
-@app.websocket("/ws/{player_name}")
-async def websocket_endpoint(websocket: WebSocket, player_name: str):
+@app.websocket("/ws/{session_code}/{player_name}")
+async def websocket_endpoint(websocket: WebSocket, session_code: str, player_name: str):
     """WebSocket connection for real-time game updates."""
+    # Get or validate session
+    game_session = session_manager.get_session(session_code)
+    if not game_session:
+        await websocket.close(code=4004, reason="Session not found")
+        return
+
     await websocket.accept()
 
     # Register player
     is_dm = player_name.lower() == "dm"
     if is_dm:
         game_session.dm_socket = websocket
-        logger.info("DM connected")
+        logger.info(f"[{session_code}] DM connected")
     else:
         game_session.players[player_name] = websocket
-        logger.info(f"Player '{player_name}' connected")
+        logger.info(f"[{session_code}] Player '{player_name}' connected")
 
     # Send welcome message
     await websocket.send_json({
         "type": "connected",
         "player_name": player_name,
         "is_dm": is_dm,
+        "session_code": game_session.code,
         "location": game_session.current_location,
         "ai_available": llm_client.is_available() if llm_client else False,
     })
@@ -402,7 +482,7 @@ async def websocket_endpoint(websocket: WebSocket, player_name: str):
             msg_type = data.get("type", "")
 
             if msg_type == "player_action":
-                await handle_player_action(websocket, player_name, data)
+                await handle_player_action(websocket, player_name, data, game_session)
 
             elif msg_type == "dice_roll":
                 notation = data.get("notation", "1d20")
@@ -435,16 +515,16 @@ async def websocket_endpoint(websocket: WebSocket, player_name: str):
                     await handle_player_action(websocket, player_name, {
                         "type": "player_action",
                         "action": text,
-                    })
+                    }, game_session)
 
     except WebSocketDisconnect:
         # Clean up
         if is_dm:
             game_session.dm_socket = None
-            logger.info("DM disconnected")
+            logger.info(f"[{session_code}] DM disconnected")
         else:
             game_session.players.pop(player_name, None)
-            logger.info(f"Player '{player_name}' disconnected")
+            logger.info(f"[{session_code}] Player '{player_name}' disconnected")
 
         await game_session.broadcast({
             "type": "player_left",
@@ -452,8 +532,11 @@ async def websocket_endpoint(websocket: WebSocket, player_name: str):
             "players": list(game_session.players.keys()),
         })
 
+        # Clean up empty sessions
+        session_manager.remove_empty_sessions()
 
-async def handle_player_action(websocket: WebSocket, player_name: str, data: dict):
+
+async def handle_player_action(websocket: WebSocket, player_name: str, data: dict, game_session: GameSession):
     """Process a player action through the AI."""
     action = data.get("action", "").strip()
     if not action:

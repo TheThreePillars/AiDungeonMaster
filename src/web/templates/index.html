@@ -856,6 +856,48 @@
             font-size: 0.875rem;
             color: var(--text-muted);
         }
+
+        /* Session Code */
+        .session-code-display {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--bg-dark);
+            border-radius: 0.5rem;
+        }
+
+        .session-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .session-code {
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 0.5rem;
+            color: var(--accent-gold);
+            font-family: monospace;
+        }
+
+        .session-input {
+            text-transform: uppercase;
+            text-align: center;
+            font-size: 1.5rem;
+            letter-spacing: 0.3rem;
+            font-family: monospace;
+        }
+
+        .header-session-code {
+            font-family: monospace;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            background: var(--bg-dark);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            letter-spacing: 0.1rem;
+        }
     </style>
 </head>
 <body>
@@ -867,7 +909,7 @@
             <p class="game-subtitle">Pathfinder 1st Edition</p>
 
             <button class="menu-btn primary" id="btn-new-game">&#x25B6; New Game</button>
-            <button class="menu-btn" id="btn-continue">&#x1F4BE; Continue Game</button>
+            <button class="menu-btn" id="btn-join-game">&#x1F517; Join Game</button>
 
             <div class="menu-divider"></div>
 
@@ -887,16 +929,37 @@
         </div>
     </div>
 
-    <!-- Name Input Modal -->
-    <div class="modal-overlay" id="name-modal">
+    <!-- New Game Modal (shows session code) -->
+    <div class="modal-overlay" id="new-game-modal">
         <div class="modal-card">
-            <h2 class="modal-title">Enter Your Name</h2>
-            <div class="form-group">
-                <label class="form-label" for="player-name">Character Name</label>
-                <input type="text" id="player-name" class="form-input" placeholder="Valeros the Brave" autocomplete="off">
+            <h2 class="modal-title">New Game Created!</h2>
+            <div class="session-code-display">
+                <div class="session-label">Share this code with your party:</div>
+                <div class="session-code" id="new-session-code">----</div>
             </div>
-            <button class="menu-btn primary" id="btn-join">Begin Adventure</button>
-            <button class="menu-btn" id="btn-cancel">Cancel</button>
+            <div class="form-group">
+                <label class="form-label" for="new-game-name">Your Name</label>
+                <input type="text" id="new-game-name" class="form-input" placeholder="Enter your name" autocomplete="off">
+            </div>
+            <button class="menu-btn primary" id="btn-start-new">Start Game</button>
+            <button class="menu-btn" id="btn-cancel-new">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Join Game Modal -->
+    <div class="modal-overlay" id="join-game-modal">
+        <div class="modal-card">
+            <h2 class="modal-title">Join Game</h2>
+            <div class="form-group">
+                <label class="form-label" for="join-code">Session Code</label>
+                <input type="text" id="join-code" class="form-input session-input" placeholder="ABCD" maxlength="4" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="join-name">Your Name</label>
+                <input type="text" id="join-name" class="form-input" placeholder="Enter your name" autocomplete="off">
+            </div>
+            <button class="menu-btn primary" id="btn-join-session">Join Game</button>
+            <button class="menu-btn" id="btn-cancel-join">Cancel</button>
         </div>
     </div>
 
@@ -1002,6 +1065,7 @@
         <!-- Header -->
         <header class="game-header">
             <button class="header-btn" id="btn-menu">&#x2630;</button>
+            <span class="header-session-code" id="header-session-code">----</span>
             <div class="location-info">
                 <div class="location-name" id="location-name">The Rusty Dragon Inn</div>
                 <div class="location-time" id="location-time">Evening</div>
@@ -1135,6 +1199,7 @@
         // State
         const state = {
             playerName: '',
+            sessionCode: '',
             ws: null,
             connected: false,
             recording: false,
@@ -1147,8 +1212,8 @@
         // Elements
         const titleScreen = document.getElementById('title-screen');
         const gameScreen = document.getElementById('game-screen');
-        const nameModal = document.getElementById('name-modal');
-        const playerNameInput = document.getElementById('player-name');
+        const newGameModal = document.getElementById('new-game-modal');
+        const joinGameModal = document.getElementById('join-game-modal');
         const narrativeLog = document.getElementById('narrative-log');
         const actionInput = document.getElementById('action-input');
         const typingIndicator = document.getElementById('typing-indicator');
@@ -1190,7 +1255,7 @@
 
         // Connect WebSocket
         function connect() {
-            const wsUrl = `ws://${window.location.host}/ws/${state.playerName}`;
+            const wsUrl = `ws://${window.location.host}/ws/${state.sessionCode}/${state.playerName}`;
             state.ws = new WebSocket(wsUrl);
 
             state.ws.onopen = () => {
@@ -1219,6 +1284,9 @@
             switch (data.type) {
                 case 'connected':
                     document.getElementById('location-name').textContent = data.location || 'Unknown Location';
+                    if (data.session_code) {
+                        document.getElementById('header-session-code').textContent = data.session_code;
+                    }
                     break;
 
                 case 'player_joined':
@@ -1448,33 +1516,98 @@
             }
         }
 
-        // Start game
+        // Start game with session
         function startGame() {
-            const name = playerNameInput.value.trim();
-            if (!name) {
-                playerNameInput.focus();
-                return;
-            }
-            state.playerName = name;
-            nameModal.classList.remove('visible');
             titleScreen.style.display = 'none';
             gameScreen.style.display = 'flex';
+            document.getElementById('header-session-code').textContent = state.sessionCode;
             connect();
         }
 
-        // Event Listeners
-        document.getElementById('btn-new-game').addEventListener('click', () => {
-            nameModal.classList.add('visible');
-            playerNameInput.focus();
+        // Create new session
+        async function createNewSession() {
+            try {
+                const res = await fetch('/api/sessions', { method: 'POST' });
+                const data = await res.json();
+                state.sessionCode = data.code;
+                document.getElementById('new-session-code').textContent = data.code;
+                newGameModal.classList.add('visible');
+                document.getElementById('new-game-name').focus();
+            } catch (e) {
+                console.error('Failed to create session:', e);
+                alert('Failed to create session');
+            }
+        }
+
+        // Event Listeners - New Game
+        document.getElementById('btn-new-game').addEventListener('click', createNewSession);
+
+        document.getElementById('btn-start-new').addEventListener('click', () => {
+            const name = document.getElementById('new-game-name').value.trim();
+            if (!name) {
+                document.getElementById('new-game-name').focus();
+                return;
+            }
+            state.playerName = name;
+            newGameModal.classList.remove('visible');
+            startGame();
         });
 
-        document.getElementById('btn-join').addEventListener('click', startGame);
-        document.getElementById('btn-cancel').addEventListener('click', () => {
-            nameModal.classList.remove('visible');
+        document.getElementById('btn-cancel-new').addEventListener('click', () => {
+            newGameModal.classList.remove('visible');
         });
 
-        playerNameInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') startGame();
+        document.getElementById('new-game-name').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('btn-start-new').click();
+        });
+
+        // Event Listeners - Join Game
+        document.getElementById('btn-join-game').addEventListener('click', () => {
+            joinGameModal.classList.add('visible');
+            document.getElementById('join-code').focus();
+        });
+
+        document.getElementById('btn-join-session').addEventListener('click', async () => {
+            const code = document.getElementById('join-code').value.trim().toUpperCase();
+            const name = document.getElementById('join-name').value.trim();
+
+            if (!code || code.length !== 4) {
+                document.getElementById('join-code').focus();
+                return;
+            }
+            if (!name) {
+                document.getElementById('join-name').focus();
+                return;
+            }
+
+            // Verify session exists
+            try {
+                const res = await fetch(`/api/sessions/${code}`);
+                if (!res.ok) {
+                    alert('Session not found. Check the code and try again.');
+                    return;
+                }
+            } catch (e) {
+                alert('Failed to verify session');
+                return;
+            }
+
+            state.sessionCode = code;
+            state.playerName = name;
+            joinGameModal.classList.remove('visible');
+            startGame();
+        });
+
+        document.getElementById('btn-cancel-join').addEventListener('click', () => {
+            joinGameModal.classList.remove('visible');
+        });
+
+        document.getElementById('join-code').addEventListener('input', (e) => {
+            e.target.value = e.target.value.toUpperCase();
+        });
+
+        document.getElementById('join-name').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('btn-join-session').click();
         });
 
         document.getElementById('send-btn').addEventListener('click', sendAction);
