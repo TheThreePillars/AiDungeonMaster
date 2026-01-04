@@ -15,7 +15,7 @@ class TitleArt(Static):
     TITLE_ART = """
     +======================================+
     |                                      |
-    |      [/] AI DUNGEON MASTER [/]       |
+    |      *** AI DUNGEON MASTER ***       |
     |                                      |
     |       Pathfinder 1st Edition         |
     |                                      |

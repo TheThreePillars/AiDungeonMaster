@@ -266,9 +266,9 @@ class QuestLogScreen(Screen):
                 if isinstance(obj, dict):
                     completed = obj.get("completed", False)
                     text = obj.get("description", f"Objective {i + 1}")
-                    marker = "[green][+][/green]" if completed else "[ ]"
+                    marker = "[green](+)[/green]" if completed else "( )"
                 else:
-                    marker = "[ ]"
+                    marker = "( )"
                     text = str(obj)
                 obj_text += f"{marker} {text}\n"
             obj_list.update(obj_text.strip())

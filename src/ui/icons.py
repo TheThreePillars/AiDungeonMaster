@@ -77,9 +77,9 @@ ICON_FIRE = "󰈸"  # fire
 ICON_REST = "󰒲"  # sleep/moon
 
 
-# Terminal-safe Unicode icons (avoid emoji for Windows compatibility)
+# Terminal-safe ASCII icons (avoid Rich markup conflicts with square brackets)
 class Icons:
-    """Icon set using ASCII/basic Unicode for maximum terminal compatibility."""
+    """Icon set using ASCII for maximum terminal compatibility."""
 
     # Navigation
     BACK = "<-"
@@ -88,53 +88,53 @@ class Icons:
     DOWN = "v"
     MENU = "="
     CLOSE = "x"
-    CHECK = "[+]"
-    CANCEL = "[x]"
+    CHECK = "(+)"
+    CANCEL = "(x)"
 
     # Game Actions
-    PLAY = "[>]"
-    NEW = "[+]"
-    SAVE = "[S]"
-    LOAD = "[L]"
-    SETTINGS = "[*]"
-    QUIT = "[Q]"
+    PLAY = ">"
+    NEW = "+"
+    SAVE = "(S)"
+    LOAD = "(L)"
+    SETTINGS = "(=)"
+    QUIT = "(Q)"
 
     # Character & Party
-    CHARACTER = "[C]"
-    PARTY = "[P]"
-    LEVEL_UP = "[^]"
-    EDIT = "[E]"
-    DELETE = "[D]"
+    CHARACTER = "(C)"
+    PARTY = "(P)"
+    LEVEL_UP = "^"
+    EDIT = "(E)"
+    DELETE = "(D)"
 
     # Combat
-    SWORD = "[/]"
-    SHIELD = "[O]"
+    SWORD = "/"
+    SHIELD = "O"
     HEART = "<3"
-    SKULL = "[X]"
-    DICE = "[d20]"
+    SKULL = "X"
+    DICE = "d20"
     TARGET = "(o)"
 
     # Magic & Items
-    MAGIC = "[*]"
-    POTION = "[!]"
-    SCROLL = "[~]"
-    BOOK = "[#]"
-    CHEST = "[ ]"
-    GOLD = "[$]"
+    MAGIC = "*"
+    POTION = "!"
+    SCROLL = "~"
+    BOOK = "#"
+    CHEST = "="
+    GOLD = "$"
 
     # Exploration
-    MAP = "[M]"
-    COMPASS = "[@]"
-    LOCATION = "[.]"
-    TRAVEL = "[>]"
-    HOUSE = "[H]"
-    CASTLE = "[C]"
+    MAP = "(M)"
+    COMPASS = "@"
+    LOCATION = "."
+    TRAVEL = ">"
+    HOUSE = "(H)"
+    CASTLE = "(C)"
 
     # NPCs & Quests
-    NPC = "[?]"
-    QUEST = "[!]"
-    CHAT = "[.]"
-    TRADE = "[<>]"
+    NPC = "?"
+    QUEST = "!"
+    CHAT = "..."
+    TRADE = "<>"
 
     # Status
     INFO = "(i)"
@@ -142,12 +142,12 @@ class Icons:
     ERROR = "(X)"
     SUCCESS = "(+)"
     HELP = "(?)"
-    TIME = "[@]"
+    TIME = "@"
 
     # Monsters
-    MONSTER = "[M]"
-    DRAGON = "[D]"
-    UNDEAD = "[U]"
+    MONSTER = "(M)"
+    DRAGON = "(D)"
+    UNDEAD = "(U)"
 
     # Misc
     STAR = "*"

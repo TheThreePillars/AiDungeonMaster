@@ -187,7 +187,7 @@ class MapViewScreen(Screen):
 
         for loc_id, loc_data in LOCATIONS.items():
             if loc_id in self.visited_locations:
-                status = "[+] Visited" if loc_id != self.current_location_id else "[*] Here"
+                status = "(+) Visited" if loc_id != self.current_location_id else "(*) Here"
             elif self._is_adjacent(loc_id):
                 status = "-> Adjacent"
             else:
