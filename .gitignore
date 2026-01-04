@@ -62,6 +62,11 @@ logs/
 # OS
 .DS_Store
 Thumbs.db
+nul
+
+# Cloudflare tunnel
+cloudflared.exe
+current-url.txt
 
 # Secrets
 .env
