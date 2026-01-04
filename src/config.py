@@ -11,7 +11,7 @@ class LLMConfig(BaseModel):
     """LLM provider configuration."""
 
     provider: str = "ollama"
-    model: str = "hermes3:latest"
+    model: str = "hermes3:8b"
     base_url: str = "http://localhost:11434"
     temperature: float = 0.8
     max_tokens: int = 1024

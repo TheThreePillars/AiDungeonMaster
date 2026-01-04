@@ -3,7 +3,7 @@
 
 llm:
   provider: ollama
-  model: hermes3:latest  # or hermes3:7b for more complex responses
+  model: hermes3:8b  # or mistral:latest, llama3:latest
   base_url: http://localhost:11434
   temperature: 0.8
   max_tokens: 1024
