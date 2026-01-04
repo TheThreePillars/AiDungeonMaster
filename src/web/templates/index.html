@@ -1804,7 +1804,19 @@
         // Send action
         function sendAction() {
             const action = actionInput.value.trim();
-            if (!action || !state.connected) return;
+            if (!action) return;
+
+            if (!state.connected) {
+                addSystemEntry('Not connected - trying to reconnect...');
+                connect();
+                // Retry after a short delay
+                setTimeout(() => {
+                    if (state.connected && actionInput.value.trim()) {
+                        sendAction();
+                    }
+                }, 1000);
+                return;
+            }
 
             addPlayerEntry(state.playerName, action);
             state.ws.send(JSON.stringify({

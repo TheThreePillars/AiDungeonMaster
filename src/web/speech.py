@@ -76,15 +76,21 @@ async def transcribe_audio(audio_data: bytes, format: str = "webm") -> Optional[
             tmp_path = tmp.name
 
         try:
-            # Transcribe
+            # Transcribe with speed optimizations
             segments, info = model.transcribe(
                 tmp_path,
                 beam_size=1,  # Faster, slightly less accurate
+                best_of=1,  # Only one candidate
                 language="en",  # Force English for gaming
                 vad_filter=True,  # Filter out silence
+                without_timestamps=True,  # Skip timestamp computation
+                condition_on_previous_text=False,  # Don't use context
+                compression_ratio_threshold=None,  # Skip quality check
+                log_prob_threshold=None,  # Skip quality check
+                no_speech_threshold=None,  # Skip quality check
             )
 
-            # Combine segments
+            # Combine segments (convert generator to list for speed)
             text = " ".join(segment.text.strip() for segment in segments)
 
             logger.info(f"Transcribed: {text[:50]}..." if len(text) > 50 else f"Transcribed: {text}")
