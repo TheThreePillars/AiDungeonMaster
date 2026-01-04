@@ -1,10 +1,11 @@
 """Main menu screen for AI Dungeon Master."""
 
 from textual.app import ComposeResult
-from textual.containers import Center, Vertical
+from textual.containers import Center, Container, Vertical
 from textual.screen import Screen
 from textual.widgets import Button, Label, Static
 
+from ..icons import Icons
 from .save_load import LoadGameScreen
 
 
@@ -12,11 +13,13 @@ class TitleArt(Static):
     """ASCII art title display."""
 
     TITLE_ART = """
-┌─────────────────────────────┐
-│      AI Dungeon Master      │
-│                             │
-│    Pathfinder 1st Edition   │
-└─────────────────────────────┘
+    ╔══════════════════════════════════════╗
+    ║                                      ║
+    ║       ⚔️  AI DUNGEON MASTER  ⚔️       ║
+    ║                                      ║
+    ║        Pathfinder 1st Edition        ║
+    ║                                      ║
+    ╚══════════════════════════════════════╝
     """
 
     def compose(self) -> ComposeResult:
@@ -29,46 +32,138 @@ class MainMenuScreen(Screen):
 
     CSS = """
     MainMenuScreen {
+        background: $surface;
         align: center middle;
     }
 
     #title-art {
         text-align: center;
         color: $primary;
-        margin-bottom: 2;
+        text-style: bold;
+        margin-bottom: 1;
     }
 
     #menu-container {
-        width: 40;
+        width: 50;
         height: auto;
         align: center middle;
+        padding: 1 2;
     }
 
-    Button {
+    #button-group {
         width: 100%;
-        margin: 1 0;
+        height: auto;
+        padding: 1;
+        border: round $primary;
+        background: $surface-darken-1;
+    }
+
+    .menu-button {
+        width: 100%;
+        margin: 0 0 1 0;
+        min-height: 3;
+    }
+
+    .menu-button:last-of-type {
+        margin-bottom: 0;
+    }
+
+    #btn-new-game {
+        background: $success;
+        color: $text;
+    }
+
+    #btn-new-game:hover {
+        background: $success-darken-1;
+    }
+
+    #btn-quit {
+        background: $error;
+        margin-top: 1;
+    }
+
+    #btn-quit:hover {
+        background: $error-darken-1;
+    }
+
+    #footer-container {
+        width: 100%;
+        height: auto;
+        margin-top: 1;
     }
 
     #version-label {
         text-align: center;
         color: $text-muted;
-        margin-top: 2;
+    }
+
+    #powered-by {
+        text-align: center;
+        color: $text-muted;
+        text-style: italic;
+    }
+
+    .separator {
+        height: 1;
+        margin: 1 0;
+        background: $primary 30%;
     }
     """
 
     def compose(self) -> ComposeResult:
         """Compose the main menu."""
+        i = Icons
+
         with Center():
             with Vertical(id="menu-container"):
                 yield TitleArt()
-                yield Button("New Game", id="btn-new-game", variant="primary")
-                yield Button("Continue Game", id="btn-continue")
-                yield Button("Create Character", id="btn-create-char")
-                yield Button("Manage Party", id="btn-party")
-                yield Button("Bestiary", id="btn-bestiary")
-                yield Button("Settings", id="btn-settings")
-                yield Button("Quit", id="btn-quit", variant="error")
-                yield Label("v0.1.0 - Powered by Ollama", id="version-label")
+
+                with Container(id="button-group"):
+                    yield Button(
+                        f"{i.PLAY}  New Game",
+                        id="btn-new-game",
+                        classes="menu-button",
+                    )
+                    yield Button(
+                        f"{i.LOAD}  Continue Game",
+                        id="btn-continue",
+                        classes="menu-button",
+                    )
+
+                    yield Static("", classes="separator")
+
+                    yield Button(
+                        f"{i.CHARACTER}  Create Character",
+                        id="btn-create-char",
+                        classes="menu-button",
+                    )
+                    yield Button(
+                        f"{i.PARTY}  Manage Party",
+                        id="btn-party",
+                        classes="menu-button",
+                    )
+                    yield Button(
+                        f"{i.MONSTER}  Bestiary",
+                        id="btn-bestiary",
+                        classes="menu-button",
+                    )
+
+                    yield Static("", classes="separator")
+
+                    yield Button(
+                        f"{i.SETTINGS}  Settings",
+                        id="btn-settings",
+                        classes="menu-button",
+                    )
+                    yield Button(
+                        f"{i.QUIT}  Quit",
+                        id="btn-quit",
+                        classes="menu-button",
+                    )
+
+                with Container(id="footer-container"):
+                    yield Label("v0.1.0", id="version-label")
+                    yield Label("Powered by Ollama", id="powered-by")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Handle button presses."""
@@ -96,5 +191,4 @@ class MainMenuScreen(Screen):
     def _handle_load_result(self, campaign_id: int | None) -> None:
         """Handle the result from the load game screen."""
         if campaign_id is not None:
-            # Game was loaded, go to game session
             self.app.push_screen("game_session")

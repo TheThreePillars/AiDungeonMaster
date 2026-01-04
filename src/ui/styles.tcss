@@ -1,125 +1,285 @@
-/* AI Dungeon Master - Textual CSS Styles */
+/* AI Dungeon Master - Modern Material Design Inspired Styles */
 
-/* Global styles */
+/* ============================================================================
+   Global Styles
+   ============================================================================ */
+
 Screen {
     background: $surface;
 }
 
 Header {
     background: $primary-darken-2;
+    color: $text;
+    text-style: bold;
 }
 
 Footer {
-    background: $primary-darken-3;
+    background: $surface-darken-2;
+    color: $text-muted;
 }
 
-/* Button variants */
+/* ============================================================================
+   Button Styles - Material Design Inspired
+   ============================================================================ */
+
 Button {
-    min-width: 12;
+    min-width: 16;
+    min-height: 3;
+    border: none;
+    background: $primary;
+    color: $text;
+    text-style: bold;
+    padding: 0 2;
+}
+
+Button:hover {
+    background: $primary-lighten-1;
+}
+
+Button:focus {
+    background: $primary-lighten-2;
 }
 
 Button.-primary {
     background: $primary;
 }
 
+Button.-primary:hover {
+    background: $primary-lighten-1;
+}
+
 Button.-success {
     background: $success;
 }
 
+Button.-success:hover {
+    background: $success-lighten-1;
+}
+
 Button.-warning {
     background: $warning;
+    color: $text;
+}
+
+Button.-warning:hover {
+    background: $warning-lighten-1;
 }
 
 Button.-error {
     background: $error;
 }
 
-/* Common utility classes */
-.section-header {
+Button.-error:hover {
+    background: $error-lighten-1;
+}
+
+/* Outlined button variant */
+.btn-outlined {
+    background: transparent;
+    border: tall $primary;
+    color: $primary;
+}
+
+.btn-outlined:hover {
+    background: $primary 20%;
+}
+
+/* Icon button - compact square button */
+.btn-icon {
+    min-width: 5;
+    width: 5;
+    padding: 0;
+}
+
+/* ============================================================================
+   Card / Panel Styles
+   ============================================================================ */
+
+.card {
+    background: $surface-darken-1;
+    border: round $primary 50%;
+    padding: 1 2;
+    margin: 1;
+}
+
+.card-header {
     text-style: bold;
     color: $primary;
+    border-bottom: solid $primary 30%;
+    padding-bottom: 1;
     margin-bottom: 1;
-    text-align: center;
 }
 
-.muted {
-    color: $text-muted;
+.card-elevated {
+    background: $surface;
+    border: wide $primary;
 }
 
-.centered {
-    align: center middle;
-}
-
-/* Panel styles */
 .panel {
-    border: solid $primary;
+    border: round $primary;
     padding: 1;
     margin: 1;
+    background: $surface-darken-1;
 }
 
 .panel-header {
     dock: top;
     height: 3;
-    background: $primary-darken-1;
+    background: $primary;
+    color: $text;
     text-align: center;
+    text-style: bold;
+    padding: 1;
 }
 
-/* Form styles */
+/* ============================================================================
+   Form Styles
+   ============================================================================ */
+
 .form-group {
     margin-bottom: 1;
 }
 
 .form-label {
     margin-bottom: 0;
+    color: $text-muted;
 }
 
 Input {
-    border: tall $primary;
+    border: tall $primary 50%;
+    background: $surface-darken-1;
+    padding: 0 1;
 }
 
 Input:focus {
-    border: tall $accent;
+    border: tall $primary;
+    background: $surface;
+}
+
+Input.-invalid {
+    border: tall $error;
 }
 
 Select {
-    border: tall $primary;
+    border: tall $primary 50%;
+    background: $surface-darken-1;
 }
 
 Select:focus {
-    border: tall $accent;
+    border: tall $primary;
 }
 
-/* DataTable styles */
+Checkbox {
+    background: transparent;
+    padding: 0 1;
+}
+
+Checkbox:focus {
+    background: $primary 10%;
+}
+
+/* ============================================================================
+   DataTable Styles
+   ============================================================================ */
+
 DataTable {
     height: 100%;
+    background: $surface-darken-1;
 }
 
 DataTable > .datatable--header {
-    background: $primary-darken-1;
+    background: $primary;
+    color: $text;
     text-style: bold;
 }
 
 DataTable > .datatable--cursor {
-    background: $primary;
+    background: $primary 40%;
 }
 
-/* RichLog styles */
-RichLog {
+DataTable > .datatable--hover {
+    background: $primary 20%;
+}
+
+/* ============================================================================
+   List & Selection Styles
+   ============================================================================ */
+
+ListView {
     background: $surface-darken-1;
-    border: none;
+}
+
+ListView > ListItem {
     padding: 1;
 }
 
-/* TabbedContent styles */
+ListView > ListItem.-selected {
+    background: $primary 30%;
+}
+
+ListView > ListItem:hover {
+    background: $primary 15%;
+}
+
+OptionList {
+    background: $surface-darken-1;
+    border: round $primary 50%;
+}
+
+OptionList:focus {
+    border: round $primary;
+}
+
+/* ============================================================================
+   RichLog / Chat Styles
+   ============================================================================ */
+
+RichLog {
+    background: $surface-darken-2;
+    border: round $surface-lighten-1;
+    padding: 1;
+    scrollbar-gutter: stable;
+}
+
+/* ============================================================================
+   TabbedContent Styles
+   ============================================================================ */
+
 TabbedContent {
     height: 100%;
 }
 
-TabPane {
-    padding: 1;
+Tabs {
+    background: $surface-darken-1;
 }
 
-/* Status indicators */
+Tab {
+    background: transparent;
+    color: $text-muted;
+    padding: 1 2;
+}
+
+Tab:hover {
+    background: $primary 20%;
+    color: $text;
+}
+
+Tab.-active {
+    background: $primary;
+    color: $text;
+    text-style: bold;
+}
+
+TabPane {
+    padding: 1;
+    background: $surface-darken-1;
+}
+
+/* ============================================================================
+   Status Indicators
+   ============================================================================ */
+
 .status-good {
     color: $success;
 }
@@ -132,45 +292,288 @@ TabPane {
     color: $error;
 }
 
-/* HP bar styles */
-.hp-bar {
-    height: 1;
-    background: $error-darken-2;
+.status-info {
+    color: $primary;
 }
 
-.hp-bar-fill {
+.badge {
+    padding: 0 1;
+    text-style: bold;
+}
+
+.badge-success {
+    background: $success;
+    color: $text;
+}
+
+.badge-warning {
+    background: $warning;
+    color: $text;
+}
+
+.badge-error {
+    background: $error;
+    color: $text;
+}
+
+.badge-info {
+    background: $primary;
+    color: $text;
+}
+
+/* ============================================================================
+   HP Bar Styles
+   ============================================================================ */
+
+.hp-bar-container {
+    height: 1;
+    background: $error-darken-2;
+    width: 100%;
+}
+
+.hp-bar {
+    height: 1;
     background: $success;
 }
 
-/* Combat styles */
+.hp-bar-critical {
+    background: $error;
+}
+
+.hp-bar-wounded {
+    background: $warning;
+}
+
+/* ============================================================================
+   Combat Styles
+   ============================================================================ */
+
 .combat-active {
     background: $error-darken-3;
+    border: wide $error;
 }
 
 .current-turn {
-    background: $warning-darken-2;
+    background: $warning 30%;
+    border-left: wide $warning;
 }
 
-/* Dice roll display */
+.enemy {
+    color: $error;
+}
+
+.ally {
+    color: $success;
+}
+
+.neutral {
+    color: $warning;
+}
+
+/* ============================================================================
+   Dice Roll Styles
+   ============================================================================ */
+
 .dice-result {
     text-align: center;
     text-style: bold;
     padding: 1;
-    border: solid $success;
+    background: $surface-darken-1;
+    border: round $primary;
 }
 
 .dice-critical {
     color: $success;
     text-style: bold;
+    background: $success 20%;
 }
 
 .dice-fumble {
     color: $error;
     text-style: bold;
+    background: $error 20%;
 }
 
-/* Notification styles */
+.dice-roll {
+    color: $primary;
+    text-style: bold;
+}
+
+/* ============================================================================
+   Modal / Dialog Styles
+   ============================================================================ */
+
+ModalScreen {
+    align: center middle;
+    background: $surface 80%;
+}
+
+.modal-container {
+    background: $surface;
+    border: thick $primary;
+    padding: 1 2;
+    min-width: 40;
+    max-width: 80%;
+    max-height: 80%;
+}
+
+.modal-title {
+    text-style: bold;
+    color: $primary;
+    text-align: center;
+    padding-bottom: 1;
+    border-bottom: solid $primary 30%;
+    margin-bottom: 1;
+}
+
+.modal-footer {
+    dock: bottom;
+    height: auto;
+    padding-top: 1;
+    border-top: solid $primary 30%;
+    margin-top: 1;
+    align: center middle;
+}
+
+/* ============================================================================
+   Section & Typography Styles
+   ============================================================================ */
+
+.section-header {
+    text-style: bold;
+    color: $primary;
+    margin-bottom: 1;
+    text-align: center;
+    border-bottom: solid $primary 30%;
+    padding-bottom: 1;
+}
+
+.section-title {
+    text-style: bold;
+    color: $secondary;
+    margin-bottom: 1;
+}
+
+.muted {
+    color: $text-muted;
+}
+
+.small {
+    text-style: italic;
+    color: $text-muted;
+}
+
+.centered {
+    text-align: center;
+}
+
+.bold {
+    text-style: bold;
+}
+
+/* ============================================================================
+   Separator / Divider
+   ============================================================================ */
+
+.separator {
+    height: 1;
+    margin: 1 0;
+    background: $primary 20%;
+}
+
+.separator-vertical {
+    width: 1;
+    margin: 0 1;
+    background: $primary 20%;
+}
+
+/* ============================================================================
+   Scrollbar Styles
+   ============================================================================ */
+
+Vertical:focus-within {
+    scrollbar-color: $primary;
+    scrollbar-background: $surface-darken-1;
+}
+
+/* ============================================================================
+   Toast / Notification Styles
+   ============================================================================ */
+
 Toast {
-    background: $primary-darken-2;
-    border: tall $primary;
+    background: $surface-lighten-1;
+    border: round $primary;
+    padding: 1 2;
+}
+
+Toast.-information {
+    border: round $primary;
+}
+
+Toast.-warning {
+    border: round $warning;
+}
+
+Toast.-error {
+    border: round $error;
+}
+
+/* ============================================================================
+   Loading / Progress Styles
+   ============================================================================ */
+
+LoadingIndicator {
+    color: $primary;
+}
+
+ProgressBar {
+    padding: 0 1;
+}
+
+ProgressBar > .bar--bar {
+    color: $primary;
+}
+
+ProgressBar > .bar--complete {
+    color: $success;
+}
+
+/* ============================================================================
+   Utility Classes
+   ============================================================================ */
+
+.hidden {
+    display: none;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.no-border {
+    border: none;
+}
+
+.margin-1 {
+    margin: 1;
+}
+
+.padding-1 {
+    padding: 1;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
 }

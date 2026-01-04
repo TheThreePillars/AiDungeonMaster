@@ -5,6 +5,7 @@ from textual.containers import Container, Horizontal, Vertical, VerticalScroll
 from textual.screen import Screen
 from textual.widgets import Button, DataTable, Input, Label, Select, Static
 
+from ..icons import Icons
 from ...game.bestiary import (
     BESTIARY,
     Monster,
@@ -28,14 +29,13 @@ class BestiaryScreen(Screen):
     #monster-list-panel {
         width: 35;
         height: 100%;
-        border: thick $primary;
-        background: $surface;
+        background: $surface-darken-1;
+        border-right: solid $primary 50%;
     }
 
     #monster-detail-panel {
         width: 1fr;
         height: 100%;
-        border: thick $secondary;
         background: $surface;
         padding: 1;
     }
@@ -45,7 +45,8 @@ class BestiaryScreen(Screen):
         color: $primary;
         text-align: center;
         padding: 1;
-        border-bottom: solid $primary;
+        border-bottom: solid $primary 50%;
+        background: $primary 20%;
     }
 
     #filter-row {
@@ -133,9 +134,11 @@ class BestiaryScreen(Screen):
         self.filtered_monsters: list[Monster] = list_all_monsters()
 
     def compose(self) -> ComposeResult:
+        i = Icons
+
         # Left panel - monster list
         with Container(id="monster-list-panel"):
-            yield Label("Bestiary", classes="panel-header")
+            yield Label(f"{i.MONSTER}  Bestiary", classes="panel-header")
 
             with Horizontal(id="filter-row"):
                 yield Input(placeholder="Search...", id="search-input")
@@ -163,14 +166,14 @@ class BestiaryScreen(Screen):
 
         # Right panel - monster details
         with Container(id="monster-detail-panel"):
-            yield Label("Monster Details", classes="panel-header")
+            yield Label(f"{i.BOOK}  Monster Details", classes="panel-header")
 
             with VerticalScroll():
                 yield Static("Select a monster to view details.", id="detail-content", classes="no-selection")
 
             with Horizontal(id="button-row"):
-                yield Button("Spawn in Combat", id="btn-spawn", variant="warning", disabled=True)
-                yield Button("Back", id="btn-back")
+                yield Button(f"{i.SWORD}  Spawn in Combat", id="btn-spawn", variant="warning", disabled=True)
+                yield Button(f"{i.BACK}  Back", id="btn-back")
 
     def on_mount(self) -> None:
         """Initialize the monster table."""

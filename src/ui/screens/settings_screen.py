@@ -5,6 +5,7 @@ from textual.containers import Container, Horizontal, Vertical, VerticalScroll
 from textual.screen import Screen
 from textual.widgets import Button, Checkbox, Input, Label, Select, Static
 
+from ..icons import Icons
 from ...config import get_config
 
 
@@ -19,9 +20,9 @@ class SettingsScreen(Screen):
     #settings-container {
         width: 70;
         height: 90%;
-        border: thick $primary;
+        border: round $primary;
         background: $surface;
-        padding: 1;
+        padding: 1 2;
     }
 
     .header {
@@ -29,11 +30,14 @@ class SettingsScreen(Screen):
         color: $primary;
         text-align: center;
         margin-bottom: 1;
+        padding-bottom: 1;
+        border-bottom: solid $primary 30%;
     }
 
     .section {
         margin-bottom: 1;
-        border: solid $secondary;
+        background: $surface-darken-1;
+        border: round $secondary 50%;
         padding: 1;
     }
 
@@ -41,6 +45,8 @@ class SettingsScreen(Screen):
         text-style: bold;
         color: $secondary;
         margin-bottom: 1;
+        padding-bottom: 1;
+        border-bottom: solid $secondary 30%;
     }
 
     .setting-row {
@@ -66,8 +72,10 @@ class SettingsScreen(Screen):
 
     #button-row {
         dock: bottom;
-        height: 3;
+        height: 4;
         align: center middle;
+        padding-top: 1;
+        border-top: solid $primary 30%;
     }
 
     Button {
@@ -77,6 +85,18 @@ class SettingsScreen(Screen):
     .hint {
         color: $text-muted;
         text-style: italic;
+    }
+
+    #btn-save {
+        background: $success;
+    }
+
+    #btn-reset {
+        background: $warning;
+    }
+
+    #btn-clear-data {
+        background: $error;
     }
     """
 
@@ -95,13 +115,15 @@ class SettingsScreen(Screen):
             self.llm_base_url = "http://localhost:11434"
 
     def compose(self) -> ComposeResult:
+        i = Icons
+
         with Container(id="settings-container"):
-            yield Label("Settings", classes="header")
+            yield Label(f"{i.SETTINGS}  Settings", classes="header")
 
             with VerticalScroll(id="scroll-area"):
                 # LLM Settings
                 with Container(classes="section"):
-                    yield Label("AI / LLM Settings", classes="section-title")
+                    yield Label(f"{i.MAGIC}  AI / LLM Settings", classes="section-title")
 
                     with Horizontal(classes="setting-row"):
                         yield Label("Model:", classes="setting-label")
@@ -119,12 +141,12 @@ class SettingsScreen(Screen):
                             placeholder="http://localhost:11434"
                         )
 
-                    yield Button("Test Connection", id="btn-test")
+                    yield Button(f"{i.CHECK}  Test Connection", id="btn-test")
                     yield Static("", id="connection-status")
 
                 # Game Settings
                 with Container(classes="section"):
-                    yield Label("Game Settings", classes="section-title")
+                    yield Label(f"{i.DICE}  Game Settings", classes="section-title")
 
                     with Horizontal(classes="setting-row"):
                         yield Label("XP Track:", classes="setting-label")
@@ -157,7 +179,7 @@ class SettingsScreen(Screen):
 
                 # UI Settings
                 with Container(classes="section"):
-                    yield Label("UI Settings", classes="section-title")
+                    yield Label(f"{i.INFO}  UI Settings", classes="section-title")
 
                     yield Checkbox("Show dice roll details", id="chk-dice-details", value=True)
                     yield Checkbox("Auto-scroll narrative", id="chk-auto-scroll", value=True)
@@ -165,25 +187,25 @@ class SettingsScreen(Screen):
 
                 # Danger Zone
                 with Container(classes="section"):
-                    yield Label("Danger Zone", classes="section-title")
+                    yield Label(f"{i.WARNING}  Danger Zone", classes="section-title")
                     yield Static(
-                        "[red]These actions cannot be undone![/red]",
+                        f"[red]{i.ERROR} These actions cannot be undone![/red]",
                         classes="hint"
                     )
                     yield Button(
-                        "Reset All Settings",
+                        f"{i.WARNING}  Reset All Settings",
                         id="btn-reset",
                         variant="warning"
                     )
                     yield Button(
-                        "Clear All Data",
+                        f"{i.DELETE}  Clear All Data",
                         id="btn-clear-data",
                         variant="error"
                     )
 
             with Horizontal(id="button-row"):
-                yield Button("Save", id="btn-save", variant="success")
-                yield Button("Cancel", id="btn-cancel")
+                yield Button(f"{i.SAVE}  Save", id="btn-save", variant="success")
+                yield Button(f"{i.CANCEL}  Cancel", id="btn-cancel")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Handle button presses."""

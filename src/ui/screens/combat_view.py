@@ -12,6 +12,7 @@ from textual.widgets import (
     Static,
 )
 
+from ..icons import Icons
 from ...game.combat import CombatTracker, Combatant, CombatantType, CombatState
 from ...game.conditions import ConditionManager
 from ...game.dice import DiceRoller
@@ -70,39 +71,46 @@ class CombatViewScreen(Screen):
 
     #combat-sidebar {
         height: 100%;
-        border: solid $error;
+        background: $surface-darken-1;
+        border-right: wide $error;
         padding: 1;
     }
 
     #combat-main {
         height: 100%;
-        border: solid $secondary;
+        background: $surface;
     }
 
     #combat-log {
         height: 1fr;
+        background: $surface-darken-2;
         border: none;
+        padding: 1;
     }
 
     #action-buttons {
         dock: bottom;
         height: auto;
         padding: 1;
+        background: $surface-darken-1;
+        border-top: solid $error 50%;
     }
 
     .action-row {
         margin-bottom: 1;
+        height: 4;
     }
 
-    Button {
+    .action-row Button {
         margin-right: 1;
     }
 
     #round-counter {
         text-align: center;
         text-style: bold;
-        color: $warning;
-        border: solid $warning;
+        color: $text;
+        background: $error;
+        border: none;
         padding: 1;
         margin-bottom: 1;
     }
@@ -111,10 +119,13 @@ class CombatViewScreen(Screen):
         text-style: bold;
         color: $primary;
         margin-bottom: 1;
+        padding-bottom: 1;
+        border-bottom: solid $primary 30%;
     }
 
     #target-info {
-        border: solid $accent;
+        background: $surface-darken-2;
+        border: round $warning 50%;
         padding: 1;
         margin-top: 1;
         height: auto;
@@ -123,6 +134,7 @@ class CombatViewScreen(Screen):
     #initiative-table {
         height: auto;
         max-height: 15;
+        background: $surface-darken-2;
     }
 
     #enemy-select {
@@ -130,6 +142,18 @@ class CombatViewScreen(Screen):
     }
 
     .current-turn {
+        background: $primary;
+    }
+
+    #btn-attack, #btn-full-attack {
+        background: $error;
+    }
+
+    #btn-end-turn {
+        background: $success;
+    }
+
+    #btn-spell {
         background: $primary;
     }
     """
@@ -144,43 +168,45 @@ class CombatViewScreen(Screen):
 
     def compose(self) -> ComposeResult:
         """Compose the combat screen."""
+        i = Icons
+
         # Left sidebar - Initiative and actions
         with Container(id="combat-sidebar"):
-            yield Static("Round 1", id="round-counter")
-            yield Label("Initiative Order", classes="section-header")
+            yield Static(f"{i.SWORD} Round 1", id="round-counter")
+            yield Label(f"{i.TARGET}  Initiative Order", classes="section-header")
             yield DataTable(id="initiative-table")
             yield Static("", id="target-info")
-            yield Label("Add Enemy", classes="section-header")
+            yield Label(f"{i.MONSTER}  Add Enemy", classes="section-header")
             yield Select(
                 [(name, name) for name in ENEMY_TEMPLATES.keys()],
                 id="enemy-select",
                 prompt="Select enemy type",
             )
-            yield Button("Add Enemy", id="btn-add-enemy", variant="warning")
+            yield Button(f"{i.NEW}  Add Enemy", id="btn-add-enemy", variant="warning")
 
         # Main area - Combat log and action buttons
         with Container(id="combat-main"):
-            yield Label("Combat Log", classes="section-header")
+            yield Label(f"{i.BOOK}  Combat Log", classes="section-header")
             yield RichLog(id="combat-log", highlight=True, markup=True, wrap=True)
 
             with Container(id="action-buttons"):
                 with Horizontal(classes="action-row"):
-                    yield Button("Attack", id="btn-attack", variant="error")
-                    yield Button("Full Attack", id="btn-full-attack", variant="error")
-                    yield Button("Charge", id="btn-charge", variant="warning")
+                    yield Button(f"{i.SWORD} Attack", id="btn-attack", variant="error")
+                    yield Button(f"{i.SWORD}{i.SWORD} Full Attack", id="btn-full-attack", variant="error")
+                    yield Button(f"{i.FORWARD} Charge", id="btn-charge", variant="warning")
                 with Horizontal(classes="action-row"):
-                    yield Button("Move", id="btn-move")
+                    yield Button(f"{i.TRAVEL} Move", id="btn-move")
                     yield Button("5-ft Step", id="btn-5ft")
-                    yield Button("Withdraw", id="btn-withdraw")
+                    yield Button(f"{i.BACK} Withdraw", id="btn-withdraw")
                 with Horizontal(classes="action-row"):
-                    yield Button("Cast Spell", id="btn-spell", variant="primary")
-                    yield Button("Use Item", id="btn-item")
-                    yield Button("Combat Maneuver", id="btn-cmb")
+                    yield Button(f"{i.MAGIC} Cast Spell", id="btn-spell", variant="primary")
+                    yield Button(f"{i.POTION} Use Item", id="btn-item")
+                    yield Button(f"{i.TARGET} Maneuver", id="btn-cmb")
                 with Horizontal(classes="action-row"):
-                    yield Button("Delay", id="btn-delay")
-                    yield Button("Ready", id="btn-ready")
-                    yield Button("End Turn", id="btn-end-turn", variant="success")
-                    yield Button("End Combat", id="btn-end-combat", variant="error")
+                    yield Button(f"{i.TIME} Delay", id="btn-delay")
+                    yield Button(f"{i.TARGET} Ready", id="btn-ready")
+                    yield Button(f"{i.CHECK} End Turn", id="btn-end-turn", variant="success")
+                    yield Button(f"{i.CLOSE} End Combat", id="btn-end-combat", variant="error")
 
     def on_mount(self) -> None:
         """Handle screen mount."""
@@ -695,8 +721,9 @@ Conditions: {conditions}""")
 
     def _on_round_change(self, round_number: int) -> None:
         """Callback for round changes."""
+        i = Icons
         round_counter = self.query_one("#round-counter", Static)
-        round_counter.update(f"Round {round_number}")
+        round_counter.update(f"{i.SWORD} Round {round_number}")
         self._add_combat_message(f"\n[bold]--- Round {round_number} ---[/bold]\n")
 
     def _on_combatant_update(self, combatant: Combatant) -> None:
