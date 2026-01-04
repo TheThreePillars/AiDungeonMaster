@@ -661,6 +661,201 @@
         .hidden {
             display: none !important;
         }
+
+        /* Character Screen */
+        #character-screen {
+            min-height: 100vh;
+            background: var(--bg-dark);
+            padding: 1rem;
+        }
+
+        .char-screen-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .char-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .char-header h2 {
+            flex: 1;
+            color: var(--accent-gold);
+        }
+
+        .char-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .char-loading {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 2rem;
+        }
+
+        .char-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .char-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .char-details {
+            flex: 1;
+        }
+
+        .char-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .char-meta {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .char-hp {
+            font-size: 0.75rem;
+            color: var(--hp-high);
+        }
+
+        .char-delete {
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .char-delete:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .empty-chars {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        /* Option Grid for Race/Class selection */
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .option-btn {
+            padding: 0.625rem 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .option-btn.selected {
+            border-color: var(--accent-gold);
+            background: rgba(212, 160, 23, 0.2);
+            color: var(--accent-gold);
+        }
+
+        .race-info, .class-info {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            background: var(--bg-dark);
+            border-radius: 0.375rem;
+            min-height: 2.5rem;
+        }
+
+        /* Ability Scores */
+        .ability-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .ability-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg-elevated);
+            border-radius: 0.5rem;
+        }
+
+        .ability-name {
+            width: 40px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .ability-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ability-btn:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .ability-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .ability-value {
+            width: 36px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .ability-mod {
+            width: 36px;
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
     </style>
 </head>
 <body>
@@ -702,6 +897,103 @@
             </div>
             <button class="menu-btn primary" id="btn-join">Begin Adventure</button>
             <button class="menu-btn" id="btn-cancel">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Character Management Screen -->
+    <div id="character-screen" style="display: none;">
+        <div class="char-screen-container">
+            <div class="char-header">
+                <button class="header-btn" id="btn-back-to-menu">&#x2190;</button>
+                <h2>Manage Characters</h2>
+                <button class="menu-btn primary" id="btn-create-new" style="padding: 0.5rem 1rem; width: auto;">+ New</button>
+            </div>
+
+            <!-- Character List -->
+            <div class="char-list" id="character-list">
+                <div class="char-loading">Loading characters...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Character Creation Modal -->
+    <div class="modal-overlay" id="create-char-modal">
+        <div class="modal-card" style="max-width: 500px; max-height: 90vh; overflow-y: auto;">
+            <h2 class="modal-title">Create Character</h2>
+
+            <!-- Step 1: Name -->
+            <div class="form-group">
+                <label class="form-label">Character Name</label>
+                <input type="text" id="char-name" class="form-input" placeholder="Enter name...">
+            </div>
+
+            <!-- Step 2: Race -->
+            <div class="form-group">
+                <label class="form-label">Race</label>
+                <div class="option-grid" id="race-options"></div>
+                <div class="race-info" id="race-info"></div>
+            </div>
+
+            <!-- Step 3: Class -->
+            <div class="form-group">
+                <label class="form-label">Class</label>
+                <div class="option-grid" id="class-options"></div>
+                <div class="class-info" id="class-info"></div>
+            </div>
+
+            <!-- Step 4: Ability Scores -->
+            <div class="form-group">
+                <label class="form-label">Ability Scores <span style="color: var(--text-muted);">(Points: <span id="points-remaining">20</span>)</span></label>
+                <div class="ability-grid">
+                    <div class="ability-row">
+                        <span class="ability-name">STR</span>
+                        <button class="ability-btn" data-ability="strength" data-dir="-">-</button>
+                        <span class="ability-value" id="str-value">10</span>
+                        <button class="ability-btn" data-ability="strength" data-dir="+">+</button>
+                        <span class="ability-mod" id="str-mod">+0</span>
+                    </div>
+                    <div class="ability-row">
+                        <span class="ability-name">DEX</span>
+                        <button class="ability-btn" data-ability="dexterity" data-dir="-">-</button>
+                        <span class="ability-value" id="dex-value">10</span>
+                        <button class="ability-btn" data-ability="dexterity" data-dir="+">+</button>
+                        <span class="ability-mod" id="dex-mod">+0</span>
+                    </div>
+                    <div class="ability-row">
+                        <span class="ability-name">CON</span>
+                        <button class="ability-btn" data-ability="constitution" data-dir="-">-</button>
+                        <span class="ability-value" id="con-value">10</span>
+                        <button class="ability-btn" data-ability="constitution" data-dir="+">+</button>
+                        <span class="ability-mod" id="con-mod">+0</span>
+                    </div>
+                    <div class="ability-row">
+                        <span class="ability-name">INT</span>
+                        <button class="ability-btn" data-ability="intelligence" data-dir="-">-</button>
+                        <span class="ability-value" id="int-value">10</span>
+                        <button class="ability-btn" data-ability="intelligence" data-dir="+">+</button>
+                        <span class="ability-mod" id="int-mod">+0</span>
+                    </div>
+                    <div class="ability-row">
+                        <span class="ability-name">WIS</span>
+                        <button class="ability-btn" data-ability="wisdom" data-dir="-">-</button>
+                        <span class="ability-value" id="wis-value">10</span>
+                        <button class="ability-btn" data-ability="wisdom" data-dir="+">+</button>
+                        <span class="ability-mod" id="wis-mod">+0</span>
+                    </div>
+                    <div class="ability-row">
+                        <span class="ability-name">CHA</span>
+                        <button class="ability-btn" data-ability="charisma" data-dir="-">-</button>
+                        <span class="ability-value" id="cha-value">10</span>
+                        <button class="ability-btn" data-ability="charisma" data-dir="+">+</button>
+                        <span class="ability-mod" id="cha-mod">+0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <button class="menu-btn" id="btn-cancel-create" style="flex: 1;">Cancel</button>
+                <button class="menu-btn primary" id="btn-save-char" style="flex: 1;">Create Character</button>
+            </div>
         </div>
     </div>
 
@@ -1237,6 +1529,271 @@
         sidebarOverlay.addEventListener('click', () => {
             sidebar.classList.remove('visible');
             sidebarOverlay.classList.remove('visible');
+        });
+
+        // ===== CHARACTER CREATION =====
+        const characterScreen = document.getElementById('character-screen');
+        const createCharModal = document.getElementById('create-char-modal');
+        const characterList = document.getElementById('character-list');
+
+        // Character creation state
+        const charState = {
+            races: [],
+            classes: [],
+            selectedRace: null,
+            selectedClass: null,
+            abilities: {
+                strength: 10,
+                dexterity: 10,
+                constitution: 10,
+                intelligence: 10,
+                wisdom: 10,
+                charisma: 10
+            },
+            pointsUsed: 0,
+            maxPoints: 20
+        };
+
+        // Point buy cost table (Pathfinder)
+        const pointCost = {
+            7: -4, 8: -2, 9: -1, 10: 0, 11: 1, 12: 2, 13: 3, 14: 5, 15: 7, 16: 10, 17: 13, 18: 17
+        };
+
+        function calculatePointsUsed() {
+            let total = 0;
+            for (const ability of Object.values(charState.abilities)) {
+                total += pointCost[ability] || 0;
+            }
+            return total;
+        }
+
+        function updatePointsDisplay() {
+            charState.pointsUsed = calculatePointsUsed();
+            const remaining = charState.maxPoints - charState.pointsUsed;
+            document.getElementById('points-remaining').textContent = remaining;
+            document.getElementById('points-remaining').style.color = remaining < 0 ? 'var(--danger)' : 'var(--text-primary)';
+        }
+
+        function updateAbilityDisplay(ability) {
+            const abbrev = ability.substring(0, 3);
+            const value = charState.abilities[ability];
+            const mod = Math.floor((value - 10) / 2);
+            document.getElementById(`${abbrev}-value`).textContent = value;
+            document.getElementById(`${abbrev}-mod`).textContent = mod >= 0 ? `+${mod}` : mod;
+        }
+
+        function adjustAbility(ability, direction) {
+            const current = charState.abilities[ability];
+            const newValue = direction === '+' ? current + 1 : current - 1;
+
+            if (newValue < 7 || newValue > 18) return;
+
+            // Check if we have enough points
+            charState.abilities[ability] = newValue;
+            const newPointsUsed = calculatePointsUsed();
+
+            if (newPointsUsed > charState.maxPoints && direction === '+') {
+                charState.abilities[ability] = current;
+                return;
+            }
+
+            updateAbilityDisplay(ability);
+            updatePointsDisplay();
+        }
+
+        // Load races and classes
+        async function loadRacesAndClasses() {
+            try {
+                const [racesRes, classesRes] = await Promise.all([
+                    fetch('/api/races'),
+                    fetch('/api/classes')
+                ]);
+                const racesData = await racesRes.json();
+                const classesData = await classesRes.json();
+
+                charState.races = racesData.races;
+                charState.classes = classesData.classes;
+
+                renderRaceOptions();
+                renderClassOptions();
+            } catch (e) {
+                console.error('Failed to load races/classes:', e);
+            }
+        }
+
+        function renderRaceOptions() {
+            const container = document.getElementById('race-options');
+            container.innerHTML = charState.races.map(race => `
+                <button class="option-btn" data-race="${race.name}">${race.name}</button>
+            `).join('');
+
+            container.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    container.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    charState.selectedRace = charState.races.find(r => r.name === btn.dataset.race);
+                    document.getElementById('race-info').textContent = charState.selectedRace?.description || '';
+                });
+            });
+        }
+
+        function renderClassOptions() {
+            const container = document.getElementById('class-options');
+            container.innerHTML = charState.classes.map(cls => `
+                <button class="option-btn" data-class="${cls.name}">${cls.name}</button>
+            `).join('');
+
+            container.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    container.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    charState.selectedClass = charState.classes.find(c => c.name === btn.dataset.class);
+                    const cls = charState.selectedClass;
+                    document.getElementById('class-info').textContent = cls ? `${cls.description} (d${cls.hit_die} HP)` : '';
+                });
+            });
+        }
+
+        async function loadCharacters() {
+            try {
+                const res = await fetch('/api/characters');
+                const data = await res.json();
+                renderCharacterList(data.characters);
+            } catch (e) {
+                console.error('Failed to load characters:', e);
+                characterList.innerHTML = '<div class="char-loading">Failed to load characters</div>';
+            }
+        }
+
+        function renderCharacterList(characters) {
+            if (characters.length === 0) {
+                characterList.innerHTML = `
+                    <div class="empty-chars">
+                        <p>No characters yet</p>
+                        <p style="font-size: 0.875rem;">Create your first character to begin adventuring!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            characterList.innerHTML = characters.map(char => `
+                <div class="char-card" data-id="${char.id}">
+                    <div class="char-avatar">&#x1F9D9;</div>
+                    <div class="char-details">
+                        <div class="char-name">${escapeHtml(char.name)}</div>
+                        <div class="char-meta">${char.race} ${char.character_class} Lv${char.level}</div>
+                        <div class="char-hp">HP: ${char.current_hp}/${char.max_hp}</div>
+                    </div>
+                    <button class="char-delete" data-id="${char.id}">Delete</button>
+                </div>
+            `).join('');
+
+            characterList.querySelectorAll('.char-delete').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    if (confirm('Delete this character?')) {
+                        await deleteCharacter(btn.dataset.id);
+                    }
+                });
+            });
+        }
+
+        async function deleteCharacter(id) {
+            try {
+                await fetch(`/api/characters/${id}`, { method: 'DELETE' });
+                loadCharacters();
+            } catch (e) {
+                console.error('Failed to delete character:', e);
+            }
+        }
+
+        function resetCharacterForm() {
+            document.getElementById('char-name').value = '';
+            charState.selectedRace = null;
+            charState.selectedClass = null;
+            charState.abilities = { strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10 };
+
+            document.querySelectorAll('#race-options .option-btn, #class-options .option-btn').forEach(b => b.classList.remove('selected'));
+            document.getElementById('race-info').textContent = '';
+            document.getElementById('class-info').textContent = '';
+
+            ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'].forEach(updateAbilityDisplay);
+            updatePointsDisplay();
+        }
+
+        async function saveCharacter() {
+            const name = document.getElementById('char-name').value.trim();
+            if (!name) {
+                alert('Please enter a character name');
+                return;
+            }
+            if (!charState.selectedRace) {
+                alert('Please select a race');
+                return;
+            }
+            if (!charState.selectedClass) {
+                alert('Please select a class');
+                return;
+            }
+            if (charState.pointsUsed > charState.maxPoints) {
+                alert('You have used too many points');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/characters', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: name,
+                        race: charState.selectedRace.name,
+                        character_class: charState.selectedClass.name,
+                        ...charState.abilities
+                    })
+                });
+
+                if (res.ok) {
+                    createCharModal.classList.remove('visible');
+                    loadCharacters();
+                } else {
+                    const error = await res.json();
+                    alert(error.detail || 'Failed to create character');
+                }
+            } catch (e) {
+                console.error('Failed to save character:', e);
+                alert('Failed to create character');
+            }
+        }
+
+        // Character screen event listeners
+        document.getElementById('btn-characters').addEventListener('click', () => {
+            titleScreen.style.display = 'none';
+            characterScreen.style.display = 'block';
+            loadCharacters();
+            loadRacesAndClasses();
+        });
+
+        document.getElementById('btn-back-to-menu').addEventListener('click', () => {
+            characterScreen.style.display = 'none';
+            titleScreen.style.display = 'flex';
+        });
+
+        document.getElementById('btn-create-new').addEventListener('click', () => {
+            resetCharacterForm();
+            createCharModal.classList.add('visible');
+        });
+
+        document.getElementById('btn-cancel-create').addEventListener('click', () => {
+            createCharModal.classList.remove('visible');
+        });
+
+        document.getElementById('btn-save-char').addEventListener('click', saveCharacter);
+
+        // Ability score buttons
+        document.querySelectorAll('.ability-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                adjustAbility(btn.dataset.ability, btn.dataset.dir);
+            });
         });
 
         // Initialize

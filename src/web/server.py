@@ -18,6 +18,8 @@ from .speech import transcribe_audio, is_available as speech_available
 from ..game.dice import roll
 from ..database.session import init_db, session_scope
 from ..database.models import Campaign, Party, Character
+from ..characters.races import RACES
+from ..characters.classes import CLASSES
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -122,6 +124,18 @@ class ChatMessage(BaseModel):
     timestamp: str = ""
 
 
+class CharacterCreate(BaseModel):
+    name: str
+    race: str
+    character_class: str
+    strength: int = 10
+    dexterity: int = 10
+    constitution: int = 10
+    intelligence: int = 10
+    wisdom: int = 10
+    charisma: int = 10
+
+
 # System prompt for DM AI
 DM_SYSTEM_PROMPT = """You are an expert Dungeon Master for a Pathfinder 1st Edition tabletop RPG game.
 
@@ -193,6 +207,143 @@ async def transcribe_voice(audio: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail="Transcription failed")
 
     return {"text": text, "format": format}
+
+
+@app.get("/api/races")
+async def get_races():
+    """Get all available races."""
+    races = []
+    for name, race in RACES.items():
+        races.append({
+            "name": race.name,
+            "size": race.size,
+            "speed": race.speed,
+            "ability_modifiers": race.ability_modifiers,
+            "description": race.description,
+        })
+    return {"races": races}
+
+
+@app.get("/api/classes")
+async def get_classes():
+    """Get all available classes."""
+    classes = []
+    for name, cls in CLASSES.items():
+        classes.append({
+            "name": cls.name,
+            "hit_die": cls.hit_die,
+            "description": cls.description,
+            "is_spellcaster": cls.is_spellcaster(),
+        })
+    return {"classes": classes}
+
+
+@app.get("/api/characters")
+async def get_characters():
+    """Get all saved characters."""
+    try:
+        with session_scope() as session:
+            characters = session.query(Character).all()
+            return {
+                "characters": [
+                    {
+                        "id": c.id,
+                        "name": c.name,
+                        "race": c.race,
+                        "character_class": c.character_class,
+                        "level": c.level,
+                        "current_hp": c.current_hp,
+                        "max_hp": c.max_hp,
+                    }
+                    for c in characters
+                ]
+            }
+    except Exception as e:
+        logger.error(f"Error fetching characters: {e}")
+        return {"characters": []}
+
+
+@app.post("/api/characters")
+async def create_character(char: CharacterCreate):
+    """Create a new character."""
+    # Validate race and class
+    if char.race not in RACES:
+        raise HTTPException(status_code=400, detail=f"Invalid race: {char.race}")
+    if char.character_class not in CLASSES:
+        raise HTTPException(status_code=400, detail=f"Invalid class: {char.character_class}")
+
+    race = RACES[char.race]
+    cls = CLASSES[char.character_class]
+
+    # Apply racial ability modifiers
+    str_mod = race.ability_modifiers.get("strength", 0)
+    dex_mod = race.ability_modifiers.get("dexterity", 0)
+    con_mod = race.ability_modifiers.get("constitution", 0)
+    int_mod = race.ability_modifiers.get("intelligence", 0)
+    wis_mod = race.ability_modifiers.get("wisdom", 0)
+    cha_mod = race.ability_modifiers.get("charisma", 0)
+
+    final_str = char.strength + str_mod
+    final_dex = char.dexterity + dex_mod
+    final_con = char.constitution + con_mod
+    final_int = char.intelligence + int_mod
+    final_wis = char.wisdom + wis_mod
+    final_cha = char.charisma + cha_mod
+
+    # Calculate derived stats
+    con_bonus = (final_con - 10) // 2
+    max_hp = cls.hit_die + con_bonus
+    ac = 10 + ((final_dex - 10) // 2)
+
+    try:
+        with session_scope() as session:
+            new_char = Character(
+                name=char.name,
+                race=char.race,
+                character_class=char.character_class,
+                level=1,
+                strength=final_str,
+                dexterity=final_dex,
+                constitution=final_con,
+                intelligence=final_int,
+                wisdom=final_wis,
+                charisma=final_cha,
+                max_hp=max_hp,
+                current_hp=max_hp,
+                ac=ac,
+            )
+            session.add(new_char)
+            session.flush()
+
+            return {
+                "id": new_char.id,
+                "name": new_char.name,
+                "race": new_char.race,
+                "character_class": new_char.character_class,
+                "level": new_char.level,
+                "max_hp": new_char.max_hp,
+                "ac": new_char.ac,
+            }
+    except Exception as e:
+        logger.error(f"Error creating character: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/api/characters/{character_id}")
+async def delete_character(character_id: int):
+    """Delete a character."""
+    try:
+        with session_scope() as session:
+            char = session.query(Character).filter_by(id=character_id).first()
+            if not char:
+                raise HTTPException(status_code=404, detail="Character not found")
+            session.delete(char)
+            return {"deleted": True}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting character: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/api/roll")
