@@ -1626,7 +1626,9 @@
 
         // Connect WebSocket
         function connect() {
-            const wsUrl = `ws://${window.location.host}/ws/${state.sessionCode}/${state.playerName}`;
+            // Use wss:// for HTTPS, ws:// for HTTP
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${wsProtocol}//${window.location.host}/ws/${state.sessionCode}/${state.playerName}`;
             state.ws = new WebSocket(wsUrl);
 
             state.ws.onopen = () => {
