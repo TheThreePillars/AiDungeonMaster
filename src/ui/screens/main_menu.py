@@ -5,26 +5,18 @@ from textual.containers import Center, Vertical
 from textual.screen import Screen
 from textual.widgets import Button, Label, Static
 
+from .save_load import LoadGameScreen
+
 
 class TitleArt(Static):
     """ASCII art title display."""
 
     TITLE_ART = """
-╔═══════════════════════════════════════════════════════════════╗
-║     _    ___   ____                                           ║
-║    / \\  |_ _| |  _ \\ _   _ _ __   __ _  ___  ___  _ __        ║
-║   / _ \\  | |  | | | | | | | '_ \\ / _` |/ _ \\/ _ \\| '_ \\       ║
-║  / ___ \\ | |  | |_| | |_| | | | | (_| |  __/ (_) | | | |      ║
-║ /_/   \\_\\___| |____/ \\__,_|_| |_|\\__, |\\___|\\___/|_| |_|      ║
-║                                   |___/                        ║
-║               __  __           _                               ║
-║              |  \\/  | __ _ ___| |_ ___ _ __                    ║
-║              | |\\/| |/ _` / __| __/ _ \\ '__|                   ║
-║              | |  | | (_| \\__ \\ ||  __/ |                      ║
-║              |_|  |_|\\__,_|___/\\__\\___|_|                      ║
-║                                                                ║
-║                    Pathfinder 1st Edition                      ║
-╚═══════════════════════════════════════════════════════════════╝
+┌─────────────────────────────┐
+│      AI Dungeon Master      │
+│                             │
+│    Pathfinder 1st Edition   │
+└─────────────────────────────┘
     """
 
     def compose(self) -> ComposeResult:
@@ -73,6 +65,7 @@ class MainMenuScreen(Screen):
                 yield Button("Continue Game", id="btn-continue")
                 yield Button("Create Character", id="btn-create-char")
                 yield Button("Manage Party", id="btn-party")
+                yield Button("Bestiary", id="btn-bestiary")
                 yield Button("Settings", id="btn-settings")
                 yield Button("Quit", id="btn-quit", variant="error")
                 yield Label("v0.1.0 - Powered by Ollama", id="version-label")
@@ -84,12 +77,24 @@ class MainMenuScreen(Screen):
         if button_id == "btn-new-game":
             self.app.push_screen("game_session")
         elif button_id == "btn-continue":
-            self.app.notify("No saved games found.", title="Continue")
+            self._open_load_game()
         elif button_id == "btn-create-char":
             self.app.push_screen("character_creation")
         elif button_id == "btn-party":
             self.app.push_screen("party_manager")
+        elif button_id == "btn-bestiary":
+            self.app.push_screen("bestiary")
         elif button_id == "btn-settings":
-            self.app.notify("Settings coming soon!", title="Settings")
+            self.app.push_screen("settings")
         elif button_id == "btn-quit":
             self.app.exit()
+
+    def _open_load_game(self) -> None:
+        """Open the load game screen."""
+        self.app.push_screen(LoadGameScreen(), self._handle_load_result)
+
+    def _handle_load_result(self, campaign_id: int | None) -> None:
+        """Handle the result from the load game screen."""
+        if campaign_id is not None:
+            # Game was loaded, go to game session
+            self.app.push_screen("game_session")

@@ -5,7 +5,9 @@
       "Bash(python -m pytest:*)",
       "Bash(pip install:*)",
       "Bash(python -m src.main:*)",
-      "Bash(git init:*)"
+      "Bash(git init:*)",
+      "Bash(python:*)",
+      "Bash(gh auth status:*)"
     ]
   }
 }

@@ -134,9 +134,10 @@ class TestScreenImports:
 
     def test_combat_view_import(self):
         """Test combat view screen import."""
-        from src.ui.screens.combat_view import CombatViewScreen, InitiativeTracker
+        from src.ui.screens.combat_view import CombatViewScreen, ENEMY_TEMPLATES
         assert CombatViewScreen is not None
-        assert InitiativeTracker is not None
+        assert ENEMY_TEMPLATES is not None
+        assert "Goblin" in ENEMY_TEMPLATES
 
     def test_party_manager_import(self):
         """Test party manager screen import."""
@@ -159,8 +160,9 @@ class TestAppImport:
 
         app = AIDungeonMasterApp()
         assert app.TITLE == "AI Dungeon Master"
-        assert app.current_party is None
-        assert app.current_campaign is None
+        assert app.game_state is not None
+        assert app.game_state.party_id is None
+        assert app.game_state.campaign_id is None
 
     def test_app_screens_registered(self):
         """Test that screens are registered."""
@@ -202,16 +204,17 @@ class TestAbilityScoreDisplay:
         assert display._get_modifier(6) == "(-2)"
 
 
-class TestInitiativeTracker:
-    """Tests for InitiativeTracker widget in combat view."""
+class TestCombatTracker:
+    """Tests for CombatTracker used in combat view."""
 
     def test_tracker_initialization(self):
-        """Test initiative tracker initialization."""
-        from src.ui.screens.combat_view import InitiativeTracker
+        """Test combat tracker initialization."""
+        from src.game.combat import CombatTracker, CombatState
 
-        tracker = InitiativeTracker()
+        tracker = CombatTracker()
         assert tracker.combatants == []
-        assert tracker.current_index == 0
+        assert tracker.current_turn == 0
+        assert tracker.state == CombatState.NOT_STARTED
 
 
 class TestGameSessionScreen:
@@ -233,8 +236,8 @@ class TestCombatViewScreen:
         from src.ui.screens.combat_view import CombatViewScreen
 
         screen = CombatViewScreen()
-        assert screen.current_round == 1
-        assert screen.current_turn == 0
+        assert screen.combat_tracker is not None
+        assert screen.selected_target is None
 
 
 class TestPartyManagerScreen:
@@ -245,8 +248,8 @@ class TestPartyManagerScreen:
         from src.ui.screens.party_manager import PartyManagerScreen
 
         screen = PartyManagerScreen()
-        assert screen.selected_character is None
-        assert screen.party_gold == 150
+        assert screen.selected_character_id is None
+        assert screen.party_gold == 0  # Starts at 0, loaded from database
 
 
 if __name__ == "__main__":
