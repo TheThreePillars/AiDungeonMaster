@@ -402,7 +402,7 @@ async def create_character(char: CharacterCreate):
                 charisma=final_cha,
                 max_hp=max_hp,
                 current_hp=max_hp,
-                ac=ac,
+                armor_class=ac,
             )
             session.add(new_char)
             session.flush()
@@ -414,7 +414,7 @@ async def create_character(char: CharacterCreate):
                 "character_class": new_char.character_class,
                 "level": new_char.level,
                 "max_hp": new_char.max_hp,
-                "ac": new_char.ac,
+                "ac": new_char.armor_class,
             }
     except Exception as e:
         logger.error(f"Error creating character: {e}")
