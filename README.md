@@ -36,7 +36,7 @@ A text-based RPG experience for **Pathfinder 1st Edition**, powered by local LLM
 
 - Python 3.11+
 - [Ollama](https://ollama.ai) (for AI features)
-- Recommended model: `mistral:latest` or `llama3:latest`
+- Recommended models: `hermes3:8b`, `mistral:latest`, or `llama3:latest`
 
 ## Installation
 
@@ -64,9 +64,13 @@ A text-based RPG experience for **Pathfinder 1st Edition**, powered by local LLM
 
 4. **Install Ollama** (for AI features)
    - Download from [ollama.ai](https://ollama.ai)
-   - Pull a model:
+   - Start the Ollama server:
      ```bash
-     ollama pull mistral:latest
+     ollama serve
+     ```
+   - Pull a model (in another terminal):
+     ```bash
+     ollama pull hermes3:8b
      ```
 
 ## Usage
@@ -111,7 +115,7 @@ Type commands in the game session:
 Settings can be configured in-app via **Settings** menu:
 
 ### AI Settings
-- **Model** - Ollama model to use (default: `mistral:latest`)
+- **Model** - Ollama model to use (default: `hermes3:latest`)
 - **Base URL** - Ollama server URL (default: `http://localhost:11434`)
 
 ### Game Settings

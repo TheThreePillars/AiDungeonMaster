@@ -1,0 +1,19 @@
+# AI Dungeon Master - Dependencies
+# Install with: pip install -r requirements.txt
+
+# LLM Integration
+ollama>=0.3.0
+
+# Database
+sqlalchemy>=2.0.0
+aiosqlite>=0.19.0
+
+# Terminal UI
+textual>=0.40.0
+rich>=13.0.0
+
+# Data Validation
+pydantic>=2.0.0
+
+# Configuration
+pyyaml>=6.0

@@ -49,8 +49,8 @@ dev = [
 ai-dm = "src.main:main"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/ai-dungeon-master"
-Repository = "https://github.com/yourusername/ai-dungeon-master"
+Homepage = "https://github.com/TheThreePillars/AiDungeonMaster"
+Repository = "https://github.com/TheThreePillars/AiDungeonMaster"
 
 [tool.setuptools.packages.find]
 where = ["."]
