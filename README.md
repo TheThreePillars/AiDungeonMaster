@@ -2,6 +2,8 @@
 
 A text-based RPG experience for **Pathfinder 1st Edition**, powered by local LLMs via [Ollama](https://ollama.ai). Create characters, form parties, and embark on AI-narrated adventures with full combat, spellcasting, and exploration systems.
 
+![AI Dungeon Master Screenshot](docs/screenshot.svg)
+
 ## Features
 
 ### Character Management
