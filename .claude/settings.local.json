@@ -9,7 +9,11 @@
       "Bash(python:*)",
       "Bash(gh auth status:*)",
       "Bash(gh repo create:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(timeout 8 python:*)",
+      "Bash(timeout 6 python:*)",
+      "Bash(del test_map_travel.py)",
+      "Bash(ollama pull:*)"
     ]
   }
 }

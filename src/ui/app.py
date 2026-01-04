@@ -144,10 +144,6 @@ class AIDungeonMasterApp(App):
         yield Header()
         yield Footer()
 
-    def on_mount(self) -> None:
-        """Handle app mount - show main menu."""
-        self.push_screen("main_menu")
-
     def action_back(self) -> None:
         """Go back to previous screen."""
         if len(self.screen_stack) > 1:

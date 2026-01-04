@@ -1,163 +1,89 @@
-"""Material Design inspired icons for the UI.
+"""Modern Unicode emoji icons for the UI.
 
-Uses Unicode symbols that render well in terminals.
+Uses standard Unicode emoji that work on Windows terminals.
 """
 
-# Navigation & Actions
-ICON_BACK = "󰁍"  # arrow left
-ICON_FORWARD = "󰁔"  # arrow right
-ICON_UP = "󰁛"  # arrow up
-ICON_DOWN = "󰁅"  # arrow down
-ICON_MENU = "󰍜"  # menu
-ICON_CLOSE = "󰅖"  # close
-ICON_CHECK = "󰄬"  # check
-ICON_CANCEL = "󰅙"  # cancel
 
-# Game Actions
-ICON_PLAY = "󰐊"  # play
-ICON_NEW = "󰐕"  # plus
-ICON_SAVE = "󰆓"  # save/floppy
-ICON_LOAD = "󰷊"  # folder open
-ICON_SETTINGS = "󰒓"  # cog/gear
-ICON_QUIT = "󰗼"  # exit
-
-# Character & Party
-ICON_CHARACTER = "󰀄"  # account
-ICON_PARTY = "󰡉"  # account group
-ICON_LEVEL_UP = "󰁞"  # arrow up bold
-ICON_EDIT = "󰏫"  # pencil
-ICON_DELETE = "󰆴"  # trash
-
-# Combat
-ICON_SWORD = "󰓥"  # sword
-ICON_SHIELD = "󰒡"  # shield
-ICON_HEART = "󰋑"  # heart
-ICON_SKULL = "󰊱"  # skull
-ICON_DICE = "󰡛"  # dice d20
-ICON_TARGET = "󰓾"  # target
-
-# Magic & Items
-ICON_MAGIC = "󰂖"  # auto-fix / magic wand
-ICON_POTION = "󰂓"  # flask
-ICON_SCROLL = "󰈙"  # file document
-ICON_BOOK = "󰂽"  # book open
-ICON_CHEST = "󱊴"  # treasure chest
-ICON_GOLD = "󰆧"  # currency
-
-# Exploration
-ICON_MAP = "󰍐"  # map
-ICON_COMPASS = "󰇂"  # compass
-ICON_LOCATION = "󰍎"  # map marker
-ICON_TRAVEL = "󰠁"  # walk
-ICON_HOUSE = "󰋜"  # home
-ICON_CASTLE = "󱃲"  # castle
-
-# NPCs & Quests
-ICON_NPC = "󰓃"  # account voice
-ICON_QUEST = "󰃤"  # flag
-ICON_CHAT = "󰍡"  # message
-ICON_TRADE = "󰤏"  # swap horizontal
-
-# Status & Info
-ICON_INFO = "󰋽"  # information
-ICON_WARNING = "󰀦"  # alert
-ICON_ERROR = "󰅚"  # alert circle
-ICON_SUCCESS = "󰄭"  # check circle
-ICON_HELP = "󰋗"  # help circle
-ICON_TIME = "󰥔"  # clock
-
-# Monsters
-ICON_MONSTER = "󰚌"  # ghost (bestiary)
-ICON_DRAGON = "󱍼"  # dragon
-ICON_UNDEAD = "󰊱"  # skull
-
-# Misc
-ICON_STAR = "󰓎"  # star
-ICON_FIRE = "󰈸"  # fire
-ICON_REST = "󰒲"  # sleep/moon
-
-
-# Terminal-safe ASCII icons (avoid Rich markup conflicts with square brackets)
 class Icons:
-    """Icon set using ASCII for maximum terminal compatibility."""
+    """Icon set using Unicode emoji for modern appearance."""
 
     # Navigation
-    BACK = "<-"
-    FORWARD = "->"
-    UP = "^"
-    DOWN = "v"
-    MENU = "="
-    CLOSE = "x"
-    CHECK = "(+)"
-    CANCEL = "(x)"
+    BACK = "◀"
+    FORWARD = "▶"
+    UP = "▲"
+    DOWN = "▼"
+    MENU = "☰"
+    CLOSE = "✕"
+    CHECK = "✓"
+    CANCEL = "✕"
 
     # Game Actions
-    PLAY = ">"
-    NEW = "+"
-    SAVE = "(S)"
-    LOAD = "(L)"
-    SETTINGS = "(=)"
-    QUIT = "(Q)"
+    PLAY = "▶"
+    NEW = "✚"
+    SAVE = "💾"
+    LOAD = "📂"
+    SETTINGS = "⚙"
+    QUIT = "⏻"
 
     # Character & Party
-    CHARACTER = "(C)"
-    PARTY = "(P)"
-    LEVEL_UP = "^"
-    EDIT = "(E)"
-    DELETE = "(D)"
+    CHARACTER = "👤"
+    PARTY = "👥"
+    LEVEL_UP = "⬆"
+    EDIT = "✎"
+    DELETE = "🗑"
 
     # Combat
-    SWORD = "/"
-    SHIELD = "O"
-    HEART = "<3"
-    SKULL = "X"
-    DICE = "d20"
-    TARGET = "(o)"
+    SWORD = "⚔"
+    SHIELD = "🛡"
+    HEART = "❤"
+    SKULL = "💀"
+    DICE = "🎲"
+    TARGET = "◎"
 
     # Magic & Items
-    MAGIC = "*"
-    POTION = "!"
-    SCROLL = "~"
-    BOOK = "#"
-    CHEST = "="
-    GOLD = "$"
+    MAGIC = "✨"
+    POTION = "🧪"
+    SCROLL = "📜"
+    BOOK = "📖"
+    CHEST = "📦"
+    GOLD = "💰"
 
     # Exploration
-    MAP = "(M)"
-    COMPASS = "@"
-    LOCATION = "."
-    TRAVEL = ">"
-    HOUSE = "(H)"
-    CASTLE = "(C)"
+    MAP = "🗺"
+    COMPASS = "🧭"
+    LOCATION = "📍"
+    TRAVEL = "🚶"
+    HOUSE = "🏠"
+    CASTLE = "🏰"
 
     # NPCs & Quests
-    NPC = "?"
-    QUEST = "!"
-    CHAT = "..."
-    TRADE = "<>"
+    NPC = "💬"
+    QUEST = "📋"
+    CHAT = "💭"
+    TRADE = "🔄"
 
     # Status
-    INFO = "(i)"
-    WARNING = "(!)"
-    ERROR = "(X)"
-    SUCCESS = "(+)"
-    HELP = "(?)"
-    TIME = "@"
+    INFO = "ℹ"
+    WARNING = "⚠"
+    ERROR = "❌"
+    SUCCESS = "✅"
+    HELP = "❓"
+    TIME = "🕐"
 
     # Monsters
-    MONSTER = "(M)"
-    DRAGON = "(D)"
-    UNDEAD = "(U)"
+    MONSTER = "👹"
+    DRAGON = "🐉"
+    UNDEAD = "💀"
 
     # Misc
-    STAR = "*"
-    FIRE = "~"
-    REST = "zzz"
+    STAR = "⭐"
+    FIRE = "🔥"
+    REST = "😴"
 
 
-# Simple ASCII fallback for maximum compatibility
+# Fallback to simple ASCII if needed
 class SimpleIcons:
-    """Simple ASCII icons for maximum terminal compatibility."""
+    """Simple ASCII icons for maximum compatibility."""
 
     BACK = "<"
     FORWARD = ">"
@@ -170,41 +96,41 @@ class SimpleIcons:
 
     PLAY = ">"
     NEW = "+"
-    SAVE = "[S]"
-    LOAD = "[L]"
-    SETTINGS = "[*]"
-    QUIT = "[Q]"
+    SAVE = "S"
+    LOAD = "L"
+    SETTINGS = "*"
+    QUIT = "Q"
 
-    CHARACTER = "[C]"
-    PARTY = "[P]"
+    CHARACTER = "C"
+    PARTY = "P"
     LEVEL_UP = "^"
-    EDIT = "[E]"
-    DELETE = "[D]"
+    EDIT = "E"
+    DELETE = "D"
 
     SWORD = "/"
     SHIELD = "O"
     HEART = "<3"
     SKULL = "X"
-    DICE = "[d]"
-    TARGET = "()"
+    DICE = "d"
+    TARGET = "o"
 
     MAGIC = "*"
     POTION = "!"
     SCROLL = "~"
     BOOK = "#"
-    CHEST = "[]"
+    CHEST = "="
     GOLD = "$"
 
-    MAP = "[M]"
+    MAP = "M"
     COMPASS = "@"
     LOCATION = "*"
     TRAVEL = ">"
-    HOUSE = "^"
-    CASTLE = "#"
+    HOUSE = "H"
+    CASTLE = "C"
 
     NPC = "?"
     QUEST = "!"
-    CHAT = "..."
+    CHAT = "."
     TRADE = "<>"
 
     INFO = "i"
@@ -221,7 +147,3 @@ class SimpleIcons:
     STAR = "*"
     FIRE = "~"
     REST = "z"
-
-
-# Default icon set - use Unicode emoji icons
-icons = Icons()
