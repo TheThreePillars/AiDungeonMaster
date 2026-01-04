@@ -898,6 +898,29 @@
             border-radius: 0.25rem;
             letter-spacing: 0.1rem;
         }
+
+        .copy-btn {
+            margin-top: 0.75rem;
+            padding: 0.5rem 1.5rem;
+            border: 1px solid var(--accent-gold);
+            border-radius: 0.5rem;
+            background: transparent;
+            color: var(--accent-gold);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -936,6 +959,7 @@
             <div class="session-code-display">
                 <div class="session-label">Share this code with your party:</div>
                 <div class="session-code" id="new-session-code">----</div>
+                <button class="copy-btn" id="btn-copy-code">Copy Code</button>
             </div>
             <div class="form-group">
                 <label class="form-label" for="new-game-name">Your Name</label>
@@ -1555,6 +1579,34 @@
 
         document.getElementById('btn-cancel-new').addEventListener('click', () => {
             newGameModal.classList.remove('visible');
+        });
+
+        document.getElementById('btn-copy-code').addEventListener('click', async () => {
+            const code = state.sessionCode;
+            const btn = document.getElementById('btn-copy-code');
+            try {
+                await navigator.clipboard.writeText(code);
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Copy Code';
+                    btn.classList.remove('copied');
+                }, 2000);
+            } catch (e) {
+                // Fallback for older browsers
+                const input = document.createElement('input');
+                input.value = code;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Copy Code';
+                    btn.classList.remove('copied');
+                }, 2000);
+            }
         });
 
         document.getElementById('new-game-name').addEventListener('keypress', (e) => {
