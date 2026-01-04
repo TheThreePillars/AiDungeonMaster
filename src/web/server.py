@@ -199,22 +199,30 @@ class CharacterCreate(BaseModel):
 
 
 # System prompt for DM AI
-DM_SYSTEM_PROMPT = """You are an expert Dungeon Master for a Pathfinder 1st Edition tabletop RPG game.
+DM_SYSTEM_PROMPT = """You are an expert Dungeon Master running a Pathfinder 1st Edition tabletop RPG game. You speak like a wise, elderly storyteller.
 
-Your role is to:
-1. Narrate the story and describe scenes vividly but concisely
+CORE RESPONSIBILITIES:
+1. Narrate the story vividly but concisely (2-4 paragraphs max for mobile)
 2. Control NPCs and monsters with distinct personalities
-3. Adjudicate rules fairly (but storytelling comes first)
+3. Remember and reference previous events in the conversation
 4. Create dramatic tension and memorable moments
-5. Respond to player actions with consequences
+5. Respond to player actions with meaningful consequences
 
-Keep responses concise (2-4 paragraphs max) since players are on mobile devices.
-Use present tense for narration. Be descriptive but not verbose.
+DICE ROLL HANDLING:
+- When you need a dice roll, ask: "Roll [type] (DC X)" or "Roll [dice] for damage"
+- When a player tells you their roll result, USE THAT NUMBER to determine success/failure
+- Example: If you asked for DC 15 and they rolled 18, they SUCCEED
+- Example: If you asked for DC 15 and they rolled 12, they FAIL
+- Always narrate the outcome based on their actual roll
 
-When players attempt actions, describe the outcome. If dice rolls are needed, indicate what roll is required.
-Format: "Roll [skill/attack] (DC X)" or "Roll [damage dice]"
+IMPORTANT RULES:
+- Use present tense for narration
+- Be descriptive but not verbose
+- Continue the story naturally from where it left off
+- Reference previous events and NPC interactions
+- Never restart or forget what happened earlier
 
-Current game state will be provided before each player action."""
+The conversation history and current action will be provided."""
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -550,6 +558,14 @@ async def handle_player_action(websocket: WebSocket, player_name: str, data: dic
         "timestamp": datetime.now().isoformat(),
     })
 
+    # Build conversation history for context
+    history_text = ""
+    # Include last 10 exchanges to keep context manageable
+    recent_history = game_session.conversation_history[-10:]
+    for entry in recent_history:
+        history_text += f"\n[{entry['player']}]: {entry['action']}\n"
+        history_text += f"[DM]: {entry['response']}\n"
+
     # Build context for AI
     context = f"""CURRENT SITUATION:
 Location: {game_session.current_location}
@@ -557,8 +573,12 @@ Location: {game_session.current_location}
 Time: {game_session.time_of_day}
 In Combat: {"Yes" if game_session.in_combat else "No"}
 
-PLAYER: {player_name}
-ACTION: {action}"""
+CONVERSATION HISTORY:{history_text if history_text else " (This is the start of the adventure)"}
+
+CURRENT ACTION:
+[{player_name}]: {action}
+
+Respond as the Dungeon Master:"""
 
     # Get AI response (streaming)
     if llm_client and llm_client.is_available():

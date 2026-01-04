@@ -1976,40 +1976,78 @@
             const utterance = new SpeechSynthesisUtterance(text);
 
             // Get available voices
+            let voices = speechSynthesis.getVoices();
+
+            // Voices might not be loaded yet on some browsers
+            if (voices.length === 0) {
+                // Wait for voices and retry once
+                setTimeout(() => {
+                    voices = speechSynthesis.getVoices();
+                    if (voices.length > 0) speakWithVoices(utterance, text);
+                }, 100);
+                return;
+            }
+
+            speakWithVoices(utterance, text);
+        }
+
+        function speakWithVoices(utterance, text) {
             const voices = speechSynthesis.getVoices();
 
-            // Try to find a suitable voice based on gender preference
-            let selectedVoice = null;
-            const genderKeywords = dmVoice.gender === 'male'
-                ? ['male', 'david', 'james', 'mark', 'paul', 'daniel', 'george']
-                : ['female', 'zira', 'susan', 'linda', 'samantha', 'karen', 'victoria'];
+            // Keywords to identify male vs female voices
+            const maleKeywords = ['male', 'david', 'james', 'mark', 'paul', 'daniel', 'george', 'alex', 'tom', 'fred', 'albert', 'guy'];
+            const femaleKeywords = ['female', 'zira', 'susan', 'linda', 'samantha', 'karen', 'victoria', 'fiona', 'moira', 'tessa', 'kate', 'serena', 'ellen', 'ava'];
 
-            // First try to find English voice matching gender
-            for (const voice of voices) {
+            const targetKeywords = dmVoice.gender === 'male' ? maleKeywords : femaleKeywords;
+            const avoidKeywords = dmVoice.gender === 'male' ? femaleKeywords : maleKeywords;
+
+            // Filter to English voices
+            const englishVoices = voices.filter(v => v.lang.startsWith('en'));
+
+            // Score voices based on how well they match our criteria
+            let bestVoice = null;
+            let bestScore = -100;
+
+            for (const voice of englishVoices) {
                 const nameLower = voice.name.toLowerCase();
-                if (voice.lang.startsWith('en')) {
-                    for (const keyword of genderKeywords) {
-                        if (nameLower.includes(keyword)) {
-                            selectedVoice = voice;
-                            break;
-                        }
-                    }
-                    if (selectedVoice) break;
+                let score = 0;
+
+                // Prefer matching gender
+                for (const keyword of targetKeywords) {
+                    if (nameLower.includes(keyword)) score += 10;
+                }
+                // Avoid opposite gender
+                for (const keyword of avoidKeywords) {
+                    if (nameLower.includes(keyword)) score -= 20;
+                }
+                // Slight preference for US/GB voices
+                if (voice.lang === 'en-US' || voice.lang === 'en-GB') score += 2;
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestVoice = voice;
                 }
             }
 
-            // Fallback to any English voice
-            if (!selectedVoice) {
-                selectedVoice = voices.find(v => v.lang.startsWith('en')) || voices[0];
+            // Fallback to first English voice or any voice
+            if (!bestVoice) {
+                bestVoice = englishVoices[0] || voices[0];
             }
 
-            if (selectedVoice) {
-                utterance.voice = selectedVoice;
+            if (bestVoice) {
+                utterance.voice = bestVoice;
             }
 
-            // Adjust for elderly voice effect
-            utterance.rate = 0.85;  // Slightly slower
-            utterance.pitch = dmVoice.gender === 'male' ? 0.8 : 0.9;  // Lower pitch
+            // ELDERLY VOICE EFFECT - very pronounced differences
+            if (dmVoice.gender === 'male') {
+                // Old Wizard: Very deep, slow, deliberate
+                utterance.rate = 0.7;    // Much slower - wise, deliberate speech
+                utterance.pitch = 0.5;   // Very low pitch - deep old man voice
+            } else {
+                // Old Witch: Slower, lower, mysterious
+                utterance.rate = 0.75;   // Slower
+                utterance.pitch = 0.7;   // Lower than normal - old woman voice
+            }
 
             dmVoice.speaking = true;
             utterance.onend = () => { dmVoice.speaking = false; };
