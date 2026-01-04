@@ -1,0 +1,176 @@
+/* AI Dungeon Master - Textual CSS Styles */
+
+/* Global styles */
+Screen {
+    background: $surface;
+}
+
+Header {
+    background: $primary-darken-2;
+}
+
+Footer {
+    background: $primary-darken-3;
+}
+
+/* Button variants */
+Button {
+    min-width: 12;
+}
+
+Button.-primary {
+    background: $primary;
+}
+
+Button.-success {
+    background: $success;
+}
+
+Button.-warning {
+    background: $warning;
+}
+
+Button.-error {
+    background: $error;
+}
+
+/* Common utility classes */
+.section-header {
+    text-style: bold;
+    color: $primary;
+    margin-bottom: 1;
+    text-align: center;
+}
+
+.muted {
+    color: $text-muted;
+}
+
+.centered {
+    align: center middle;
+}
+
+/* Panel styles */
+.panel {
+    border: solid $primary;
+    padding: 1;
+    margin: 1;
+}
+
+.panel-header {
+    dock: top;
+    height: 3;
+    background: $primary-darken-1;
+    text-align: center;
+}
+
+/* Form styles */
+.form-group {
+    margin-bottom: 1;
+}
+
+.form-label {
+    margin-bottom: 0;
+}
+
+Input {
+    border: tall $primary;
+}
+
+Input:focus {
+    border: tall $accent;
+}
+
+Select {
+    border: tall $primary;
+}
+
+Select:focus {
+    border: tall $accent;
+}
+
+/* DataTable styles */
+DataTable {
+    height: 100%;
+}
+
+DataTable > .datatable--header {
+    background: $primary-darken-1;
+    text-style: bold;
+}
+
+DataTable > .datatable--cursor {
+    background: $primary;
+}
+
+/* RichLog styles */
+RichLog {
+    background: $surface-darken-1;
+    border: none;
+    padding: 1;
+}
+
+/* TabbedContent styles */
+TabbedContent {
+    height: 100%;
+}
+
+TabPane {
+    padding: 1;
+}
+
+/* Status indicators */
+.status-good {
+    color: $success;
+}
+
+.status-warning {
+    color: $warning;
+}
+
+.status-danger {
+    color: $error;
+}
+
+/* HP bar styles */
+.hp-bar {
+    height: 1;
+    background: $error-darken-2;
+}
+
+.hp-bar-fill {
+    background: $success;
+}
+
+/* Combat styles */
+.combat-active {
+    background: $error-darken-3;
+}
+
+.current-turn {
+    background: $warning-darken-2;
+}
+
+/* Dice roll display */
+.dice-result {
+    text-align: center;
+    text-style: bold;
+    padding: 1;
+    border: solid $success;
+}
+
+.dice-critical {
+    color: $success;
+    text-style: bold;
+}
+
+.dice-fumble {
+    color: $error;
+    text-style: bold;
+}
+
+/* Notification styles */
+Toast {
+    background: $primary-darken-2;
+    border: tall $primary;
+}

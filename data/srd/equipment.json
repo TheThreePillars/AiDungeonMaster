@@ -1,0 +1,126 @@
+{
+  "weapons": {
+    "simple_melee": [
+      {"name": "Dagger", "cost": 2, "damage_s": "1d3", "damage_m": "1d4", "critical": "19-20/x2", "range": 10, "weight": 1, "type": "P or S", "special": ["light", "thrown"]},
+      {"name": "Gauntlet", "cost": 2, "damage_s": "1d2", "damage_m": "1d3", "critical": "x2", "weight": 1, "type": "B"},
+      {"name": "Light Mace", "cost": 5, "damage_s": "1d4", "damage_m": "1d6", "critical": "x2", "weight": 4, "type": "B", "special": ["light"]},
+      {"name": "Sickle", "cost": 6, "damage_s": "1d4", "damage_m": "1d6", "critical": "x2", "weight": 2, "type": "S", "special": ["light", "trip"]},
+      {"name": "Club", "cost": 0, "damage_s": "1d4", "damage_m": "1d6", "critical": "x2", "range": 10, "weight": 3, "type": "B", "special": ["thrown"]},
+      {"name": "Heavy Mace", "cost": 12, "damage_s": "1d6", "damage_m": "1d8", "critical": "x2", "weight": 8, "type": "B"},
+      {"name": "Morningstar", "cost": 8, "damage_s": "1d6", "damage_m": "1d8", "critical": "x2", "weight": 6, "type": "B and P"},
+      {"name": "Shortspear", "cost": 1, "damage_s": "1d4", "damage_m": "1d6", "critical": "x2", "range": 20, "weight": 3, "type": "P", "special": ["thrown"]},
+      {"name": "Longspear", "cost": 5, "damage_s": "1d6", "damage_m": "1d8", "critical": "x3", "weight": 9, "type": "P", "special": ["brace", "reach"]},
+      {"name": "Quarterstaff", "cost": 0, "damage_s": "1d4/1d4", "damage_m": "1d6/1d6", "critical": "x2", "weight": 4, "type": "B", "special": ["double", "monk"]},
+      {"name": "Spear", "cost": 2, "damage_s": "1d6", "damage_m": "1d8", "critical": "x3", "range": 20, "weight": 6, "type": "P", "special": ["brace", "thrown"]}
+    ],
+    "simple_ranged": [
+      {"name": "Crossbow, Heavy", "cost": 50, "damage_s": "1d8", "damage_m": "1d10", "critical": "19-20/x2", "range": 120, "weight": 8, "type": "P"},
+      {"name": "Crossbow, Light", "cost": 35, "damage_s": "1d6", "damage_m": "1d8", "critical": "19-20/x2", "range": 80, "weight": 4, "type": "P"},
+      {"name": "Dart", "cost": 0.5, "damage_s": "1d3", "damage_m": "1d4", "critical": "x2", "range": 20, "weight": 0.5, "type": "P", "special": ["thrown"]},
+      {"name": "Javelin", "cost": 1, "damage_s": "1d4", "damage_m": "1d6", "critical": "x2", "range": 30, "weight": 2, "type": "P", "special": ["thrown"]},
+      {"name": "Sling", "cost": 0, "damage_s": "1d3", "damage_m": "1d4", "critical": "x2", "range": 50, "weight": 0, "type": "B"}
+    ],
+    "martial_melee": [
+      {"name": "Battleaxe", "cost": 10, "damage_s": "1d6", "damage_m": "1d8", "critical": "x3", "weight": 6, "type": "S"},
+      {"name": "Flail", "cost": 8, "damage_s": "1d6", "damage_m": "1d8", "critical": "x2", "weight": 5, "type": "B", "special": ["disarm", "trip"]},
+      {"name": "Longsword", "cost": 15, "damage_s": "1d6", "damage_m": "1d8", "critical": "19-20/x2", "weight": 4, "type": "S"},
+      {"name": "Heavy Pick", "cost": 8, "damage_s": "1d4", "damage_m": "1d6", "critical": "x4", "weight": 6, "type": "P"},
+      {"name": "Rapier", "cost": 20, "damage_s": "1d4", "damage_m": "1d6", "critical": "18-20/x2", "weight": 2, "type": "P", "special": ["finesse"]},
+      {"name": "Scimitar", "cost": 15, "damage_s": "1d4", "damage_m": "1d6", "critical": "18-20/x2", "weight": 4, "type": "S"},
+      {"name": "Trident", "cost": 15, "damage_s": "1d6", "damage_m": "1d8", "critical": "x2", "range": 10, "weight": 4, "type": "P", "special": ["brace", "thrown"]},
+      {"name": "Warhammer", "cost": 12, "damage_s": "1d6", "damage_m": "1d8", "critical": "x3", "weight": 5, "type": "B"},
+      {"name": "Falchion", "cost": 75, "damage_s": "1d6", "damage_m": "2d4", "critical": "18-20/x2", "weight": 8, "type": "S", "special": ["two-handed"]},
+      {"name": "Glaive", "cost": 8, "damage_s": "1d8", "damage_m": "1d10", "critical": "x3", "weight": 10, "type": "S", "special": ["reach", "two-handed"]},
+      {"name": "Greataxe", "cost": 20, "damage_s": "1d10", "damage_m": "1d12", "critical": "x3", "weight": 12, "type": "S", "special": ["two-handed"]},
+      {"name": "Greatsword", "cost": 50, "damage_s": "1d10", "damage_m": "2d6", "critical": "19-20/x2", "weight": 8, "type": "S", "special": ["two-handed"]},
+      {"name": "Halberd", "cost": 10, "damage_s": "1d8", "damage_m": "1d10", "critical": "x3", "weight": 12, "type": "P or S", "special": ["brace", "trip", "two-handed"]},
+      {"name": "Lance", "cost": 10, "damage_s": "1d6", "damage_m": "1d8", "critical": "x3", "weight": 10, "type": "P", "special": ["reach"]},
+      {"name": "Scythe", "cost": 18, "damage_s": "1d6", "damage_m": "2d4", "critical": "x4", "weight": 10, "type": "P or S", "special": ["trip", "two-handed"]},
+      {"name": "Handaxe", "cost": 6, "damage_s": "1d4", "damage_m": "1d6", "critical": "x3", "weight": 3, "type": "S", "special": ["light"]},
+      {"name": "Short Sword", "cost": 10, "damage_s": "1d4", "damage_m": "1d6", "critical": "19-20/x2", "weight": 2, "type": "P", "special": ["light"]}
+    ],
+    "martial_ranged": [
+      {"name": "Longbow", "cost": 75, "damage_s": "1d6", "damage_m": "1d8", "critical": "x3", "range": 100, "weight": 3, "type": "P"},
+      {"name": "Longbow, Composite", "cost": 100, "damage_s": "1d6", "damage_m": "1d8", "critical": "x3", "range": 110, "weight": 3, "type": "P"},
+      {"name": "Shortbow", "cost": 30, "damage_s": "1d4", "damage_m": "1d6", "critical": "x3", "range": 60, "weight": 2, "type": "P"},
+      {"name": "Shortbow, Composite", "cost": 75, "damage_s": "1d4", "damage_m": "1d6", "critical": "x3", "range": 70, "weight": 2, "type": "P"},
+      {"name": "Throwing Axe", "cost": 8, "damage_s": "1d4", "damage_m": "1d6", "critical": "x2", "range": 10, "weight": 2, "type": "S", "special": ["thrown"]}
+    ]
+  },
+  "armor": {
+    "light": [
+      {"name": "Padded", "cost": 5, "ac_bonus": 1, "max_dex": 8, "armor_check": 0, "spell_failure": 5, "speed_30": 30, "speed_20": 20, "weight": 10},
+      {"name": "Leather", "cost": 10, "ac_bonus": 2, "max_dex": 6, "armor_check": 0, "spell_failure": 10, "speed_30": 30, "speed_20": 20, "weight": 15},
+      {"name": "Studded Leather", "cost": 25, "ac_bonus": 3, "max_dex": 5, "armor_check": -1, "spell_failure": 15, "speed_30": 30, "speed_20": 20, "weight": 20},
+      {"name": "Chain Shirt", "cost": 100, "ac_bonus": 4, "max_dex": 4, "armor_check": -2, "spell_failure": 20, "speed_30": 30, "speed_20": 20, "weight": 25}
+    ],
+    "medium": [
+      {"name": "Hide", "cost": 15, "ac_bonus": 4, "max_dex": 4, "armor_check": -3, "spell_failure": 20, "speed_30": 20, "speed_20": 15, "weight": 25},
+      {"name": "Scale Mail", "cost": 50, "ac_bonus": 5, "max_dex": 3, "armor_check": -4, "spell_failure": 25, "speed_30": 20, "speed_20": 15, "weight": 30},
+      {"name": "Chainmail", "cost": 150, "ac_bonus": 6, "max_dex": 2, "armor_check": -5, "spell_failure": 30, "speed_30": 20, "speed_20": 15, "weight": 40},
+      {"name": "Breastplate", "cost": 200, "ac_bonus": 6, "max_dex": 3, "armor_check": -4, "spell_failure": 25, "speed_30": 20, "speed_20": 15, "weight": 30}
+    ],
+    "heavy": [
+      {"name": "Splint Mail", "cost": 200, "ac_bonus": 7, "max_dex": 0, "armor_check": -7, "spell_failure": 40, "speed_30": 20, "speed_20": 15, "weight": 45},
+      {"name": "Banded Mail", "cost": 250, "ac_bonus": 7, "max_dex": 1, "armor_check": -6, "spell_failure": 35, "speed_30": 20, "speed_20": 15, "weight": 35},
+      {"name": "Half-Plate", "cost": 600, "ac_bonus": 8, "max_dex": 0, "armor_check": -7, "spell_failure": 40, "speed_30": 20, "speed_20": 15, "weight": 50},
+      {"name": "Full Plate", "cost": 1500, "ac_bonus": 9, "max_dex": 1, "armor_check": -6, "spell_failure": 35, "speed_30": 20, "speed_20": 15, "weight": 50}
+    ],
+    "shields": [
+      {"name": "Buckler", "cost": 5, "ac_bonus": 1, "armor_check": -1, "spell_failure": 5, "weight": 5},
+      {"name": "Shield, Light Wooden", "cost": 3, "ac_bonus": 1, "armor_check": -1, "spell_failure": 5, "weight": 5},
+      {"name": "Shield, Light Steel", "cost": 9, "ac_bonus": 1, "armor_check": -1, "spell_failure": 5, "weight": 6},
+      {"name": "Shield, Heavy Wooden", "cost": 7, "ac_bonus": 2, "armor_check": -2, "spell_failure": 15, "weight": 10},
+      {"name": "Shield, Heavy Steel", "cost": 20, "ac_bonus": 2, "armor_check": -2, "spell_failure": 15, "weight": 15},
+      {"name": "Shield, Tower", "cost": 30, "ac_bonus": 4, "max_dex": 2, "armor_check": -10, "spell_failure": 50, "weight": 45}
+    ]
+  },
+  "adventuring_gear": [
+    {"name": "Backpack", "cost": 2, "weight": 2},
+    {"name": "Bedroll", "cost": 0.1, "weight": 5},
+    {"name": "Caltrops", "cost": 1, "weight": 2},
+    {"name": "Candle", "cost": 0.01, "weight": 0},
+    {"name": "Chain (10 ft.)", "cost": 30, "weight": 2},
+    {"name": "Chalk", "cost": 0.01, "weight": 0},
+    {"name": "Crowbar", "cost": 2, "weight": 5},
+    {"name": "Fishhook", "cost": 0.1, "weight": 0},
+    {"name": "Flint and Steel", "cost": 1, "weight": 0},
+    {"name": "Grappling Hook", "cost": 1, "weight": 4},
+    {"name": "Hammer", "cost": 0.5, "weight": 2},
+    {"name": "Ink (1 oz.)", "cost": 8, "weight": 0},
+    {"name": "Inkpen", "cost": 0.1, "weight": 0},
+    {"name": "Lantern, Bullseye", "cost": 12, "weight": 3},
+    {"name": "Lantern, Hooded", "cost": 7, "weight": 2},
+    {"name": "Lock, Simple", "cost": 20, "weight": 1},
+    {"name": "Lock, Average", "cost": 40, "weight": 1},
+    {"name": "Lock, Good", "cost": 80, "weight": 1},
+    {"name": "Manacles", "cost": 15, "weight": 2},
+    {"name": "Mirror, Small Steel", "cost": 10, "weight": 0.5},
+    {"name": "Oil (1-pint flask)", "cost": 0.1, "weight": 1},
+    {"name": "Paper (sheet)", "cost": 0.4, "weight": 0},
+    {"name": "Piton", "cost": 0.1, "weight": 0.5},
+    {"name": "Pole (10 ft.)", "cost": 0.05, "weight": 8},
+    {"name": "Pouch, Belt", "cost": 1, "weight": 0.5},
+    {"name": "Rations, Trail (per day)", "cost": 0.5, "weight": 1},
+    {"name": "Rope, Hemp (50 ft.)", "cost": 1, "weight": 10},
+    {"name": "Rope, Silk (50 ft.)", "cost": 10, "weight": 5},
+    {"name": "Sack", "cost": 0.1, "weight": 0.5},
+    {"name": "Spyglass", "cost": 1000, "weight": 1},
+    {"name": "Tent", "cost": 10, "weight": 20},
+    {"name": "Thieves' Tools", "cost": 30, "weight": 1},
+    {"name": "Thieves' Tools, Masterwork", "cost": 100, "weight": 2},
+    {"name": "Torch", "cost": 0.01, "weight": 1},
+    {"name": "Waterskin", "cost": 1, "weight": 4},
+    {"name": "Whetstone", "cost": 0.02, "weight": 1}
+  ],
+  "potions": [
+    {"name": "Potion of Cure Light Wounds", "cost": 50, "spell_level": 1, "caster_level": 1, "effect": "Heals 1d8+1 hit points"},
+    {"name": "Potion of Cure Moderate Wounds", "cost": 300, "spell_level": 2, "caster_level": 3, "effect": "Heals 2d8+3 hit points"},
+    {"name": "Potion of Cure Serious Wounds", "cost": 750, "spell_level": 3, "caster_level": 5, "effect": "Heals 3d8+5 hit points"},
+    {"name": "Potion of Bull's Strength", "cost": 300, "spell_level": 2, "caster_level": 3, "effect": "+4 enhancement bonus to Strength for 3 minutes"},
+    {"name": "Potion of Cat's Grace", "cost": 300, "spell_level": 2, "caster_level": 3, "effect": "+4 enhancement bonus to Dexterity for 3 minutes"},
+    {"name": "Potion of Bear's Endurance", "cost": 300, "spell_level": 2, "caster_level": 3, "effect": "+4 enhancement bonus to Constitution for 3 minutes"},
+    {"name": "Potion of Invisibility", "cost": 300, "spell_level": 2, "caster_level": 3, "effect": "Invisible for 3 minutes or until attack"},
+    {"name": "Potion of Haste", "cost": 750, "spell_level": 3, "caster_level": 5, "effect": "+1 attack, +1 AC, +30 ft speed for 5 rounds"}
+  ]
+}

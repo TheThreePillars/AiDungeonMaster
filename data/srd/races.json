@@ -1,0 +1,271 @@
+{
+  "races": [
+    {
+      "name": "Human",
+      "size": "Medium",
+      "speed": 30,
+      "ability_modifiers": {
+        "any": 2
+      },
+      "traits": [
+        {
+          "name": "Bonus Feat",
+          "description": "Humans select one extra feat at 1st level."
+        },
+        {
+          "name": "Skilled",
+          "description": "Humans gain an additional skill rank at first level and one additional rank whenever they gain a level."
+        }
+      ],
+      "languages": ["Common"],
+      "bonus_languages": ["any"],
+      "favored_class": "any",
+      "description": "Humans are the most adaptable and ambitious people among the common races. Whatever drives them, humans are the innovators, the achievers, and the pioneers of the worlds."
+    },
+    {
+      "name": "Elf",
+      "size": "Medium",
+      "speed": 30,
+      "ability_modifiers": {
+        "dexterity": 2,
+        "intelligence": 2,
+        "constitution": -2
+      },
+      "traits": [
+        {
+          "name": "Low-Light Vision",
+          "description": "Elves can see twice as far as humans in conditions of dim light."
+        },
+        {
+          "name": "Elven Immunities",
+          "description": "Elves are immune to magic sleep effects and gain a +2 racial saving throw bonus against enchantment spells and effects."
+        },
+        {
+          "name": "Elven Magic",
+          "description": "+2 racial bonus on caster level checks made to overcome spell resistance. +2 racial bonus on Spellcraft skill checks made to identify the properties of magic items."
+        },
+        {
+          "name": "Keen Senses",
+          "description": "+2 racial bonus on Perception skill checks."
+        },
+        {
+          "name": "Weapon Familiarity",
+          "description": "Elves are proficient with longbows, longswords, rapiers, and shortbows, and treat any weapon with the word 'elven' in its name as a martial weapon."
+        }
+      ],
+      "languages": ["Common", "Elven"],
+      "bonus_languages": ["Celestial", "Draconic", "Gnoll", "Gnome", "Goblin", "Orc", "Sylvan"],
+      "favored_class": "any",
+      "description": "Elves are a race of graceful, long-lived humanoids known for their connection to nature and magic."
+    },
+    {
+      "name": "Dwarf",
+      "size": "Medium",
+      "speed": 20,
+      "speed_note": "Dwarves are never slowed by armor or encumbrance",
+      "ability_modifiers": {
+        "constitution": 2,
+        "wisdom": 2,
+        "charisma": -2
+      },
+      "traits": [
+        {
+          "name": "Darkvision",
+          "description": "Dwarves can see in the dark up to 60 feet."
+        },
+        {
+          "name": "Defensive Training",
+          "description": "+4 dodge bonus to AC against monsters of the giant subtype."
+        },
+        {
+          "name": "Greed",
+          "description": "+2 racial bonus on Appraise skill checks made to determine the price of nonmagical goods that contain precious metals or gemstones."
+        },
+        {
+          "name": "Hatred",
+          "description": "+1 bonus on attack rolls against humanoid creatures of the orc and goblinoid subtypes."
+        },
+        {
+          "name": "Hardy",
+          "description": "+2 racial bonus on saving throws against poison, spells, and spell-like abilities."
+        },
+        {
+          "name": "Stability",
+          "description": "+4 racial bonus to CMD when resisting a bull rush or trip attempt."
+        },
+        {
+          "name": "Stonecunning",
+          "description": "+2 bonus on Perception checks to notice unusual stonework. Receive a check to notice such features whenever within 10 feet."
+        },
+        {
+          "name": "Weapon Familiarity",
+          "description": "Dwarves are proficient with battleaxes, heavy picks, and warhammers, and treat any weapon with 'dwarven' in its name as a martial weapon."
+        }
+      ],
+      "languages": ["Common", "Dwarven"],
+      "bonus_languages": ["Giant", "Gnome", "Goblin", "Orc", "Terran", "Undercommon"],
+      "favored_class": "any",
+      "description": "Dwarves are a stoic but stern race, ensconced in cities carved from the hearts of mountains."
+    },
+    {
+      "name": "Halfling",
+      "size": "Small",
+      "speed": 20,
+      "ability_modifiers": {
+        "dexterity": 2,
+        "charisma": 2,
+        "strength": -2
+      },
+      "traits": [
+        {
+          "name": "Small",
+          "description": "+1 size bonus to AC, +1 size bonus on attack rolls, -1 penalty to CMB and CMD, +4 size bonus on Stealth checks."
+        },
+        {
+          "name": "Fearless",
+          "description": "+2 racial bonus on all saving throws against fear."
+        },
+        {
+          "name": "Halfling Luck",
+          "description": "+1 racial bonus on all saving throws."
+        },
+        {
+          "name": "Keen Senses",
+          "description": "+2 racial bonus on Perception skill checks."
+        },
+        {
+          "name": "Sure-Footed",
+          "description": "+2 racial bonus on Acrobatics and Climb skill checks."
+        },
+        {
+          "name": "Weapon Familiarity",
+          "description": "Halflings are proficient with slings and treat any weapon with 'halfling' in its name as a martial weapon."
+        }
+      ],
+      "languages": ["Common", "Halfling"],
+      "bonus_languages": ["Dwarven", "Elven", "Gnome", "Goblin"],
+      "favored_class": "any",
+      "description": "Halflings are nimble, optimistic people who form tight-knit communities in the shadow of larger folk."
+    },
+    {
+      "name": "Gnome",
+      "size": "Small",
+      "speed": 20,
+      "ability_modifiers": {
+        "constitution": 2,
+        "charisma": 2,
+        "strength": -2
+      },
+      "traits": [
+        {
+          "name": "Small",
+          "description": "+1 size bonus to AC, +1 size bonus on attack rolls, -1 penalty to CMB and CMD, +4 size bonus on Stealth checks."
+        },
+        {
+          "name": "Low-Light Vision",
+          "description": "Gnomes can see twice as far as humans in conditions of dim light."
+        },
+        {
+          "name": "Defensive Training",
+          "description": "+4 dodge bonus to AC against monsters of the giant subtype."
+        },
+        {
+          "name": "Gnome Magic",
+          "description": "+1 to the DC of any saving throws against illusion spells. Gnomes with a Charisma of 11 or higher also gain spell-like abilities."
+        },
+        {
+          "name": "Hatred",
+          "description": "+1 bonus on attack rolls against humanoid creatures of the reptilian and goblinoid subtypes."
+        },
+        {
+          "name": "Keen Senses",
+          "description": "+2 racial bonus on Perception skill checks."
+        },
+        {
+          "name": "Obsessive",
+          "description": "+2 racial bonus on a Craft or Profession skill of their choice."
+        },
+        {
+          "name": "Weapon Familiarity",
+          "description": "Gnomes treat any weapon with 'gnome' in its name as a martial weapon."
+        }
+      ],
+      "languages": ["Common", "Gnome", "Sylvan"],
+      "bonus_languages": ["Draconic", "Dwarven", "Elven", "Giant", "Goblin", "Orc"],
+      "favored_class": "any",
+      "description": "Gnomes are whimsical, curious folk with a connection to the First World and a passion for discovery."
+    },
+    {
+      "name": "Half-Elf",
+      "size": "Medium",
+      "speed": 30,
+      "ability_modifiers": {
+        "any": 2
+      },
+      "traits": [
+        {
+          "name": "Low-Light Vision",
+          "description": "Half-elves can see twice as far as humans in conditions of dim light."
+        },
+        {
+          "name": "Adaptability",
+          "description": "Half-elves receive Skill Focus as a bonus feat at 1st level."
+        },
+        {
+          "name": "Elf Blood",
+          "description": "Half-elves count as both elves and humans for any effect related to race."
+        },
+        {
+          "name": "Elven Immunities",
+          "description": "Half-elves are immune to magic sleep effects and gain a +2 racial saving throw bonus against enchantment spells and effects."
+        },
+        {
+          "name": "Keen Senses",
+          "description": "+2 racial bonus on Perception skill checks."
+        },
+        {
+          "name": "Multitalented",
+          "description": "Half-elves choose two favored classes at first level and gain +1 hit point or +1 skill point whenever they take a level in either one of those classes."
+        }
+      ],
+      "languages": ["Common", "Elven"],
+      "bonus_languages": ["any"],
+      "favored_class": "any (two)",
+      "description": "Half-elves combine the best qualities of both parent races, but often feel isolated from both societies."
+    },
+    {
+      "name": "Half-Orc",
+      "size": "Medium",
+      "speed": 30,
+      "ability_modifiers": {
+        "any": 2
+      },
+      "traits": [
+        {
+          "name": "Darkvision",
+          "description": "Half-orcs can see in the dark up to 60 feet."
+        },
+        {
+          "name": "Intimidating",
+          "description": "+2 racial bonus on Intimidate skill checks."
+        },
+        {
+          "name": "Orc Blood",
+          "description": "Half-orcs count as both humans and orcs for any effect related to race."
+        },
+        {
+          "name": "Orc Ferocity",
+          "description": "Once per day, when a half-orc is brought below 0 hit points but not killed, he can fight on for one more round as if disabled."
+        },
+        {
+          "name": "Weapon Familiarity",
+          "description": "Half-orcs are proficient with greataxes and falchions and treat any weapon with 'orc' in its name as a martial weapon."
+        }
+      ],
+      "languages": ["Common", "Orc"],
+      "bonus_languages": ["Abyssal", "Draconic", "Giant", "Gnoll", "Goblin"],
+      "favored_class": "any",
+      "description": "Half-orcs combine human ambition with orcish fury. They often struggle to find acceptance in either society."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+# AI Dungeon Master Configuration
+# Pathfinder 1e Edition
+
+llm:
+  provider: ollama
+  model: hermes3:latest  # or hermes3:7b for more complex responses
+  base_url: http://localhost:11434
+  temperature: 0.8
+  max_tokens: 1024
+  context_window: 4096  # Adjust based on your model's context size
+
+game:
+  ruleset: pf1e  # Pathfinder 1st Edition
+  difficulty: normal  # easy, normal, hard (affects encounter balance)
+  auto_roll: false    # DM rolls for players or players roll themselves
+  narration_style: detailed  # brief, detailed, dramatic
+  max_party_size: 6   # Maximum number of player characters
+  experience_track: medium  # slow, medium, fast (PF1e XP progression)
+
+combat:
+  initiative_style: individual  # individual, group, side
+  confirm_criticals: true  # PF1e requires confirming critical hits
+  auto_stabilize: false  # Automatically roll stabilization checks
+
+ui:
+  theme: dark
+  dice_animation: true
+  combat_log_length: 50
+  chat_history_display: 100
+  show_roll_details: true  # Show individual dice results
+
+paths:
+  saves: ./saves
+  srd_data: ./data/srd
+  prompts: ./data/prompts
+  database: ./saves/campaign.db
+
+session:
+  auto_save_interval: 300  # seconds (5 minutes)
+  summary_frequency: 15    # Generate summary every N exchanges
+  max_context_messages: 20 # Messages kept in immediate context
