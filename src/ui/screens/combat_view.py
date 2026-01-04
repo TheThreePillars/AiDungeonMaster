@@ -439,14 +439,16 @@ Conditions: {conditions}""")
 
         # Display result
         attack_text = f"\n[bold]{current.name}[/bold] attacks [bold]{self.selected_target.name}[/bold]!\n"
-        attack_text += f"  Attack roll: {result.natural_roll}"
-        if result.attack_bonus != 0:
-            attack_text += f" + {result.attack_bonus}"
-        attack_text += f" = {result.attack_roll} vs AC {self.selected_target.armor_class}\n"
+        natural_roll = result.attack_roll.roll.rolls[0] if result.attack_roll.roll.rolls else 0
+        modifier = result.attack_roll.modifier
+        attack_text += f"  Attack roll: {natural_roll}"
+        if modifier != 0:
+            attack_text += f" + {modifier}" if modifier > 0 else f" {modifier}"
+        attack_text += f" = {result.attack_roll.total} vs AC {self.selected_target.armor_class}\n"
 
         if result.critical_threat and result.critical_confirmed:
             attack_text += f"  [bold yellow]CRITICAL HIT![/bold yellow]\n"
-            attack_text += f"  Damage: {result.total_damage} (x{result.critical_multiplier})\n"
+            attack_text += f"  Damage: {result.total_damage} (x2)\n"
         elif result.hit:
             attack_text += f"  [green]HIT![/green] Damage: {result.total_damage}\n"
         else:
