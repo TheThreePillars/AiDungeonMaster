@@ -1049,6 +1049,46 @@
             color: var(--accent-gold);
         }
 
+        /* Alignment Grid */
+        .alignment-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            max-width: 200px;
+        }
+
+        .alignment-btn {
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 36px;
+        }
+
+        .alignment-btn:hover:not(:disabled) {
+            border-color: var(--accent-gold);
+        }
+
+        .alignment-btn.selected {
+            border-color: var(--accent-gold);
+            background: rgba(212, 160, 23, 0.2);
+            color: var(--accent-gold);
+        }
+
+        .alignment-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .alignment-btn[data-alignment*="Good"] { border-left: 3px solid var(--success); }
+        .alignment-btn[data-alignment*="Evil"] { border-left: 3px solid var(--danger); }
+        .alignment-btn[data-alignment*="Neutral"]:not([data-alignment*="Good"]):not([data-alignment*="Evil"]) { border-left: 3px solid var(--text-muted); }
+
         .race-info, .class-info {
             font-size: 0.8rem;
             color: var(--text-secondary);
@@ -1056,6 +1096,57 @@
             background: var(--bg-dark);
             border-radius: 0.375rem;
             min-height: 2.5rem;
+        }
+
+        /* Starting Spell Selection */
+        .spell-select-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .spell-select-item:hover {
+            border-color: var(--accent-purple);
+        }
+
+        .spell-select-item.selected {
+            border-color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.15);
+        }
+
+        .spell-select-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .spell-select-checkbox {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent-purple);
+        }
+
+        .spell-select-name {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+
+        .spell-select-level {
+            font-size: 0.7rem;
+            padding: 0.125rem 0.375rem;
+            background: var(--accent-purple);
+            color: white;
+            border-radius: 0.25rem;
+        }
+
+        .spell-select-level.cantrip {
+            background: var(--accent-gold);
+            color: #000;
         }
 
         /* Ability Scores */
@@ -1738,6 +1829,58 @@
             color: var(--text-primary);
         }
 
+        /* Transaction History */
+        .transaction-history {
+            margin-top: 0.5rem;
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            background: var(--bg-dark);
+        }
+
+        .transaction-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            padding: 0.5rem;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.375rem 0.5rem;
+            background: var(--bg-elevated);
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+        }
+
+        .transaction-item.add {
+            border-left: 3px solid var(--success);
+        }
+
+        .transaction-item.subtract {
+            border-left: 3px solid var(--danger);
+        }
+
+        .transaction-reason {
+            flex: 1;
+            color: var(--text-secondary);
+        }
+
+        .transaction-amount {
+            font-weight: 600;
+        }
+
+        .transaction-amount.positive {
+            color: var(--success);
+        }
+
+        .transaction-amount.negative {
+            color: var(--danger);
+        }
+
         .rest-btn {
             width: 100%;
             padding: 0.625rem;
@@ -1839,14 +1982,39 @@
             border-radius: 2rem;
             font-size: 0.8rem;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
         .quick-indicator:hover {
             border-color: var(--accent-gold);
+            transform: scale(1.05);
+        }
+
+        .quick-indicator.clickable:active {
+            transform: scale(0.95);
         }
 
         .gold-indicator {
             color: var(--accent-gold);
+        }
+
+        /* Character sheet button in quick bar */
+        .char-sheet-btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-gold));
+            color: white;
+            font-weight: 600;
+            border: none;
+            animation: pulse-glow 2s ease-in-out 3;
+        }
+
+        .char-sheet-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 12px rgba(139, 92, 246, 0.5);
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(139, 92, 246, 0.3); }
+            50% { box-shadow: 0 0 15px rgba(139, 92, 246, 0.6), 0 0 25px rgba(212, 160, 23, 0.4); }
         }
 
         .slots-indicator .slot-mini {
@@ -1971,7 +2139,32 @@
                 <div class="class-info" id="class-info"></div>
             </div>
 
-            <!-- Step 4: Ability Scores -->
+            <!-- Step 4: Alignment -->
+            <div class="form-group">
+                <label class="form-label">Alignment</label>
+                <div class="alignment-grid" id="alignment-options">
+                    <button class="alignment-btn" data-alignment="Lawful Good" title="Lawful Good">LG</button>
+                    <button class="alignment-btn" data-alignment="Neutral Good" title="Neutral Good">NG</button>
+                    <button class="alignment-btn" data-alignment="Chaotic Good" title="Chaotic Good">CG</button>
+                    <button class="alignment-btn" data-alignment="Lawful Neutral" title="Lawful Neutral">LN</button>
+                    <button class="alignment-btn" data-alignment="True Neutral" title="True Neutral">TN</button>
+                    <button class="alignment-btn" data-alignment="Chaotic Neutral" title="Chaotic Neutral">CN</button>
+                    <button class="alignment-btn" data-alignment="Lawful Evil" title="Lawful Evil">LE</button>
+                    <button class="alignment-btn" data-alignment="Neutral Evil" title="Neutral Evil">NE</button>
+                    <button class="alignment-btn" data-alignment="Chaotic Evil" title="Chaotic Evil">CE</button>
+                </div>
+                <div class="alignment-info" id="alignment-info" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;"></div>
+                <div class="alignment-restriction" id="alignment-restriction" style="font-size: 0.8rem; color: var(--warning); margin-top: 0.25rem; display: none;"></div>
+            </div>
+
+            <!-- Step 5: Starting Spells (for spellcasters) -->
+            <div class="form-group" id="spell-selection-group" style="display: none;">
+                <label class="form-label">Starting Spells <span style="color: var(--text-muted);">(<span id="cantrips-remaining">0</span> cantrips, <span id="spells-remaining">0</span> spells)</span></label>
+                <div class="spell-selection-info" id="spell-selection-info" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;"></div>
+                <div class="spell-selection-grid" id="starting-spell-options" style="display: flex; flex-direction: column; gap: 0.25rem; max-height: 200px; overflow-y: auto;"></div>
+            </div>
+
+            <!-- Step 5: Ability Scores -->
             <div class="form-group">
                 <label class="form-label">Ability Scores <span style="color: var(--text-muted);">(Points: <span id="points-remaining">20</span>)</span></label>
                 <div class="ability-grid">
@@ -2105,6 +2298,7 @@
         <div class="modal-card char-sheet-card">
             <div class="sheet-header">
                 <h2 class="modal-title" id="sheet-char-name">Character Sheet</h2>
+                <div class="sheet-subtitle" id="sheet-char-info" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: -0.25rem;"></div>
                 <button class="sheet-close" id="btn-close-sheet">&times;</button>
             </div>
 
@@ -2165,6 +2359,21 @@
                     </div>
                 </div>
 
+                <div class="xp-section" style="margin: 1rem 0; padding: 0.75rem; background: var(--bg-elevated); border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <h3 class="section-label" style="margin: 0;">Experience</h3>
+                        <span id="sheet-xp-total" style="font-weight: bold; color: var(--accent-gold);">0 XP</span>
+                    </div>
+                    <div class="xp-bar" style="height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden;">
+                        <div id="sheet-xp-progress" style="height: 100%; background: var(--accent-gold); width: 0%; transition: width 0.3s;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
+                        <span id="sheet-xp-current-level">Level 1</span>
+                        <span id="sheet-xp-next">Next: 2,000 XP</span>
+                    </div>
+                    <button id="btn-level-up" class="menu-btn" style="width: 100%; margin-top: 0.5rem; display: none; background: var(--accent-gold); color: #000;">Level Up!</button>
+                </div>
+
                 <div class="currency-section">
                     <h3 class="section-label">Currency</h3>
                     <div class="currency-grid">
@@ -2190,6 +2399,12 @@
                         </div>
                     </div>
                     <button class="save-currency-btn" id="btn-save-currency">Save Currency</button>
+                    <button class="save-currency-btn" id="btn-toggle-history" style="margin-top: 0.25rem; background: var(--bg-elevated);">Transaction History</button>
+                    <div class="transaction-history" id="transaction-history" style="display: none;">
+                        <div class="transaction-list" id="transaction-list">
+                            <div class="inventory-empty">No transactions yet</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="feats-section">
@@ -2439,14 +2654,7 @@
             <!-- Narrative Area -->
             <main class="narrative-area">
                 <div class="narrative-log" id="narrative-log">
-                    <div class="narrative-entry entry-dm">
-                        <div class="entry-header">&#x1F3AD; Dungeon Master</div>
-                        <div class="entry-content">
-                            <strong>Welcome, adventurer!</strong><br><br>
-                            You find yourself in the common room of the Rusty Dragon Inn. The smell of roasting meat and fresh bread fills the air. Patrons laugh and chat at nearby tables while a bard strums a lute in the corner.<br><br>
-                            <em>What would you like to do?</em>
-                        </div>
-                    </div>
+                    <!-- Initial content cleared when game starts -->
                     <div class="typing-indicator" id="typing-indicator">
                         &#x1F3AD; The Dungeon Master is thinking...
                     </div>
@@ -2466,11 +2674,11 @@
 
                 <!-- Quick Bar -->
                 <div class="quick-bar">
-                    <span class="quick-indicator gold-indicator" id="quick-gold" title="Gold">&#x25CF; <span id="quick-gold-val">0</span>g</span>
-                    <span class="quick-indicator slots-indicator" id="quick-slots" title="Spell Slots"><span id="quick-slots-val">-</span></span>
-                    <button class="quick-chip" id="btn-dice-toggle">&#x1F3B2; Roll Dice</button>
-                    <button class="quick-chip" data-action="I talk to the bartender.">&#x1F5E3; Talk</button>
-                    <button class="quick-chip" data-action="I order a drink.">&#x1F37A; Drink</button>
+                    <button class="quick-chip char-sheet-btn" id="btn-quick-char-sheet" title="View Character Sheet">&#x1F4DC; Character</button>
+                    <span class="quick-indicator gold-indicator clickable" id="quick-gold" title="Click to view inventory">&#x1F4B0; <span id="quick-gold-val">0</span>g</span>
+                    <span class="quick-indicator slots-indicator clickable" id="quick-slots" title="Click to view spells"><span id="quick-slots-val">-</span></span>
+                    <button class="quick-chip" id="btn-dice-toggle">&#x1F3B2; Dice</button>
+                    <button class="quick-chip" data-action="I look around the area.">&#x1F441; Look</button>
                     <button class="quick-chip" data-action="I listen for rumors.">&#x1F442; Listen</button>
                 </div>
 
@@ -2527,6 +2735,7 @@
             currentTurnCharacter: null, // Whose turn is it to act?
             allCharacters: [], // All characters in the session
             myCharacters: [], // Character names I control
+            initiativeOrder: [], // Initiative order for combat rounds
             // Voice recording with VAD
             recording: false,
             listening: false, // Waiting for speech
@@ -2691,7 +2900,13 @@
                     break;
 
                 case 'dm_response_stream':
+                    // Legacy per-token streaming (fallback)
                     updateStreamingEntry(data.token);
+                    break;
+
+                case 'dm_response_batch':
+                    // Batched tokens for mobile efficiency (10 tokens or 150ms)
+                    updateStreamingEntry(data.tokens);
                     break;
 
                 case 'dm_response':
@@ -2733,6 +2948,12 @@
                     updateTurnIndicator();
                     break;
 
+                case 'initiative_order':
+                    // Server sending initiative order for the session
+                    state.initiativeOrder = data.order || [];
+                    console.log('Initiative order:', state.initiativeOrder);
+                    break;
+
                 case 'action_submitted':
                     // Confirm action was received for a character
                     addSystemEntry(`${data.character}'s action recorded. Waiting for others...`);
@@ -2742,7 +2963,65 @@
                     // All characters have submitted - DM will narrate
                     addSystemEntry('All characters have acted. The Dungeon Master is narrating...');
                     break;
+
+                case 'xp_awarded':
+                    // XP was awarded by the DM
+                    showXPNotification(data.total_xp, data.xp_per_character, data.characters);
+                    break;
             }
+        }
+
+        // Show XP notification
+        function showXPNotification(totalXP, xpPerChar, characters) {
+            const numChars = characters.length;
+            const message = numChars > 1
+                ? `+${totalXP} XP awarded! (${xpPerChar} XP each)`
+                : `+${totalXP} XP awarded!`;
+
+            // Create floating notification
+            const notification = document.createElement('div');
+            notification.className = 'xp-notification';
+            notification.innerHTML = `<span class="xp-icon">&#x2B50;</span> ${message}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, var(--accent-gold), #ffd700);
+                color: #000;
+                padding: 1rem 2rem;
+                border-radius: 12px;
+                font-weight: bold;
+                font-size: 1.25rem;
+                z-index: 10000;
+                animation: xpPop 0.5s ease-out, xpFade 2s ease-out 1s forwards;
+                box-shadow: 0 4px 20px rgba(255, 215, 0, 0.5);
+            `;
+            document.body.appendChild(notification);
+
+            // Add animation styles if not present
+            if (!document.getElementById('xp-animation-styles')) {
+                const style = document.createElement('style');
+                style.id = 'xp-animation-styles';
+                style.textContent = `
+                    @keyframes xpPop {
+                        0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+                        50% { transform: translate(-50%, -50%) scale(1.1); }
+                        100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                    }
+                    @keyframes xpFade {
+                        0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                        100% { opacity: 0; transform: translate(-50%, -70%) scale(0.8); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            // Remove after animation
+            setTimeout(() => notification.remove(), 3000);
+
+            // Also add to narrative log
+            addSystemEntry(`${message}`);
         }
 
         // Turn indicator UI
@@ -3781,6 +4060,7 @@
             classes: [],
             selectedRace: null,
             selectedClass: null,
+            selectedAlignment: null,
             abilities: {
                 strength: 10,
                 dexterity: 10,
@@ -3792,6 +4072,61 @@
             pointsUsed: 0,
             maxPoints: 20
         };
+
+        // Alignment descriptions
+        const ALIGNMENT_DESCRIPTIONS = {
+            "Lawful Good": "Crusader - Combines honor and compassion. Acts with honor and benevolence.",
+            "Neutral Good": "Benefactor - Does the best they can to help others. Altruistic without bias.",
+            "Chaotic Good": "Rebel - Follows their conscience with little regard for authority.",
+            "Lawful Neutral": "Judge - Acts according to law, tradition, or personal code.",
+            "True Neutral": "Undecided - Does what seems natural without moral judgment.",
+            "Chaotic Neutral": "Free Spirit - Follows whims and values personal freedom above all.",
+            "Lawful Evil": "Dominator - Methodically takes what they want within limits of a code.",
+            "Neutral Evil": "Malefactor - Does whatever they can get away with, pure selfishness.",
+            "Chaotic Evil": "Destroyer - Acts with violence guided by greed, hate, and bloodlust."
+        };
+
+        // Class alignment restrictions (Pathfinder 1e rules)
+        const CLASS_ALIGNMENT_RESTRICTIONS = {
+            "Paladin": { allowed: ["Lawful Good"], message: "Paladins must be Lawful Good" },
+            "Monk": { allowed: ["Lawful Good", "Lawful Neutral", "Lawful Evil"], message: "Monks must be Lawful" },
+            "Barbarian": { forbidden: ["Lawful Good", "Lawful Neutral", "Lawful Evil"], message: "Barbarians cannot be Lawful" },
+            "Druid": { allowed: ["Neutral Good", "Lawful Neutral", "True Neutral", "Chaotic Neutral", "Neutral Evil"], message: "Druids must be neutral on at least one axis" }
+        };
+
+        // Update alignment options based on class
+        function updateAlignmentRestrictions() {
+            const cls = charState.selectedClass?.name;
+            const restriction = CLASS_ALIGNMENT_RESTRICTIONS[cls];
+            const restrictionEl = document.getElementById('alignment-restriction');
+
+            document.querySelectorAll('.alignment-btn').forEach(btn => {
+                const alignment = btn.dataset.alignment;
+                let allowed = true;
+
+                if (restriction) {
+                    if (restriction.allowed) {
+                        allowed = restriction.allowed.includes(alignment);
+                    } else if (restriction.forbidden) {
+                        allowed = !restriction.forbidden.includes(alignment);
+                    }
+                }
+
+                btn.disabled = !allowed;
+                if (!allowed && btn.classList.contains('selected')) {
+                    btn.classList.remove('selected');
+                    charState.selectedAlignment = null;
+                    document.getElementById('alignment-info').textContent = '';
+                }
+            });
+
+            if (restriction) {
+                restrictionEl.textContent = restriction.message;
+                restrictionEl.style.display = 'block';
+            } else {
+                restrictionEl.style.display = 'none';
+            }
+        }
 
         // Point buy cost table (Pathfinder)
         const pointCost = {
@@ -3855,6 +4190,7 @@
 
                 renderRaceOptions();
                 renderClassOptions();
+                setupAlignmentButtons();
             } catch (e) {
                 console.error('Failed to load races/classes:', e);
             }
@@ -3883,13 +4219,136 @@
             `).join('');
 
             container.querySelectorAll('.option-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
+                btn.addEventListener('click', async () => {
                     container.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
                     btn.classList.add('selected');
                     charState.selectedClass = charState.classes.find(c => c.name === btn.dataset.class);
                     const cls = charState.selectedClass;
                     document.getElementById('class-info').textContent = cls ? `${cls.description} (d${cls.hit_die} HP)` : '';
+
+                    // Update alignment restrictions based on class
+                    updateAlignmentRestrictions();
+
+                    // Handle spell selection for spellcasters
+                    await updateSpellSelection(cls);
                 });
+            });
+        }
+
+        // Setup alignment buttons
+        function setupAlignmentButtons() {
+            document.querySelectorAll('.alignment-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (btn.disabled) return;
+                    document.querySelectorAll('.alignment-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    charState.selectedAlignment = btn.dataset.alignment;
+                    document.getElementById('alignment-info').textContent = ALIGNMENT_DESCRIPTIONS[charState.selectedAlignment] || '';
+                });
+            });
+        }
+
+        // Track selected starting spells
+        let selectedStartingSpells = [];
+        let startingSpellLimits = { cantrips: 0, spells: 0 };
+
+        async function updateSpellSelection(cls) {
+            const spellGroup = document.getElementById('spell-selection-group');
+            const spellOptions = document.getElementById('starting-spell-options');
+            const spellInfo = document.getElementById('spell-selection-info');
+
+            selectedStartingSpells = [];
+
+            if (!cls || !cls.is_spellcaster) {
+                spellGroup.style.display = 'none';
+                return;
+            }
+
+            // Show spell selection
+            spellGroup.style.display = 'block';
+
+            // Fetch available starting spells for this class
+            try {
+                const res = await fetch(`/api/classes/${cls.name}/starting-spells`);
+                const data = await res.json();
+
+                startingSpellLimits = {
+                    cantrips: data.cantrips_allowed || 0,
+                    spells: data.spells_allowed || 0
+                };
+
+                document.getElementById('cantrips-remaining').textContent = startingSpellLimits.cantrips;
+                document.getElementById('spells-remaining').textContent = startingSpellLimits.spells;
+                spellInfo.textContent = data.info || `Choose your starting spells`;
+
+                // Render spell options
+                spellOptions.innerHTML = data.available_spells.map(spell => `
+                    <label class="spell-select-item" data-spell="${spell.name}" data-level="${spell.level}">
+                        <input type="checkbox" class="spell-select-checkbox" data-spell="${spell.name}" data-level="${spell.level}">
+                        <span class="spell-select-name">${spell.name}</span>
+                        <span class="spell-select-level ${spell.level === 0 ? 'cantrip' : ''}">${spell.level === 0 ? 'Cantrip' : 'Lv' + spell.level}</span>
+                    </label>
+                `).join('');
+
+                // Add checkbox handlers
+                spellOptions.querySelectorAll('.spell-select-checkbox').forEach(cb => {
+                    cb.addEventListener('change', () => handleSpellCheckbox(cb));
+                });
+
+            } catch (e) {
+                console.error('Failed to load starting spells:', e);
+                spellGroup.style.display = 'none';
+            }
+        }
+
+        function handleSpellCheckbox(checkbox) {
+            const spellName = checkbox.dataset.spell;
+            const spellLevel = parseInt(checkbox.dataset.level);
+            const isCantrip = spellLevel === 0;
+
+            if (checkbox.checked) {
+                // Check if we can add more
+                const currentCantrips = selectedStartingSpells.filter(s => s.level === 0).length;
+                const currentSpells = selectedStartingSpells.filter(s => s.level > 0).length;
+
+                if (isCantrip && currentCantrips >= startingSpellLimits.cantrips) {
+                    checkbox.checked = false;
+                    return;
+                }
+                if (!isCantrip && currentSpells >= startingSpellLimits.spells) {
+                    checkbox.checked = false;
+                    return;
+                }
+
+                selectedStartingSpells.push({ name: spellName, level: spellLevel });
+                checkbox.closest('.spell-select-item').classList.add('selected');
+            } else {
+                selectedStartingSpells = selectedStartingSpells.filter(s => s.name !== spellName);
+                checkbox.closest('.spell-select-item').classList.remove('selected');
+            }
+
+            // Update remaining counts
+            const currentCantrips = selectedStartingSpells.filter(s => s.level === 0).length;
+            const currentSpells = selectedStartingSpells.filter(s => s.level > 0).length;
+            document.getElementById('cantrips-remaining').textContent = startingSpellLimits.cantrips - currentCantrips;
+            document.getElementById('spells-remaining').textContent = startingSpellLimits.spells - currentSpells;
+
+            // Disable/enable items based on limits
+            document.querySelectorAll('.spell-select-item').forEach(item => {
+                const level = parseInt(item.dataset.level);
+                const cb = item.querySelector('.spell-select-checkbox');
+                if (!cb.checked) {
+                    if (level === 0 && currentCantrips >= startingSpellLimits.cantrips) {
+                        item.classList.add('disabled');
+                        cb.disabled = true;
+                    } else if (level > 0 && currentSpells >= startingSpellLimits.spells) {
+                        item.classList.add('disabled');
+                        cb.disabled = true;
+                    } else {
+                        item.classList.remove('disabled');
+                        cb.disabled = false;
+                    }
+                }
             });
         }
 
@@ -3950,11 +4409,26 @@
             document.getElementById('char-name').value = '';
             charState.selectedRace = null;
             charState.selectedClass = null;
+            charState.selectedAlignment = null;
             charState.abilities = { strength: 10, dexterity: 10, constitution: 10, intelligence: 10, wisdom: 10, charisma: 10 };
 
             document.querySelectorAll('#race-options .option-btn, #class-options .option-btn').forEach(b => b.classList.remove('selected'));
             document.getElementById('race-info').textContent = '';
             document.getElementById('class-info').textContent = '';
+
+            // Reset alignment
+            document.querySelectorAll('.alignment-btn').forEach(b => {
+                b.classList.remove('selected');
+                b.disabled = false;
+            });
+            document.getElementById('alignment-info').textContent = '';
+            document.getElementById('alignment-restriction').style.display = 'none';
+
+            // Reset spell selection
+            selectedStartingSpells = [];
+            startingSpellLimits = { cantrips: 0, spells: 0 };
+            document.getElementById('spell-selection-group').style.display = 'none';
+            document.getElementById('starting-spell-options').innerHTML = '';
 
             ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'].forEach(updateAbilityDisplay);
             updatePointsDisplay();
@@ -3974,9 +4448,23 @@
                 alert('Please select a class');
                 return;
             }
+            if (!charState.selectedAlignment) {
+                alert('Please select an alignment');
+                return;
+            }
             if (charState.pointsUsed > charState.maxPoints) {
                 alert('You have used too many points');
                 return;
+            }
+
+            // Validate spell selection for spellcasters
+            if (charState.selectedClass.is_spellcaster) {
+                const cantripCount = selectedStartingSpells.filter(s => s.level === 0).length;
+                const spellCount = selectedStartingSpells.filter(s => s.level > 0).length;
+                if (cantripCount < startingSpellLimits.cantrips || spellCount < startingSpellLimits.spells) {
+                    alert(`Please select ${startingSpellLimits.cantrips} cantrips and ${startingSpellLimits.spells} spells`);
+                    return;
+                }
             }
 
             try {
@@ -3987,6 +4475,8 @@
                         name: name,
                         race: charState.selectedRace.name,
                         character_class: charState.selectedClass.name,
+                        alignment: charState.selectedAlignment,
+                        selected_spells: selectedStartingSpells.map(s => s.name),
                         ...charState.abilities
                     })
                 });
@@ -4252,28 +4742,37 @@
             if (!currentSheetCharId) return;
 
             try {
-                // Load character data
-                const charRes = await fetch(`/api/characters`);
-                const charData = await charRes.json();
-                const char = charData.characters.find(c => c.id == currentSheetCharId);
-                if (!char) return;
+                // Load full character details
+                const charRes = await fetch(`/api/characters/${currentSheetCharId}`);
+                const char = await charRes.json();
+                if (!char || !char.id) return;
 
                 // Update header
                 document.getElementById('sheet-char-name').textContent = char.name;
+                const alignmentShort = {
+                    "Lawful Good": "LG", "Neutral Good": "NG", "Chaotic Good": "CG",
+                    "Lawful Neutral": "LN", "True Neutral": "TN", "Chaotic Neutral": "CN",
+                    "Lawful Evil": "LE", "Neutral Evil": "NE", "Chaotic Evil": "CE"
+                };
+                const alignStr = char.alignment ? ` (${alignmentShort[char.alignment] || char.alignment})` : '';
+                document.getElementById('sheet-char-info').textContent = `${char.race} ${char.character_class} Lv${char.level}${alignStr}`;
 
-                // Stats
-                const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
-                abilities.forEach(ab => {
-                    const val = char[ab] || 10;
+                // Stats - map full names to short names
+                const abilityMap = {
+                    'str': 'strength', 'dex': 'dexterity', 'con': 'constitution',
+                    'int': 'intelligence', 'wis': 'wisdom', 'cha': 'charisma'
+                };
+                Object.entries(abilityMap).forEach(([short, full]) => {
+                    const val = char[full] || 10;
                     const mod = Math.floor((val - 10) / 2);
-                    document.getElementById(`sheet-${ab}`).textContent = val;
-                    document.getElementById(`sheet-${ab}-mod`).textContent = mod >= 0 ? `+${mod}` : mod;
+                    document.getElementById(`sheet-${short}`).textContent = val;
+                    document.getElementById(`sheet-${short}-mod`).textContent = mod >= 0 ? `+${mod}` : mod;
                 });
 
                 // Combat stats
                 document.getElementById('sheet-hp').textContent = `${char.current_hp || char.max_hp}/${char.max_hp}`;
-                document.getElementById('sheet-ac').textContent = char.ac || 10;
-                const dexMod = Math.floor((char.dex - 10) / 2);
+                document.getElementById('sheet-ac').textContent = char.armor_class || 10;
+                const dexMod = Math.floor(((char.dexterity || 10) - 10) / 2);
                 document.getElementById('sheet-init').textContent = dexMod >= 0 ? `+${dexMod}` : dexMod;
 
                 // Currency
@@ -4286,19 +4785,80 @@
                 currentSheetCharClass = char.character_class;
                 currentSheetSpellSlots = char.spell_slots || {};
 
+                // Render feats
+                renderFeats(char.feats || []);
+
                 // Load inventory
                 await loadInventory();
 
                 // Load spells
                 await loadSpells();
 
-                // Load feats from character endpoint (separate call for full details)
-                const charDetailsRes = await fetch(`/api/characters/${currentSheetCharId}`);
-                const charDetails = await charDetailsRes.json();
-                renderFeats(charDetails.feats || []);
+                // Load experience
+                await loadExperience();
 
             } catch (e) {
                 console.error('Failed to load character sheet:', e);
+            }
+        }
+
+        // Load experience and level progress
+        async function loadExperience() {
+            if (!currentSheetCharId) return;
+
+            try {
+                const res = await fetch(`/api/characters/${currentSheetCharId}/experience`);
+                const data = await res.json();
+
+                document.getElementById('sheet-xp-total').textContent = `${data.experience.toLocaleString()} XP`;
+                document.getElementById('sheet-xp-current-level').textContent = `Level ${data.level}`;
+
+                if (data.level >= 20) {
+                    document.getElementById('sheet-xp-next').textContent = 'Max Level';
+                    document.getElementById('sheet-xp-progress').style.width = '100%';
+                    document.getElementById('btn-level-up').style.display = 'none';
+                } else {
+                    document.getElementById('sheet-xp-next').textContent = `Next: ${data.xp_for_next_level.toLocaleString()} XP`;
+
+                    // Calculate progress bar percentage
+                    const xpInCurrentLevel = data.experience - data.xp_for_current_level;
+                    const xpNeededForLevel = data.xp_for_next_level - data.xp_for_current_level;
+                    const progressPercent = Math.min(100, (xpInCurrentLevel / xpNeededForLevel) * 100);
+                    document.getElementById('sheet-xp-progress').style.width = `${progressPercent}%`;
+
+                    // Show/hide level up button
+                    if (data.can_level_up) {
+                        document.getElementById('btn-level-up').style.display = 'block';
+                    } else {
+                        document.getElementById('btn-level-up').style.display = 'none';
+                    }
+                }
+            } catch (e) {
+                console.error('Failed to load experience:', e);
+            }
+        }
+
+        // Level up handler
+        async function doLevelUp() {
+            if (!currentSheetCharId) return;
+
+            try {
+                const res = await fetch(`/api/characters/${currentSheetCharId}/level-up`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    alert(err.detail || 'Cannot level up');
+                    return;
+                }
+                const data = await res.json();
+                alert(data.message + `\nHP gained: ${data.hp_gained}\nNew max HP: ${data.new_max_hp}`);
+
+                // Reload character sheet
+                await loadCharacterSheet(currentSheetCharId);
+            } catch (e) {
+                console.error('Level up failed:', e);
             }
         }
 
@@ -4913,12 +5473,65 @@
                         gold: parseInt(document.getElementById('sheet-gp').value) || 0,
                         silver: parseInt(document.getElementById('sheet-sp').value) || 0,
                         copper: parseInt(document.getElementById('sheet-cp').value) || 0,
-                        operation: 'set'
+                        operation: 'set',
+                        reason: 'Manual adjustment'
                     })
                 });
                 updateQuickBarIndicators();
+                // Refresh transaction history if visible
+                if (document.getElementById('transaction-history').style.display !== 'none') {
+                    await loadTransactionHistory();
+                }
             } catch (e) {
                 console.error('Failed to save currency:', e);
+            }
+        }
+
+        // Toggle transaction history visibility
+        async function toggleTransactionHistory() {
+            const historyDiv = document.getElementById('transaction-history');
+            if (historyDiv.style.display === 'none') {
+                historyDiv.style.display = 'block';
+                await loadTransactionHistory();
+            } else {
+                historyDiv.style.display = 'none';
+            }
+        }
+
+        // Load transaction history
+        async function loadTransactionHistory() {
+            if (!currentSheetCharId) return;
+
+            try {
+                const res = await fetch(`/api/characters/${currentSheetCharId}/currency/history`);
+                const data = await res.json();
+
+                const listDiv = document.getElementById('transaction-list');
+                if (!data.history || data.history.length === 0) {
+                    listDiv.innerHTML = '<div class="inventory-empty">No transactions yet</div>';
+                    return;
+                }
+
+                // Show most recent first
+                const transactions = [...data.history].reverse();
+                listDiv.innerHTML = transactions.map(t => {
+                    const isAdd = t.operation === 'add';
+                    const amounts = [];
+                    if (t.gold > 0) amounts.push(`${t.gold}g`);
+                    if (t.silver > 0) amounts.push(`${t.silver}s`);
+                    if (t.copper > 0) amounts.push(`${t.copper}c`);
+                    if (t.platinum > 0) amounts.push(`${t.platinum}p`);
+                    const amountStr = amounts.join(' ') || '0g';
+
+                    return `
+                        <div class="transaction-item ${t.operation}">
+                            <span class="transaction-reason">${escapeHtml(t.reason || 'Unknown')}</span>
+                            <span class="transaction-amount ${isAdd ? 'positive' : 'negative'}">${isAdd ? '+' : '-'}${amountStr}</span>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                console.error('Failed to load transaction history:', e);
             }
         }
 
@@ -4963,10 +5576,12 @@
         });
 
         document.getElementById('btn-save-currency').addEventListener('click', saveCurrency);
+        document.getElementById('btn-toggle-history').addEventListener('click', toggleTransactionHistory);
         document.getElementById('btn-add-item').addEventListener('click', () => openItemPicker(false));
         document.getElementById('btn-add-loot').addEventListener('click', () => openItemPicker(true));
         document.getElementById('btn-learn-spell').addEventListener('click', openSpellPicker);
         document.getElementById('btn-long-rest').addEventListener('click', longRest);
+        document.getElementById('btn-level-up').addEventListener('click', doLevelUp);
         document.getElementById('btn-contribute').addEventListener('click', contributeGold);
         document.getElementById('btn-withdraw').addEventListener('click', withdrawGold);
 
@@ -5011,13 +5626,21 @@
             }
         });
 
-        // Quick gold indicator click opens character sheet
+        // Quick bar Character button opens character sheet
+        document.getElementById('btn-quick-char-sheet').addEventListener('click', () => {
+            const activeChar = getActiveCharacter();
+            if (activeChar && activeChar.id) {
+                openCharacterSheet(activeChar.id);
+            }
+        });
+
+        // Quick gold indicator click opens character sheet to inventory
         document.getElementById('quick-gold').addEventListener('click', () => {
             const activeChar = getActiveCharacter();
             if (activeChar && activeChar.id) {
                 openCharacterSheet(activeChar.id);
-                // Switch to stats tab (currency)
-                document.querySelector('.sheet-tab[data-tab="stats"]').click();
+                // Switch to inventory tab
+                document.querySelector('.sheet-tab[data-tab="inventory"]').click();
             }
         });
 

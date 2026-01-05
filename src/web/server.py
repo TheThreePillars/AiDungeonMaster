@@ -6,10 +6,11 @@ import json
 import logging
 import random
 import string
+import time
 from collections import deque
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List, Callable, Awaitable
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, UploadFile, File
@@ -43,10 +44,93 @@ srd_data = SRDData()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
+# XP extraction utilities
+def extract_xp_award(text: str) -> Optional[int]:
+    """Extract XP award from DM response text.
+
+    Looks for patterns like [XP:500] or [XP: 500]
+
+    Returns:
+        XP amount if found, None otherwise
+    """
+    import re
+    match = re.search(r'\[XP:\s*(\d+)\]', text, re.IGNORECASE)
+    if match:
+        return int(match.group(1))
+    return None
+
+
+def strip_xp_tags(text: str) -> str:
+    """Remove XP tags from text for display."""
+    import re
+    return re.sub(r'\s*\[XP:\s*\d+\]\s*', '', text, flags=re.IGNORECASE).strip()
+
+
 # Generate session codes
 def generate_session_code() -> str:
     """Generate a random 4-letter session code."""
     return ''.join(random.choices(string.ascii_uppercase, k=4))
+
+
+class TokenBatcher:
+    """Batches streaming tokens for efficient mobile delivery.
+
+    Instead of sending each token individually (100-400 WebSocket messages per response),
+    this batches tokens and sends them at intervals for better mobile performance.
+    """
+
+    def __init__(
+        self,
+        broadcast_fn: Callable[[dict], Awaitable[None]],
+        batch_size: int = 10,
+        interval_ms: int = 150,
+    ):
+        self.broadcast_fn = broadcast_fn
+        self.batch_size = batch_size
+        self.interval_ms = interval_ms
+        self.buffer: list[str] = []
+        self.last_flush = time.monotonic()
+        self._flush_task: Optional[asyncio.Task] = None
+
+    async def add_token(self, token: str) -> None:
+        """Add a token to the buffer, flushing if batch size or interval reached."""
+        self.buffer.append(token)
+        elapsed_ms = (time.monotonic() - self.last_flush) * 1000
+
+        # Flush if batch size reached OR interval elapsed
+        if len(self.buffer) >= self.batch_size or elapsed_ms >= self.interval_ms:
+            await self.flush()
+
+    async def flush(self) -> None:
+        """Send all buffered tokens as a single batch message."""
+        if not self.buffer:
+            return
+
+        combined = "".join(self.buffer)
+        self.buffer.clear()
+        self.last_flush = time.monotonic()
+
+        await self.broadcast_fn({
+            "type": "dm_response_batch",
+            "tokens": combined,
+        })
+
+    async def start_interval_flush(self) -> None:
+        """Start a background task that flushes at regular intervals."""
+        async def _interval_loop():
+            while True:
+                await asyncio.sleep(self.interval_ms / 1000)
+                if self.buffer:
+                    await self.flush()
+
+        self._flush_task = asyncio.create_task(_interval_loop())
+
+    def stop_interval_flush(self) -> None:
+        """Stop the interval flush task."""
+        if self._flush_task:
+            self._flush_task.cancel()
+            self._flush_task = None
 
 
 # Game state
@@ -77,6 +161,8 @@ class GameSession:
         self.current_character_index: int = 0  # Whose turn to ask
         self.awaiting_actions: bool = False  # Are we waiting for player actions?
         self.opening_scene_done: bool = False  # Has the DM set the opening scene?
+        # Backpressure tracking for slow clients (removed after 3 consecutive timeouts)
+        self.slow_client_counts: dict[str, int] = {}
 
     def parse_characters_from_players(self):
         """Extract all individual character names from player names (handles 'Name1 & Name2' format)."""
@@ -138,26 +224,60 @@ class GameSession:
         self.initiative_order = world_state.get("initiative_order", [])
         self.current_turn = world_state.get("current_turn", 0)
 
-    async def broadcast(self, message: dict):
-        """Send message to all connected clients, removing dead sockets."""
-        dead_players = []
-        for player_name, ws in self.players.items():
+    async def broadcast(self, message: dict, timeout_ms: int = 100):
+        """Send message to all connected clients in parallel with timeout.
+
+        Args:
+            message: The message dict to broadcast
+            timeout_ms: Per-client send timeout in milliseconds (default 100ms)
+        """
+        if not self.players and not self.dm_socket:
+            return
+
+        async def send_to_client(name: str, ws: WebSocket) -> tuple[str, bool]:
+            """Send to a single client with timeout. Returns (name, success)."""
             try:
-                await ws.send_json(message)
+                async with asyncio.timeout(timeout_ms / 1000):
+                    await ws.send_json(message)
+                return (name, True)
+            except asyncio.TimeoutError:
+                logger.warning(f"[{self.code}] Send timeout to '{name}' ({timeout_ms}ms)")
+                # Track slow client but don't remove on first timeout
+                self.slow_client_counts[name] = self.slow_client_counts.get(name, 0) + 1
+                if self.slow_client_counts[name] >= 3:
+                    logger.warning(f"[{self.code}] Removing slow client '{name}' after 3 timeouts")
+                    return (name, False)
+                return (name, True)  # Keep client, just skip this message
             except Exception as e:
-                logger.warning(f"[{self.code}] Failed to send to '{player_name}', removing: {e}")
-                dead_players.append(player_name)
+                logger.warning(f"[{self.code}] Failed to send to '{name}': {e}")
+                return (name, False)
 
-        # Remove dead sockets after iteration
-        for player_name in dead_players:
-            self.players.pop(player_name, None)
+        # Build list of send tasks for all players
+        tasks = [send_to_client(name, ws) for name, ws in self.players.items()]
 
+        # Add DM socket if present
         if self.dm_socket:
-            try:
-                await self.dm_socket.send_json(message)
-            except Exception as e:
-                logger.warning(f"[{self.code}] Failed to send to DM, removing: {e}")
-                self.dm_socket = None
+            tasks.append(send_to_client("__DM__", self.dm_socket))
+
+        # Execute all sends in parallel
+        if tasks:
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+
+            # Process results and remove failed clients
+            for result in results:
+                if isinstance(result, Exception):
+                    logger.error(f"[{self.code}] Broadcast exception: {result}")
+                    continue
+                name, success = result
+                if not success:
+                    if name == "__DM__":
+                        self.dm_socket = None
+                    else:
+                        self.players.pop(name, None)
+                        self.slow_client_counts.pop(name, None)
+                elif name != "__DM__" and name in self.slow_client_counts:
+                    # Reset slow count on successful send
+                    self.slow_client_counts[name] = max(0, self.slow_client_counts.get(name, 0) - 1)
 
     def is_empty(self) -> bool:
         """Check if session has no players."""
@@ -334,56 +454,71 @@ class CharacterCreate(BaseModel):
     name: str
     race: str
     character_class: str
+    alignment: Optional[str] = None
     strength: int = 10
     dexterity: int = 10
     constitution: int = 10
     intelligence: int = 10
     wisdom: int = 10
     charisma: int = 10
+    selected_spells: Optional[List[str]] = None  # Player-selected starting spells
 
 
 # System prompt for Mobile DM narrator
 DM_SYSTEM_PROMPT = """You are an expert Dungeon Master for Pathfinder 1st Edition. Be CONCISE and INTERACTIVE.
 
-CRITICAL: CONTINUE THE STORY
-- The CONVERSATION HISTORY shows what already happened - BUILD ON IT
-- NEVER restart or repeat the opening scene
-- NEVER re-introduce the setting if players are already there
-- Each response should ADVANCE the plot based on what players do
+CRITICAL - PLAYER CHARACTERS:
+- The PLAYER CHARACTERS listed are controlled by real players - they are NOT NPCs
+- NEVER describe what a PC looks like, thinks, or feels - the player controls that
+- NEVER narrate a PC's actions beyond what they stated - only describe RESULTS
+- NEVER ask a PC questions about themselves or describe them to themselves
+- Only describe the WORLD, NPCs, and OUTCOMES of player actions
 
-TURN-BASED FLOW:
-- You receive ALL party members' actions at once
-- Narrate the results of ALL actions together
-- Something should HAPPEN or CHANGE based on their actions
-- End by asking the first character what they do next
+CRITICAL - ROUND STRUCTURE:
+When you receive "ACTIONS THIS ROUND" from multiple characters:
+1. Narrate the OUTCOME of EACH character's action (don't skip any!)
+2. Describe how NPCs and monsters react to those actions
+3. Move the story forward based on what happened
+4. State whose turn is next: "[Name], it's your turn. What do you do?"
+
+SINGLE ACTION FLOW:
+When only one character acts:
+1. Narrate the result of their action
+2. State whose turn is next: "[Next Name], it's your turn. What do you do?"
 
 STORY PROGRESSION:
 - If players talk to NPCs → NPCs respond with useful info or quests
 - If players explore → they find something interesting
-- If players fight → combat progresses
+- If players fight → combat progresses with dice rolls
 - If players investigate → they discover clues
 - ALWAYS move the story forward - never stall
 
-RESPONSE STYLE:
+RESPONSE FORMAT:
 - Keep responses SHORT (3-5 sentences)
-- Narrate results, then prompt for next action
-- End with: "What do you do, [First Character]?"
+- Narrate what happens in the WORLD as a result of actions
+- ALWAYS end by saying whose turn it is: "[Name], it's your turn. What do you do?"
 
 DICE ROLLS:
-- Ask for rolls: "Roll [type] (DC X)"
-- Narrate outcome based on their result
+- Ask for rolls: "Roll [skill] (DC X)" when needed
+- Wait for player to report result before narrating outcome
 
 NPC VOICE TAGS (for TTS):
-[VOICE:elderly_male] - wizards, sages
-[VOICE:gruff] - dwarves, guards
-[VOICE:young_female] - barmaids, adventurers
-[VOICE:menacing] - villains, monsters
-[VOICE:cheerful] - friendly NPCs
+- Format: [VOICE:name] before NPC dialogue only
+- Voices: elderly_male, gruff, young_female, menacing, cheerful
+- Example: [VOICE:gruff] "Halt! Who goes there?" the guard demands.
+- Do NOT tag narration or PC dialogue
+
+EXPERIENCE POINTS:
+- Award XP when players defeat enemies or complete objectives
+- Format: [XP:amount] at the end of your response
+- Examples: [XP:200] for defeating a goblin, [XP:500] for completing a quest
+- XP is split among all party members automatically
+- Only award XP when something is actually accomplished
 
 RULES:
 - Present tense narration
-- Keep characters distinct
-- ADVANCE the story with each response
+- Describe the world, not the players
+- Process ALL character actions each round
 - Be concise but make things happen"""
 
 
@@ -695,6 +830,7 @@ async def get_character(character_id: int):
             "name": char.name,
             "race": char.race,
             "character_class": char.character_class,
+            "alignment": char.alignment,
             "level": char.level,
             "current_hp": char.current_hp,
             "max_hp": char.max_hp,
@@ -711,6 +847,10 @@ async def get_character(character_id: int):
             "reflex_base": char.reflex_base,
             "will_base": char.will_base,
             "feats": char.feats or [],
+            "platinum": char.platinum or 0,
+            "gold": char.gold or 0,
+            "silver": char.silver or 0,
+            "copper": char.copper or 0,
         }
 
 
@@ -755,6 +895,7 @@ async def create_character(char: CharacterCreate):
                 name=char.name,
                 race=char.race,
                 character_class=char.character_class,
+                alignment=char.alignment,
                 level=1,
                 strength=final_str,
                 dexterity=final_dex,
@@ -766,6 +907,16 @@ async def create_character(char: CharacterCreate):
                 current_hp=max_hp,
                 armor_class=ac,
                 gold=starting["gold"],  # Starting gold
+                currency_history=[{
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "operation": "add",
+                    "reason": "Starting gold",
+                    "platinum": 0,
+                    "gold": starting["gold"],
+                    "silver": 0,
+                    "copper": 0,
+                    "balance_after": {"platinum": 0, "gold": starting["gold"], "silver": 0, "copper": 0}
+                }]
             )
             session.add(new_char)
             session.flush()
@@ -828,7 +979,11 @@ async def create_character(char: CharacterCreate):
                 new_char.spellcaster = True
                 new_char.caster_level = starting_spells["caster_level"]
                 new_char.spell_slots = starting_spells["spell_slots"]
-                new_char.spells_known = starting_spells["spells_known"]
+                # Use player-selected spells if provided, otherwise use defaults
+                if char.selected_spells and len(char.selected_spells) > 0:
+                    new_char.spells_known = char.selected_spells
+                else:
+                    new_char.spells_known = starting_spells["spells_known"]
 
             return {
                 "id": new_char.id,
@@ -998,15 +1153,26 @@ class CurrencyUpdate(BaseModel):
     silver: int = 0
     copper: int = 0
     operation: str = "set"  # "set", "add", or "subtract"
+    reason: Optional[str] = None  # e.g., "Starting gold", "Bought sword", "Found treasure"
 
 
 @app.put("/api/characters/{character_id}/currency")
 async def update_character_currency(character_id: int, update: CurrencyUpdate):
     """Update character's currency."""
+    from datetime import datetime
+
     with session_scope() as session:
         char = session.query(Character).filter_by(id=character_id).first()
         if not char:
             raise HTTPException(status_code=404, detail="Character not found")
+
+        # Calculate change for history
+        old_values = {
+            "platinum": char.platinum or 0,
+            "gold": char.gold or 0,
+            "silver": char.silver or 0,
+            "copper": char.copper or 0
+        }
 
         if update.operation == "set":
             char.platinum = update.platinum
@@ -1024,12 +1190,157 @@ async def update_character_currency(character_id: int, update: CurrencyUpdate):
             char.silver = max(0, (char.silver or 0) - update.silver)
             char.copper = max(0, (char.copper or 0) - update.copper)
 
+        # Record transaction in history
+        history = char.currency_history or []
+        transaction = {
+            "timestamp": datetime.utcnow().isoformat(),
+            "operation": update.operation,
+            "reason": update.reason or ("Adjustment" if update.operation == "set" else "Earned" if update.operation == "add" else "Spent"),
+            "platinum": update.platinum,
+            "gold": update.gold,
+            "silver": update.silver,
+            "copper": update.copper,
+            "balance_after": {
+                "platinum": char.platinum,
+                "gold": char.gold,
+                "silver": char.silver,
+                "copper": char.copper
+            }
+        }
+        history.append(transaction)
+        # Keep last 50 transactions
+        char.currency_history = history[-50:]
+
         return {
             "platinum": char.platinum,
             "gold": char.gold,
             "silver": char.silver,
             "copper": char.copper,
+            "transaction": transaction
         }
+
+
+@app.get("/api/characters/{character_id}/currency/history")
+async def get_currency_history(character_id: int):
+    """Get character's currency transaction history."""
+    with session_scope() as session:
+        char = session.query(Character).filter_by(id=character_id).first()
+        if not char:
+            raise HTTPException(status_code=404, detail="Character not found")
+
+        return {
+            "history": char.currency_history or [],
+            "current": {
+                "platinum": char.platinum or 0,
+                "gold": char.gold or 0,
+                "silver": char.silver or 0,
+                "copper": char.copper or 0
+            }
+        }
+
+
+# ===== ALIGNMENT ENDPOINTS =====
+
+class AlignmentShift(BaseModel):
+    new_alignment: str
+    reason: str  # e.g., "Saved innocents", "Broke oath", "Act of cruelty"
+
+
+@app.put("/api/characters/{character_id}/alignment")
+async def update_character_alignment(character_id: int, shift: AlignmentShift):
+    """Update character's alignment with tracking."""
+    valid_alignments = [
+        "Lawful Good", "Neutral Good", "Chaotic Good",
+        "Lawful Neutral", "True Neutral", "Chaotic Neutral",
+        "Lawful Evil", "Neutral Evil", "Chaotic Evil"
+    ]
+    if shift.new_alignment not in valid_alignments:
+        raise HTTPException(status_code=400, detail=f"Invalid alignment: {shift.new_alignment}")
+
+    with session_scope() as session:
+        char = session.query(Character).filter_by(id=character_id).first()
+        if not char:
+            raise HTTPException(status_code=404, detail="Character not found")
+
+        old_alignment = char.alignment or "Unaligned"
+        char.alignment = shift.new_alignment
+
+        return {
+            "success": True,
+            "old_alignment": old_alignment,
+            "new_alignment": shift.new_alignment,
+            "reason": shift.reason
+        }
+
+
+@app.get("/api/characters/{character_id}/alignment")
+async def get_character_alignment(character_id: int):
+    """Get character's current alignment."""
+    with session_scope() as session:
+        char = session.query(Character).filter_by(id=character_id).first()
+        if not char:
+            raise HTTPException(status_code=404, detail="Character not found")
+
+        return {
+            "alignment": char.alignment or "Unaligned",
+            "name": char.name
+        }
+
+
+@app.post("/api/detect-alignment")
+async def detect_alignment(target_names: List[str], detection_type: str = "evil"):
+    """
+    Simulates alignment detection spells (Detect Evil, Detect Good, etc.)
+    detection_type: "evil", "good", "law", "chaos", or "all"
+    """
+    results = []
+    with session_scope() as session:
+        for name in target_names:
+            char = session.query(Character).filter_by(name=name).first()
+            if char and char.alignment:
+                alignment = char.alignment
+                detected = False
+                aura_strength = "none"
+
+                # Calculate detection based on type
+                if detection_type == "evil":
+                    detected = "Evil" in alignment
+                elif detection_type == "good":
+                    detected = "Good" in alignment
+                elif detection_type == "law":
+                    detected = "Lawful" in alignment
+                elif detection_type == "chaos":
+                    detected = "Chaotic" in alignment
+                elif detection_type == "all":
+                    detected = True
+
+                # Aura strength based on level (simplified)
+                if detected:
+                    level = char.level or 1
+                    if level >= 11:
+                        aura_strength = "overwhelming"
+                    elif level >= 5:
+                        aura_strength = "strong"
+                    elif level >= 2:
+                        aura_strength = "moderate"
+                    else:
+                        aura_strength = "faint"
+
+                results.append({
+                    "name": name,
+                    "detected": detected,
+                    "aura_strength": aura_strength if detected else "none",
+                    "alignment": alignment if detection_type == "all" else None
+                })
+            else:
+                results.append({
+                    "name": name,
+                    "detected": False,
+                    "aura_strength": "none",
+                    "error": "Target not found or has no alignment"
+                })
+
+    return {"results": results, "detection_type": detection_type}
 
 
 # ===== SPELLS ENDPOINTS =====
@@ -1042,8 +1353,58 @@ async def get_character_spells(character_id: int):
         if not char:
             raise HTTPException(status_code=404, detail="Character not found")
 
+        # Get spell names from character
+        spell_names = char.spells_known or []
+
+        # Build full spell objects by looking up each spell in SRD data
+        spell_data = srd_data.get_spells()
+        all_spells = spell_data.get("spells", [])
+        cantrips = spell_data.get("cantrips", [])
+
+        # Build lookup dict for quick access
+        spell_lookup = {}
+        for spell in cantrips:
+            spell_lookup[spell["name"].lower()] = {
+                "name": spell["name"],
+                "level": 0,
+                "school": spell.get("school", "universal"),
+                "description": spell.get("description", "")[:200] if spell.get("description") else "",
+            }
+        for spell in all_spells:
+            # Get the level for this character's class
+            level_info = spell.get("level", {})
+            spell_level = 1  # Default
+            if isinstance(level_info, dict):
+                class_lower = char.character_class.lower() if char.character_class else ""
+                spell_level = level_info.get(class_lower, level_info.get("sorcerer", level_info.get("wizard", 1)))
+            spell_lookup[spell["name"].lower()] = {
+                "name": spell["name"],
+                "level": spell_level,
+                "school": spell.get("school", "universal"),
+                "description": spell.get("description", "")[:200] if spell.get("description") else "",
+            }
+
+        # Convert spell names to full spell objects
+        spells_with_data = []
+        for name in spell_names:
+            if isinstance(name, str):
+                spell_info = spell_lookup.get(name.lower())
+                if spell_info:
+                    spells_with_data.append(spell_info)
+                else:
+                    # Spell not found in SRD - create basic entry
+                    spells_with_data.append({
+                        "name": name,
+                        "level": 0 if "cantrip" in name.lower() else 1,
+                        "school": "universal",
+                        "description": "",
+                    })
+            elif isinstance(name, dict):
+                # Already a full spell object
+                spells_with_data.append(name)
+
         return {
-            "spells_known": char.spells_known or [],
+            "spells_known": spells_with_data,
             "spell_slots": char.spell_slots or {},
             "caster_level": char.caster_level or 0,
             "spellcaster": char.spellcaster or False,
@@ -1149,6 +1510,180 @@ async def learn_spell(character_id: int, learn: SpellLearn):
             char.spells_known = known
 
         return {"spells_known": known}
+
+
+# ===== EXPERIENCE & LEVELING =====
+
+# Pathfinder 1e XP thresholds (Medium progression)
+XP_THRESHOLDS = {
+    1: 0,
+    2: 2000,
+    3: 5000,
+    4: 9000,
+    5: 15000,
+    6: 23000,
+    7: 35000,
+    8: 51000,
+    9: 75000,
+    10: 105000,
+    11: 155000,
+    12: 220000,
+    13: 315000,
+    14: 445000,
+    15: 635000,
+    16: 890000,
+    17: 1300000,
+    18: 1800000,
+    19: 2550000,
+    20: 3600000,
+}
+
+
+def get_level_for_xp(xp: int) -> int:
+    """Determine character level based on XP total."""
+    level = 1
+    for lvl, threshold in XP_THRESHOLDS.items():
+        if xp >= threshold:
+            level = lvl
+    return level
+
+
+def get_xp_for_next_level(current_level: int) -> int:
+    """Get XP required for next level."""
+    if current_level >= 20:
+        return 0  # Max level
+    return XP_THRESHOLDS.get(current_level + 1, 0)
+
+
+@app.get("/api/characters/{character_id}/experience")
+async def get_character_experience(character_id: int):
+    """Get character's experience and level progress."""
+    with session_scope() as session:
+        char = session.query(Character).filter_by(id=character_id).first()
+        if not char:
+            raise HTTPException(status_code=404, detail="Character not found")
+
+        current_xp = char.experience or 0
+        current_level = char.level or 1
+        xp_for_current = XP_THRESHOLDS.get(current_level, 0)
+        xp_for_next = get_xp_for_next_level(current_level)
+
+        return {
+            "experience": current_xp,
+            "level": current_level,
+            "xp_for_current_level": xp_for_current,
+            "xp_for_next_level": xp_for_next,
+            "xp_to_next": max(0, xp_for_next - current_xp) if xp_for_next > 0 else 0,
+            "can_level_up": current_xp >= xp_for_next and current_level < 20,
+        }
+
+
+class XPAward(BaseModel):
+    amount: int
+    reason: Optional[str] = None
+
+
+@app.post("/api/characters/{character_id}/experience/award")
+async def award_experience(character_id: int, award: XPAward):
+    """Award XP to a character and check for level up."""
+    with session_scope() as session:
+        char = session.query(Character).filter_by(id=character_id).first()
+        if not char:
+            raise HTTPException(status_code=404, detail="Character not found")
+
+        old_xp = char.experience or 0
+        old_level = char.level or 1
+        new_xp = old_xp + award.amount
+        char.experience = new_xp
+
+        # Check for level up
+        new_level = get_level_for_xp(new_xp)
+        leveled_up = new_level > old_level
+
+        if leveled_up:
+            char.level = new_level
+
+        return {
+            "experience": new_xp,
+            "old_level": old_level,
+            "new_level": new_level,
+            "leveled_up": leveled_up,
+            "xp_awarded": award.amount,
+            "reason": award.reason,
+            "xp_for_next_level": get_xp_for_next_level(new_level),
+        }
+
+
+@app.post("/api/characters/{character_id}/level-up")
+async def level_up_character(character_id: int):
+    """Apply level up to a character (increase HP, update spell slots, etc.)."""
+    with session_scope() as session:
+        char = session.query(Character).filter_by(id=character_id).first()
+        if not char:
+            raise HTTPException(status_code=404, detail="Character not found")
+
+        # Check if character has enough XP
+        current_xp = char.experience or 0
+        current_level = char.level or 1
+        xp_needed = get_xp_for_next_level(current_level)
+
+        if current_level >= 20:
+            raise HTTPException(status_code=400, detail="Already at maximum level")
+
+        if current_xp < xp_needed:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Not enough XP. Need {xp_needed}, have {current_xp}"
+            )
+
+        new_level = current_level + 1
+        char.level = new_level
+
+        # Increase HP based on class hit die
+        hit_dice = {
+            "Barbarian": 12, "Fighter": 10, "Paladin": 10, "Ranger": 10,
+            "Cleric": 8, "Druid": 8, "Monk": 8, "Rogue": 8, "Bard": 8,
+            "Sorcerer": 6, "Wizard": 6,
+        }
+        hit_die = hit_dice.get(char.character_class, 8)
+        con_mod = ((char.constitution or 10) - 10) // 2
+
+        # Average HP gain (half die + 1 + con mod, minimum 1)
+        hp_gain = max(1, (hit_die // 2) + 1 + con_mod)
+        char.max_hp = (char.max_hp or 0) + hp_gain
+        char.current_hp = (char.current_hp or 0) + hp_gain
+
+        # Update BAB based on class
+        full_bab = ["Barbarian", "Fighter", "Paladin", "Ranger"]
+        three_quarter_bab = ["Bard", "Cleric", "Druid", "Monk", "Rogue"]
+        # Half BAB: Sorcerer, Wizard
+
+        if char.character_class in full_bab:
+            char.base_attack_bonus = new_level
+        elif char.character_class in three_quarter_bab:
+            char.base_attack_bonus = (new_level * 3) // 4
+        else:
+            char.base_attack_bonus = new_level // 2
+
+        # Update spell slots for casters
+        if char.spellcaster and char.character_class in STARTING_SPELLS:
+            # This would need more complex logic for accurate spell slot progression
+            # For now, just add a slot at the highest known level
+            slots = char.spell_slots or {}
+            for level_key in sorted(slots.keys(), key=int, reverse=True):
+                if int(level_key) > 0:
+                    slots[level_key]["total"] = slots[level_key].get("total", 0) + 1
+                    break
+            char.spell_slots = slots
+            char.caster_level = (char.caster_level or 0) + 1
+
+        return {
+            "level": new_level,
+            "hp_gained": hp_gain,
+            "new_max_hp": char.max_hp,
+            "base_attack_bonus": char.base_attack_bonus,
+            "message": f"Congratulations! You are now level {new_level}!",
+        }
 
 
 # ===== SPELL & ITEM LISTS =====
@@ -1410,6 +1945,78 @@ STARTING_SPELLS = {
     "Barbarian": None,
     "Monk": None,
 }
+
+# Starting spell allowances by class (how many the player can pick)
+STARTING_SPELL_ALLOWANCES = {
+    "Wizard": {"cantrips": 3, "spells": 3, "info": "Choose 3 cantrips and 3 1st-level spells for your spellbook"},
+    "Sorcerer": {"cantrips": 4, "spells": 2, "info": "Choose 4 cantrips and 2 1st-level spells known"},
+    "Cleric": {"cantrips": 3, "spells": 2, "info": "Choose 3 orisons and 2 1st-level spells to prepare"},
+    "Druid": {"cantrips": 3, "spells": 2, "info": "Choose 3 orisons and 2 1st-level spells to prepare"},
+    "Bard": {"cantrips": 4, "spells": 2, "info": "Choose 4 cantrips and 2 1st-level spells known"},
+}
+
+
+@app.get("/api/classes/{class_name}/starting-spells")
+async def get_starting_spells(class_name: str):
+    """Get available starting spells for a class."""
+    # Check if class exists and is a spellcaster
+    if class_name not in CLASSES:
+        raise HTTPException(status_code=404, detail="Class not found")
+
+    cls = CLASSES[class_name]
+    if not cls.is_spellcaster():
+        return {
+            "available_spells": [],
+            "cantrips_allowed": 0,
+            "spells_allowed": 0,
+            "info": "This class does not cast spells at level 1"
+        }
+
+    # Get spell allowances
+    allowances = STARTING_SPELL_ALLOWANCES.get(class_name, {"cantrips": 0, "spells": 0, "info": ""})
+
+    # Get available spells for this class from SRD
+    spell_data = srd_data.get_spells()
+    all_spells = spell_data.get("spells", [])
+    cantrips = spell_data.get("cantrips", [])  # Cantrips are in a separate array
+    available = []
+
+    class_lower = class_name.lower()
+
+    # Process cantrips first (level 0)
+    for spell in cantrips:
+        level_info = spell.get("level", {})
+        if isinstance(level_info, dict) and class_lower in level_info:
+            available.append({
+                "name": spell["name"],
+                "level": 0,
+                "school": spell.get("school", ""),
+                "description": spell.get("description", "")[:100] + "..." if spell.get("description", "") else ""
+            })
+
+    # Then process 1st level spells
+    for spell in all_spells:
+        level_info = spell.get("level", {})
+        if isinstance(level_info, dict) and class_lower in level_info:
+            spell_level = level_info[class_lower]
+            # Only include 1st level spells for starting
+            if spell_level == 1:
+                available.append({
+                    "name": spell["name"],
+                    "level": spell_level,
+                    "school": spell.get("school", ""),
+                    "description": spell.get("description", "")[:100] + "..." if spell.get("description", "") else ""
+                })
+
+    # Sort by level, then name
+    available.sort(key=lambda s: (s["level"], s["name"]))
+
+    return {
+        "available_spells": available,
+        "cantrips_allowed": allowances["cantrips"],
+        "spells_allowed": allowances["spells"],
+        "info": allowances["info"]
+    }
 
 
 @app.get("/api/items")
@@ -1952,19 +2559,51 @@ async def generate_opening_scene(game_session: GameSession):
         return
 
     game_session.opening_scene_done = True
-    party_list = ", ".join(game_session.all_characters)
+
+    # Build detailed character info including alignment
+    party_details = []
+    with session_scope() as db_session:
+        for char_name in game_session.all_characters:
+            char = db_session.query(Character).filter_by(name=char_name).first()
+            if char:
+                align = char.alignment or "Unaligned"
+                party_details.append(f"- {char.name}: {char.race} {char.character_class} ({align})")
+            else:
+                party_details.append(f"- {char_name}")
+
+    party_text = "\n".join(party_details) if party_details else ", ".join(game_session.all_characters)
+
+    # Roll initiative for all characters
+    import random
+    initiative_rolls = {}
+    for char_name in game_session.all_characters:
+        roll = random.randint(1, 20)
+        initiative_rolls[char_name] = roll
+
+    # Sort by initiative (highest first)
+    sorted_initiative = sorted(initiative_rolls.items(), key=lambda x: x[1], reverse=True)
+    game_session.initiative_order = [name for name, _ in sorted_initiative]
+
+    # Build initiative announcement
+    init_text = "\n".join([f"- {name}: {roll}" for name, roll in sorted_initiative])
+    first_player = game_session.initiative_order[0]
+    first_roll = initiative_rolls[first_player]
 
     opening_prompt = f"""Set the opening scene for a new adventure.
 
 PLAYER CHARACTERS (these are the PLAYERS, not NPCs):
-{party_list}
+{party_text}
+
+INITIATIVE ROLLED:
+{init_text}
 
 IMPORTANT: Do NOT create any NPCs that duplicate what the player characters are. The players ARE the heroes of this story.
 
-Create a SHORT opening scene (3-4 sentences):
+Create the opening scene (4-5 sentences):
 1. Describe the Rusty Dragon Inn - warm tavern, locals drinking, innkeeper Ameiko (Tian woman)
 2. Focus on atmosphere, not on other adventurers or performers
-3. End by directly addressing {game_session.all_characters[0]} and asking what they do
+3. Announce the initiative order clearly (who goes first, second, etc.)
+4. End by saying: "{first_player}, you rolled a {first_roll} for initiative and go first. It's your turn. What do you do?"
 
 Generate the opening now:"""
 
@@ -1975,6 +2614,14 @@ Generate the opening now:"""
         full_response = ""
         config = GenerationConfig(temperature=0.8, max_tokens=300)
 
+        # Token batcher for efficient mobile streaming (10 tokens or 150ms intervals)
+        token_batcher = TokenBatcher(
+            broadcast_fn=game_session.broadcast,
+            batch_size=10,
+            interval_ms=150,
+        )
+        await token_batcher.start_interval_flush()
+
         async for token in llm_client.agenerate_stream(
             prompt=opening_prompt,
             system_prompt=DM_SYSTEM_PROMPT,
@@ -1983,10 +2630,11 @@ Generate the opening now:"""
             full_response += token
             display_token = strip_voice_tags(token)
             if display_token:
-                await game_session.broadcast({
-                    "type": "dm_response_stream",
-                    "token": display_token,
-                })
+                await token_batcher.add_token(display_token)
+
+        # Flush any remaining batched tokens and stop the interval task
+        token_batcher.stop_interval_flush()
+        await token_batcher.flush()
 
         display_response = strip_voice_tags(full_response)
 
@@ -2020,12 +2668,41 @@ Generate the opening now:"""
             "timestamp": datetime.now().isoformat(),
         })
 
+        # Broadcast initiative order and first turn
+        await game_session.broadcast({
+            "type": "initiative_order",
+            "order": game_session.initiative_order,
+        })
+        await game_session.broadcast({
+            "type": "character_turn",
+            "character": first_player,
+            "all_characters": game_session.all_characters,
+        })
+
     except Exception as e:
         logger.error(f"Opening scene error: {e}")
+        # Roll initiative even in error case
+        import random
+        for char_name in game_session.all_characters:
+            if char_name not in initiative_rolls:
+                initiative_rolls[char_name] = random.randint(1, 20)
+        sorted_init = sorted(initiative_rolls.items(), key=lambda x: x[1], reverse=True)
+        game_session.initiative_order = [name for name, _ in sorted_init]
+        first_player = game_session.initiative_order[0] if game_session.initiative_order else game_session.all_characters[0]
+
         await game_session.broadcast({
             "type": "dm_response",
-            "content": f"Welcome, adventurers! You find yourselves in the Rusty Dragon Inn. What do you do, {game_session.all_characters[0]}?",
+            "content": f"Welcome, adventurers! You find yourselves in the Rusty Dragon Inn. {first_player}, it's your turn. What do you do?",
             "timestamp": datetime.now().isoformat(),
+        })
+        await game_session.broadcast({
+            "type": "initiative_order",
+            "order": game_session.initiative_order,
+        })
+        await game_session.broadcast({
+            "type": "character_turn",
+            "character": first_player,
+            "all_characters": game_session.all_characters,
         })
 
     finally:
@@ -2081,16 +2758,43 @@ async def handle_player_action(websocket: WebSocket, player_name: str, data: dic
     all_actions = game_session.get_all_pending_actions()
     actions_text = "\n".join([f"- {char}: \"{act}\"" for char, act in all_actions])
 
-    # Build list of all characters in the party
-    party_list = ", ".join(game_session.all_characters)
+    # Build detailed character info including alignment for roleplay context
+    party_details = []
+    with session_scope() as db_session:
+        for char_name in game_session.all_characters:
+            char = db_session.query(Character).filter_by(name=char_name).first()
+            if char:
+                align = char.alignment or "Unaligned"
+                party_details.append(f"- {char.name}: {char.race} {char.character_class} ({align})")
+            else:
+                party_details.append(f"- {char_name}: Unknown")
+
+    party_text = "\n".join(party_details) if party_details else ", ".join(game_session.all_characters)
+
+    # Determine next player in initiative order
+    initiative_order = game_session.initiative_order if game_session.initiative_order else game_session.all_characters
+    initiative_text = ", ".join(initiative_order) if initiative_order else "Not set"
+
+    # Find who goes next (first in initiative order after the round ends)
+    next_player = initiative_order[0] if initiative_order else game_session.all_characters[0]
 
     context = f"""CURRENT SITUATION:
 Location: {game_session.current_location}
 Time: {game_session.time_of_day}
 In Combat: {"Yes" if game_session.in_combat else "No"}
 
+INITIATIVE ORDER: {initiative_text}
+NEXT TURN: {next_player}
+
 PLAYER CHARACTERS (these are the PLAYERS - never confuse them with NPCs):
-{party_list}
+{party_text}
+
+ALIGNMENT GUIDANCE:
+- Lawful characters respect authority and keep promises
+- Chaotic characters value freedom and resist control
+- Good characters help others and protect the innocent
+- Evil characters are selfish and willing to harm others
+- Remind players when actions conflict with their alignment
 
 WHAT HAS HAPPENED SO FAR:{history_text if history_text else " (Adventure just started)"}
 
@@ -2098,10 +2802,10 @@ ACTIONS THIS ROUND:
 {actions_text}
 
 INSTRUCTIONS:
-1. Narrate the results of the players' actions - make something HAPPEN
+1. Narrate the results of EACH character's action listed above - make something HAPPEN
 2. ADVANCE the story - introduce new elements, NPCs responding, discoveries, etc.
 3. Do NOT repeat the opening scene or re-describe the location
-4. End by asking {game_session.all_characters[0]} what they do next"""
+4. END with: "{next_player}, it's your turn. What do you do?" """
 
     # Get AI response (streaming)
     if llm_client and is_llm_available():
@@ -2121,6 +2825,14 @@ INSTRUCTIONS:
                 temperature=0.8,
                 max_tokens=400,  # Allow complete responses while keeping them concise
             )
+
+            # Token batcher for efficient mobile streaming (10 tokens or 150ms intervals)
+            token_batcher = TokenBatcher(
+                broadcast_fn=game_session.broadcast,
+                batch_size=10,
+                interval_ms=150,
+            )
+            await token_batcher.start_interval_flush()
 
             async def send_tts_chunk(text: str, chunk_index: int):
                 """Generate and send TTS for a sentence chunk with voice detection."""
@@ -2157,10 +2869,7 @@ INSTRUCTIONS:
                 # Send streaming update (strip voice tags for display)
                 display_token = strip_voice_tags(token)
                 if display_token:  # Only send if there's content after stripping
-                    await websocket.send_json({
-                        "type": "dm_response_stream",
-                        "token": display_token,
-                    })
+                    await token_batcher.add_token(display_token)
 
                 # Check for TTS trigger points - start audio earlier for better UX
                 should_speak = False
@@ -2186,8 +2895,40 @@ INSTRUCTIONS:
                     asyncio.create_task(send_tts_chunk(text_to_speak, sent_sentences))
                     sent_sentences += 1
 
-            # Strip voice tags for display and history
+            # Flush any remaining batched tokens and stop the interval task
+            token_batcher.stop_interval_flush()
+            await token_batcher.flush()
+
+            # Strip voice tags and XP tags for display and history
             display_response = strip_voice_tags(full_response)
+            display_response = strip_xp_tags(display_response)
+
+            # Extract and award XP if present
+            xp_award = extract_xp_award(full_response)
+            if xp_award and xp_award > 0:
+                # Award XP to all characters in the party
+                num_chars = len(game_session.all_characters)
+                xp_per_char = xp_award // max(1, num_chars)
+
+                with session_scope() as db_session:
+                    for char_name in game_session.all_characters:
+                        char = db_session.query(Character).filter_by(name=char_name).first()
+                        if char:
+                            old_level = char.level or 1
+                            char.experience = (char.experience or 0) + xp_per_char
+                            new_level = get_level_for_xp(char.experience)
+                            if new_level > old_level:
+                                char.level = new_level
+
+                # Broadcast XP award to all players
+                await game_session.broadcast({
+                    "type": "xp_awarded",
+                    "total_xp": xp_award,
+                    "xp_per_character": xp_per_char,
+                    "characters": game_session.all_characters,
+                    "timestamp": datetime.now().isoformat(),
+                })
+                logger.info(f"[{game_session.code}] Awarded {xp_award} XP ({xp_per_char} each to {num_chars} characters)")
 
             # Send complete response to all
             await game_session.broadcast({
@@ -2209,15 +2950,14 @@ INSTRUCTIONS:
                 "timestamp": datetime.now().isoformat(),
             })
 
-            # Start a new round - reset and ask the first character
+            # Start a new round - reset and ask the first character in initiative order
             game_session.reset_round()
-            first_char = game_session.get_current_character()
-            if first_char:
-                await game_session.broadcast({
-                    "type": "character_turn",
-                    "character": first_char,
-                    "all_characters": game_session.all_characters,
-                })
+            first_char = game_session.initiative_order[0] if game_session.initiative_order else game_session.all_characters[0]
+            await game_session.broadcast({
+                "type": "character_turn",
+                "character": first_char,
+                "all_characters": game_session.all_characters,
+            })
 
         except Exception as e:
             logger.error(f"AI error: {e}")

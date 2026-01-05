@@ -184,58 +184,120 @@ def extract_voice_segments(text: str, narrator_voice: str = "dm") -> list[tuple[
     """
     Extract voice-tagged segments from text.
 
-    Parses text with [VOICE:name] tags and returns segments with their voice.
+    Parses text with various voice tag formats and returns segments with their voice.
+    Handles [VOICE:name], [DM], [Cheerful Voice], etc.
 
     Args:
-        text: Text potentially containing [VOICE:name] tags
+        text: Text potentially containing voice tags
         narrator_voice: Voice to use for narrator/DM segments (dm_male or dm_female)
 
     Returns:
         List of (voice_name, text_segment) tuples
-
-    Example:
-        Input: '[VOICE:elderly_male] "Hello there!" The old man smiled.'
-        Output: [("elderly_male", '"Hello there!" The old man smiled.')]
     """
     import re
 
+    # Map various tag names to actual voice IDs
+    VOICE_ALIASES = {
+        # Direct mappings
+        "dm": "dm_male",
+        "narrator": "dm_male",
+        "gm": "dm_male",
+        "npc": "dm_male",
+        # Character types
+        "elderly_male": "elderly_male",
+        "elderly": "elderly_male",
+        "old_man": "elderly_male",
+        "wizard": "elderly_male",
+        "sage": "elderly_male",
+        "gruff": "gruff",
+        "dwarf": "gruff",
+        "guard": "gruff",
+        "young_female": "young_female",
+        "barmaid": "young_female",
+        "young_woman": "young_female",
+        "menacing": "menacing",
+        "villain": "menacing",
+        "monster": "menacing",
+        "evil": "menacing",
+        "cheerful": "cheerful",
+        "friendly": "cheerful",
+        "happy": "cheerful",
+        # Fallbacks
+        "male": "dm_male",
+        "female": "dm_female",
+    }
+
+    def normalize_voice(tag_content: str) -> str:
+        """Convert a tag like 'Cheerful Voice' or 'elderly_male' to a voice ID."""
+        # Remove 'voice' suffix and normalize
+        normalized = tag_content.lower().replace(" voice", "").replace("voice", "").strip()
+        normalized = normalized.replace(" ", "_")
+        return VOICE_ALIASES.get(normalized, narrator_voice)
+
     segments = []
-    current_voice = narrator_voice  # Use the narrator voice preference
+    current_voice = narrator_voice
 
-    # Pattern to match [VOICE:name] tags
-    pattern = r'\[VOICE:(\w+)\]'
+    # Pattern to match various voice tag formats:
+    # [VOICE:name], [VOICE: name], [DM], [Cheerful Voice], [Old Man], etc.
+    pattern = r'\[(?:VOICE:\s*)?([^\]]+)\]'
 
-    # Split by voice tags
-    parts = re.split(pattern, text)
+    # Find all tags and their positions
+    last_end = 0
+    for match in re.finditer(pattern, text):
+        # Add text before this tag with current voice
+        before_text = text[last_end:match.start()].strip()
+        if before_text:
+            segments.append((current_voice, before_text))
 
-    for i, part in enumerate(parts):
-        if i % 2 == 0:
-            # This is text content
-            if part.strip():
-                segments.append((current_voice, part.strip()))
-        else:
-            # This is a voice name
-            current_voice = part.lower()
+        # Update voice based on tag content
+        tag_content = match.group(1).strip()
+        current_voice = normalize_voice(tag_content)
+        last_end = match.end()
+
+    # Add remaining text after last tag
+    remaining = text[last_end:].strip()
+    if remaining:
+        segments.append((current_voice, remaining))
 
     # If no segments found, return the whole text with narrator voice
     if not segments and text.strip():
-        segments = [(narrator_voice, text.strip())]
+        # Strip any tags that might have been missed
+        clean_text = strip_voice_tags(text).strip()
+        if clean_text:
+            segments = [(narrator_voice, clean_text)]
 
     return segments
 
 
 def strip_voice_tags(text: str) -> str:
     """
-    Remove [VOICE:name] tags from text for display.
+    Remove voice/speaker tags from text for display.
+
+    Handles multiple formats the LLM might generate:
+    - [VOICE:name] - intended format
+    - [DM], [NPC] - simple labels
+    - [Cheerful Voice], [Old Man] - multi-word labels
+    - [VOICE: name] - with space after colon
 
     Args:
-        text: Text potentially containing [VOICE:name] tags
+        text: Text potentially containing voice tags
 
     Returns:
         Text with voice tags removed
     """
     import re
-    return re.sub(r'\[VOICE:\w+\]\s*', '', text)
+    # Match various bracket tag formats:
+    # [VOICE:word], [VOICE: word], [Word], [Multiple Words], [DM], etc.
+    # But NOT [action descriptions in lowercase]
+    patterns = [
+        r'\[VOICE:\s*\w+\]\s*',           # [VOICE:name] or [VOICE: name]
+        r'\[(?:DM|NPC|GM|NARRATOR)\]\s*',  # [DM], [NPC], [GM], [NARRATOR]
+        r'\[[A-Z][a-z]+(?:\s+[A-Z]?[a-z]+)*\s*(?:Voice|voice)?\]\s*',  # [Cheerful Voice], [Old Man], etc.
+    ]
+    result = text
+    for pattern in patterns:
+        result = re.sub(pattern, '', result)
+    return result
 
 
 def split_into_sentences(text: str) -> list[str]:

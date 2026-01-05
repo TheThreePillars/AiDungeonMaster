@@ -133,6 +133,7 @@ class Character(Base):
     gold = Column(Integer, default=0)
     silver = Column(Integer, default=0)
     copper = Column(Integer, default=0)
+    currency_history = Column(JSON, default=list)  # Transaction log: [{type, amount, reason, timestamp}]
 
     # Conditions and Status
     conditions = Column(JSON, default=list)  # Active conditions
