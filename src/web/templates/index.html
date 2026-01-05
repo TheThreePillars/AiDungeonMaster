@@ -3506,8 +3506,11 @@
         const itemPickerModal = document.getElementById('item-picker-modal');
         const spellPickerModal = document.getElementById('spell-picker-modal');
         let currentSheetCharId = null;
+        let currentSheetCharClass = null;
+        let currentSheetSpellSlots = null;
         let commonItems = [];
         let allSpells = [];
+        let filteredSpells = [];
         let addingToPartyLoot = false;
 
         // Open character sheet
@@ -3552,6 +3555,10 @@
                 document.getElementById('sheet-gp').value = char.gold || 0;
                 document.getElementById('sheet-sp').value = char.silver || 0;
                 document.getElementById('sheet-cp').value = char.copper || 0;
+
+                // Store class and spell slots for spell filtering
+                currentSheetCharClass = char.character_class;
+                currentSheetSpellSlots = char.spell_slots || {};
 
                 // Load inventory
                 await loadInventory();
@@ -3972,14 +3979,26 @@
         async function openSpellPicker() {
             spellPickerModal.classList.add('visible');
 
-            if (allSpells.length === 0) {
-                try {
-                    const res = await fetch('/api/spells');
-                    const data = await res.json();
-                    allSpells = data.spells;
-                } catch (e) {
-                    console.error('Failed to load spells:', e);
+            // Calculate max spell level based on spell slots
+            let maxLevel = 0;
+            if (currentSheetSpellSlots) {
+                for (const level of Object.keys(currentSheetSpellSlots)) {
+                    const lvl = parseInt(level);
+                    if (lvl > maxLevel) maxLevel = lvl;
                 }
+            }
+
+            // Fetch spells filtered by class and max level
+            try {
+                let url = '/api/spells';
+                if (currentSheetCharClass) {
+                    url += `?character_class=${encodeURIComponent(currentSheetCharClass)}&max_level=${maxLevel}`;
+                }
+                const res = await fetch(url);
+                const data = await res.json();
+                filteredSpells = data.spells;
+            } catch (e) {
+                console.error('Failed to load spells:', e);
             }
 
             renderSpellPicker();
@@ -3987,7 +4006,7 @@
 
         function renderSpellPicker(filter = '', levelFilter = '') {
             const list = document.getElementById('spell-picker-list');
-            const filtered = allSpells.filter(spell => {
+            const filtered = filteredSpells.filter(spell => {
                 const matchesName = spell.name.toLowerCase().includes(filter.toLowerCase());
                 const matchesLevel = levelFilter === '' || spell.level === parseInt(levelFilter);
                 return matchesName && matchesLevel;
@@ -4009,15 +4028,21 @@
 
         async function learnSpell(spellName) {
             try {
-                await fetch(`/api/characters/${currentSheetCharId}/spells/learn`, {
+                const res = await fetch(`/api/characters/${currentSheetCharId}/spells/learn`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ spell_name: spellName })
                 });
+                if (!res.ok) {
+                    const err = await res.json();
+                    alert(err.detail || 'Failed to learn spell');
+                    return;
+                }
                 await loadSpells();
                 spellPickerModal.classList.remove('visible');
             } catch (e) {
                 console.error('Failed to learn spell:', e);
+                alert('Failed to learn spell');
             }
         }
 

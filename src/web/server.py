@@ -750,15 +750,41 @@ class SpellLearn(BaseModel):
 
 @app.post("/api/characters/{character_id}/spells/learn")
 async def learn_spell(character_id: int, learn: SpellLearn):
-    """Add a spell to character's known spells."""
+    """Add a spell to character's known spells with class validation."""
     with session_scope() as session:
         char = session.query(Character).filter_by(id=character_id).first()
         if not char:
             raise HTTPException(status_code=404, detail="Character not found")
 
+        # Validate spell exists
+        spell_key = learn.spell_name.lower()
+        if spell_key not in SPELLS:
+            raise HTTPException(status_code=400, detail=f"Unknown spell: {learn.spell_name}")
+
+        spell = SPELLS[spell_key]
+        class_lower = char.character_class.lower()
+
+        # Validate class can cast this spell
+        if class_lower not in spell.level:
+            raise HTTPException(
+                status_code=400,
+                detail=f"{char.character_class}s cannot learn {spell.name}"
+            )
+
+        # Validate character level allows this spell level
+        spell_level = spell.level[class_lower]
+        spell_slots = char.spell_slots or {}
+        max_spell_level = max((int(k) for k in spell_slots.keys()), default=-1)
+
+        if spell_level > max_spell_level and spell_level > 0:
+            raise HTTPException(
+                status_code=400,
+                detail=f"You cannot learn level {spell_level} spells yet"
+            )
+
         known = char.spells_known or []
-        if learn.spell_name not in known:
-            known.append(learn.spell_name)
+        if spell_key not in known:
+            known.append(spell_key)
             char.spells_known = known
 
         return {"spells_known": known}
