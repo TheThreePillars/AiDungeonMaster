@@ -294,48 +294,48 @@ class CharacterCreate(BaseModel):
 
 
 # System prompt for Mobile DM narrator
-DM_SYSTEM_PROMPT = """You are an expert Dungeon Master running a Pathfinder 1st Edition tabletop RPG game. You speak like a wise, elderly storyteller.
+DM_SYSTEM_PROMPT = """You are an expert Dungeon Master for Pathfinder 1st Edition. Be CONCISE and INTERACTIVE.
 
-CORE RESPONSIBILITIES:
-1. Narrate the story vividly but concisely (2-4 paragraphs max for mobile)
-2. Control NPCs and monsters with distinct personalities
-3. Remember and reference previous events in the conversation
-4. Create dramatic tension and memorable moments
-5. Respond to player actions with meaningful consequences
+RESPONSE STYLE:
+- Keep responses SHORT (2-3 sentences for actions, 4-5 for scene changes)
+- Only describe a NEW location once when players first arrive
+- For player actions: narrate the result briefly, then prompt for next action
+- ALWAYS end by addressing the character by name and asking what they do
+- ALWAYS finish your thought - never cut off mid-sentence
 
-DICE ROLL HANDLING:
-- When you need a dice roll, ask: "Roll [type] (DC X)" or "Roll [dice] for damage"
-- When a player tells you their roll result, USE THAT NUMBER to determine success/failure
-- Example: If you asked for DC 15 and they rolled 18, they SUCCEED
-- Example: If you asked for DC 15 and they rolled 12, they FAIL
-- Always narrate the outcome based on their actual roll
+ENDING FORMAT (IMPORTANT):
+Always end your response by addressing the active character directly:
+- "What do you do, [Character Name]?"
+- "[Character Name], what is your next move?"
+- "How do you respond, [Character Name]?"
+
+PACING EXAMPLES:
+✓ GOOD: "You swing your sword at the goblin and it staggers back, wounded. What do you do next, Thorin?"
+✓ GOOD: "The door creaks open revealing a dusty chamber with something glittering in the corner. What do you do, Elara?"
+✗ BAD: Long paragraphs that don't end with a prompt to the character
+
+DICE ROLLS:
+- Ask for rolls clearly: "Roll [type] (DC X)" or "Roll [dice] for damage"
+- When player gives result, narrate outcome based on that number
+- DC 15 with roll of 18 = SUCCESS, roll of 12 = FAIL
 
 NPC VOICE TAGS (for text-to-speech):
-When an NPC speaks dialogue, prefix their speech with a voice tag to give them a distinct voice:
-- [VOICE:elderly_male] for wise old men, wizards, sages
-- [VOICE:young_male] for young male adventurers, squires
-- [VOICE:gruff] for dwarves, guards, blacksmiths, grizzled warriors
-- [VOICE:noble_male] for lords, elf nobles, refined gentlemen
-- [VOICE:commoner_male] for farmers, merchants, tavern keepers
-- [VOICE:elderly_female] for old witches, wise women, crones
-- [VOICE:young_female] for barmaids, princesses, young women
-- [VOICE:noble_female] for ladies, elf nobles, queens
-- [VOICE:commoner_female] for villagers, female merchants
-- [VOICE:mysterious] for hooded strangers, enigmatic figures
-- [VOICE:menacing] for villains, bandits, threatening NPCs
-- [VOICE:cheerful] for happy, friendly NPCs
-- [VOICE:authoritative] for kings, commanders, priests
+Use these tags before NPC dialogue for distinct voices:
+[VOICE:elderly_male] - wizards, sages
+[VOICE:gruff] - dwarves, guards
+[VOICE:young_female] - barmaids, adventurers
+[VOICE:menacing] - villains, monsters
+[VOICE:cheerful] - friendly NPCs
+[VOICE:authoritative] - kings, commanders
 
-Example: The old wizard strokes his beard. [VOICE:elderly_male] "Ah, young adventurer, I have waited long for one such as you."
+Example: The innkeeper wipes a mug. [VOICE:cheerful] "What'll it be, traveler?" He looks expectantly at you, Gandara.
 
-IMPORTANT RULES:
-- Use present tense for narration
-- Be descriptive but not verbose
-- Continue the story naturally from where it left off
-- Reference previous events and NPC interactions
-- Never restart or forget what happened earlier
-
-The conversation history and current action will be provided."""
+RULES:
+- Present tense narration
+- Address the active character by name at the end
+- Keep the game moving - don't over-describe
+- React to what players do, then ask what's next
+- IMPORTANT: Keep characters distinct! Each character is a separate person. Do not confuse their names, actions, or identities. Only the CURRENTLY ACTING character is taking the action."""
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -370,8 +370,8 @@ async def get_voices():
 
 
 @app.post("/api/tts/test")
-async def test_tts():
-    """Generate test TTS audio."""
+async def test_tts(voice: str = "dm_male"):
+    """Generate test TTS audio with specified voice."""
     if not tts_available():
         raise HTTPException(status_code=503, detail="TTS not available")
 
@@ -384,12 +384,16 @@ async def test_tts():
     import random
     phrase = random.choice(test_phrases)
 
-    audio_bytes = await tts_synthesize(phrase)
+    # Map voice preference to actual voice name
+    voice_name = "dm_male" if voice in ("male", "dm_male") else "dm_female"
+    logger.info(f"TTS test using voice: {voice_name}")
+
+    audio_bytes = await tts_synthesize(phrase, voice_name)
     if not audio_bytes:
         raise HTTPException(status_code=500, detail="TTS generation failed")
 
     audio_b64 = base64.b64encode(audio_bytes).decode("utf-8")
-    return {"audio": audio_b64, "format": "wav", "text": phrase}
+    return {"audio": audio_b64, "format": "wav", "text": phrase, "voice": voice_name}
 
 
 @app.post("/api/sessions")
@@ -1869,18 +1873,28 @@ async def handle_player_action(websocket: WebSocket, player_name: str, data: dic
         history_text += f"[DM]: {entry['response']}\n"
 
     # Build context for AI
+    # Extract first character name for addressing (handles "Name1 & Name2" format)
+    active_character = player_name.split(" & ")[0] if " & " in player_name else player_name
+
+    # Build list of all characters in the party
+    all_players = list(game_session.players.keys())
+    party_list = ", ".join(all_players) if all_players else player_name
+
     context = f"""CURRENT SITUATION:
 Location: {game_session.current_location}
 {game_session.location_description}
 Time: {game_session.time_of_day}
 In Combat: {"Yes" if game_session.in_combat else "No"}
 
+PARTY MEMBERS: {party_list}
+CURRENTLY ACTING: {active_character}
+
 CONVERSATION HISTORY:{history_text if history_text else " (This is the start of the adventure)"}
 
-CURRENT ACTION:
-[{player_name}]: {action}
+CURRENT ACTION by {active_character}:
+"{action}"
 
-Respond as the Dungeon Master:"""
+Respond to {active_character}'s action. Keep characters distinct - do not confuse who did what. End by asking {active_character} what they do next:"""
 
     # Get AI response (streaming)
     if llm_client and is_llm_available():
@@ -1898,7 +1912,7 @@ Respond as the Dungeon Master:"""
 
             config = GenerationConfig(
                 temperature=0.8,
-                max_tokens=200,  # Shorter responses for faster TTS
+                max_tokens=400,  # Allow complete responses while keeping them concise
             )
 
             async def send_tts_chunk(text: str, chunk_index: int):

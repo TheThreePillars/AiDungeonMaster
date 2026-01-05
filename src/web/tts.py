@@ -148,9 +148,9 @@ def synthesize_sync(text: str, voice_name: str = "default", add_pause: bool = Tr
             for audio_chunk in voice.synthesize(text):
                 wav_file.writeframes(audio_chunk.audio_int16_bytes)
 
-            # Add dramatic pause at end (0.4 seconds of silence for storyteller effect)
+            # Add brief pause at end (150ms for natural speech rhythm)
             if add_pause:
-                pause_samples = int(voice.config.sample_rate * 0.4)  # 400ms pause
+                pause_samples = int(voice.config.sample_rate * 0.15)  # 150ms pause
                 silence = b'\x00\x00' * pause_samples  # 16-bit silence
                 wav_file.writeframes(silence)
 

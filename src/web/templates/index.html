@@ -2870,9 +2870,12 @@
             // Use server Piper TTS if available, otherwise browser TTS
             if (dmVoice.usePiper && state.speechAvailable) {
                 try {
-                    const res = await fetch('/api/tts/test', { method: 'POST' });
+                    // Pass voice preference to server
+                    const voiceParam = dmVoice.gender === 'female' ? 'dm_female' : 'dm_male';
+                    const res = await fetch(`/api/tts/test?voice=${voiceParam}`, { method: 'POST' });
                     if (res.ok) {
                         const data = await res.json();
+                        console.log('Testing voice:', data.voice);
                         playDMAudio(data.audio, data.format);
                         return;
                     }
