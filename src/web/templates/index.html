@@ -2427,7 +2427,8 @@
         const state = {
             playerName: '',
             sessionCode: '',
-            selectedCharacter: null,
+            selectedCharacters: [],  // Array of up to 2 characters
+            activeCharacterIndex: 0, // Which character is active for actions
             ws: null,
             connected: false,
             // Voice recording with VAD
@@ -3114,21 +3115,96 @@
             }
         }
 
+        // Helper: Get active character
+        function getActiveCharacter() {
+            if (state.selectedCharacters.length === 0) return null;
+            return state.selectedCharacters[state.activeCharacterIndex] || state.selectedCharacters[0];
+        }
+
+        // Helper: Switch active character (for multi-character control)
+        function switchActiveCharacter(index) {
+            if (index >= 0 && index < state.selectedCharacters.length) {
+                state.activeCharacterIndex = index;
+                updateCharacterDisplay();
+                updateQuickBarIndicators();
+            }
+        }
+
+        // Update character display in header and party sidebar
+        async function updateCharacterDisplay() {
+            const activeChar = getActiveCharacter();
+            if (!activeChar) return;
+
+            // Update header with active character name
+            document.getElementById('header-char-name').textContent = activeChar.name;
+
+            // Update party sidebar to show all controlled characters
+            const partyList = document.getElementById('party-list');
+            if (!partyList) return;
+
+            // Fetch full details for all selected characters
+            const charDetailsPromises = state.selectedCharacters.map(async (char) => {
+                try {
+                    const res = await fetch(`/api/characters/${char.id}`);
+                    if (res.ok) return await res.json();
+                } catch (e) {
+                    console.error('Failed to fetch character:', e);
+                }
+                return { id: char.id, name: char.name, character_class: '?', level: 1, current_hp: 0, max_hp: 1 };
+            });
+
+            const characters = await Promise.all(charDetailsPromises);
+
+            // Render party list with character tabs
+            partyList.innerHTML = characters.map((char, idx) => {
+                const isActive = idx === state.activeCharacterIndex;
+                const hpPercent = char.max_hp > 0 ? Math.round((char.current_hp / char.max_hp) * 100) : 100;
+                const hpColor = hpPercent > 50 ? 'var(--hp-high)' : hpPercent > 25 ? 'var(--hp-mid)' : 'var(--hp-low)';
+
+                return `
+                    <div class="party-member ${isActive ? 'active-character' : ''}"
+                         onclick="switchActiveCharacter(${idx})"
+                         style="cursor: pointer; ${isActive ? 'border: 2px solid var(--accent-gold);' : 'opacity: 0.7;'}">
+                        <div class="member-header">
+                            <span class="member-name">
+                                ${isActive ? '&#x25B6; ' : ''}${escapeHtml(char.name)}
+                                ${state.selectedCharacters.length > 1 ? `<span style="font-size: 0.7rem; color: var(--text-muted);"> [${idx + 1}]</span>` : ''}
+                            </span>
+                        </div>
+                        <div class="member-class">${char.race || ''} ${char.character_class} Lv${char.level}</div>
+                        <div class="member-hp-bar" style="background: var(--bg-dark); border-radius: 3px; height: 6px; margin-top: 4px;">
+                            <div style="width: ${hpPercent}%; background: ${hpColor}; height: 100%; border-radius: 3px; transition: width 0.3s;"></div>
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
+                            HP: ${char.current_hp}/${char.max_hp}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Add keyboard hint if multiple characters
+            if (state.selectedCharacters.length > 1) {
+                partyList.innerHTML += `
+                    <div style="font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-top: 0.5rem;">
+                        Click to switch active character
+                    </div>
+                `;
+            }
+        }
+
         // Start game with session
         function startGame() {
             titleScreen.style.display = 'none';
             gameScreen.style.display = 'flex';
             document.getElementById('header-session-code').textContent = state.sessionCode;
-            // Update header character name
-            if (state.selectedCharacter) {
-                document.getElementById('header-char-name').textContent = state.selectedCharacter.name;
-            }
+            // Update character display (header and party sidebar)
+            updateCharacterDisplay();
             connect();
             // Update quick bar indicators after a short delay
             setTimeout(updateQuickBarIndicators, 500);
         }
 
-        // Load characters for selection
+        // Load characters for selection (multi-select up to 2)
         async function loadCharactersForSelect(containerId) {
             const container = document.getElementById(containerId);
             try {
@@ -3145,28 +3221,64 @@
                     return;
                 }
 
-                container.innerHTML = data.characters.map(char => `
+                // Add instruction for multi-select
+                container.innerHTML = `
+                    <div class="char-select-hint" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem; text-align: center;">
+                        Select up to 2 characters to control
+                    </div>
+                ` + data.characters.map(char => `
                     <div class="char-select-item" data-id="${char.id}" data-name="${escapeHtml(char.name)}">
                         <div class="char-select-avatar">&#x1F9D9;</div>
                         <div class="char-select-info">
                             <div class="char-select-name">${escapeHtml(char.name)}</div>
                             <div class="char-select-meta">${char.race} ${char.character_class} Lv${char.level}</div>
                         </div>
+                        <div class="char-select-badge" style="display: none; position: absolute; top: 4px; right: 4px; background: var(--accent-gold); color: #000; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; font-weight: bold; text-align: center; line-height: 20px;"></div>
                     </div>
                 `).join('');
 
+                // Multi-select handling (up to 2)
                 container.querySelectorAll('.char-select-item').forEach(item => {
+                    item.style.position = 'relative'; // For badge positioning
                     item.addEventListener('click', () => {
-                        container.querySelectorAll('.char-select-item').forEach(i => i.classList.remove('selected'));
-                        item.classList.add('selected');
-                        state.selectedCharacter = {
-                            id: item.dataset.id,
+                        const charData = {
+                            id: parseInt(item.dataset.id),
                             name: item.dataset.name
                         };
+
+                        const existingIndex = state.selectedCharacters.findIndex(c => c.id === charData.id);
+
+                        if (existingIndex >= 0) {
+                            // Deselect
+                            state.selectedCharacters.splice(existingIndex, 1);
+                            item.classList.remove('selected');
+                            item.querySelector('.char-select-badge').style.display = 'none';
+                        } else if (state.selectedCharacters.length < 2) {
+                            // Select (if under limit)
+                            state.selectedCharacters.push(charData);
+                            item.classList.add('selected');
+                        } else {
+                            // At limit - show message
+                            alert('You can only control up to 2 characters. Deselect one first.');
+                            return;
+                        }
+
+                        // Update badges to show order
+                        container.querySelectorAll('.char-select-item').forEach(i => {
+                            const badge = i.querySelector('.char-select-badge');
+                            const idx = state.selectedCharacters.findIndex(c => c.id === parseInt(i.dataset.id));
+                            if (idx >= 0) {
+                                badge.textContent = idx + 1;
+                                badge.style.display = 'block';
+                            } else {
+                                badge.style.display = 'none';
+                            }
+                        });
                     });
                 });
 
                 // Auto-select first character
+                state.selectedCharacters = [];
                 const first = container.querySelector('.char-select-item');
                 if (first) {
                     first.click();
@@ -3192,7 +3304,8 @@
                 const res = await fetch('/api/sessions', { method: 'POST' });
                 const data = await res.json();
                 state.sessionCode = data.code;
-                state.selectedCharacter = null;
+                state.selectedCharacters = [];
+                state.activeCharacterIndex = 0;
                 document.getElementById('new-session-code').textContent = data.code;
                 newGameModal.classList.add('visible');
                 loadCharactersForSelect('new-game-char-list');
@@ -3206,11 +3319,11 @@
         document.getElementById('btn-new-game').addEventListener('click', createNewSession);
 
         document.getElementById('btn-start-new').addEventListener('click', () => {
-            if (!state.selectedCharacter) {
-                alert('Please select a character');
+            if (state.selectedCharacters.length === 0) {
+                alert('Please select at least one character');
                 return;
             }
-            state.playerName = state.selectedCharacter.name;
+            state.playerName = state.selectedCharacters.map(c => c.name).join(' & ');
             newGameModal.classList.remove('visible');
             startGame();
         });
@@ -3249,7 +3362,8 @@
 
         // Event Listeners - Join Game
         document.getElementById('btn-join-game').addEventListener('click', () => {
-            state.selectedCharacter = null;
+            state.selectedCharacters = [];
+            state.activeCharacterIndex = 0;
             joinGameModal.classList.add('visible');
             loadCharactersForSelect('join-game-char-list');
             document.getElementById('join-code').focus();
@@ -3262,8 +3376,8 @@
                 document.getElementById('join-code').focus();
                 return;
             }
-            if (!state.selectedCharacter) {
-                alert('Please select a character');
+            if (state.selectedCharacters.length === 0) {
+                alert('Please select at least one character');
                 return;
             }
 
@@ -3280,7 +3394,7 @@
             }
 
             state.sessionCode = code;
-            state.playerName = state.selectedCharacter.name;
+            state.playerName = state.selectedCharacters.map(c => c.name).join(' & ');
             joinGameModal.classList.remove('visible');
             startGame();
         });
@@ -4510,15 +4624,17 @@
 
         // Character sheet button in header
         document.getElementById('btn-char-sheet').addEventListener('click', () => {
-            if (state.selectedCharacter && state.selectedCharacter.id) {
-                openCharacterSheet(state.selectedCharacter.id);
+            const activeChar = getActiveCharacter();
+            if (activeChar && activeChar.id) {
+                openCharacterSheet(activeChar.id);
             }
         });
 
         // Quick gold indicator click opens character sheet
         document.getElementById('quick-gold').addEventListener('click', () => {
-            if (state.selectedCharacter && state.selectedCharacter.id) {
-                openCharacterSheet(state.selectedCharacter.id);
+            const activeChar = getActiveCharacter();
+            if (activeChar && activeChar.id) {
+                openCharacterSheet(activeChar.id);
                 // Switch to stats tab (currency)
                 document.querySelector('.sheet-tab[data-tab="stats"]').click();
             }
@@ -4526,8 +4642,9 @@
 
         // Quick spell slots indicator click opens character sheet
         document.getElementById('quick-slots').addEventListener('click', () => {
-            if (state.selectedCharacter && state.selectedCharacter.id) {
-                openCharacterSheet(state.selectedCharacter.id);
+            const activeChar = getActiveCharacter();
+            if (activeChar && activeChar.id) {
+                openCharacterSheet(activeChar.id);
                 // Switch to spells tab
                 document.querySelector('.sheet-tab[data-tab="spells"]').click();
             }
@@ -4535,20 +4652,21 @@
 
         // Update quick bar indicators
         async function updateQuickBarIndicators() {
-            if (!state.selectedCharacter || !state.selectedCharacter.id) return;
+            const activeChar = getActiveCharacter();
+            if (!activeChar || !activeChar.id) return;
 
             try {
                 // Get character data for gold
                 const charRes = await fetch('/api/characters');
                 const charData = await charRes.json();
-                const char = charData.characters.find(c => c.id == state.selectedCharacter.id);
+                const char = charData.characters.find(c => c.id == activeChar.id);
                 if (char) {
                     const totalGold = (char.platinum || 0) * 10 + (char.gold || 0) + (char.silver || 0) / 10 + (char.copper || 0) / 100;
                     document.getElementById('quick-gold-val').textContent = Math.floor(totalGold);
                 }
 
                 // Get spell slots
-                const spellRes = await fetch(`/api/characters/${state.selectedCharacter.id}/spells`);
+                const spellRes = await fetch(`/api/characters/${activeChar.id}/spells`);
                 const spellData = await spellRes.json();
                 const slots = spellData.spell_slots;
                 if (Object.keys(slots).length > 0) {

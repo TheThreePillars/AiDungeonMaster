@@ -587,6 +587,36 @@ async def get_characters():
         return {"characters": []}
 
 
+@app.get("/api/characters/{character_id}")
+async def get_character(character_id: int):
+    """Get a single character's full details."""
+    with session_scope() as session:
+        char = session.query(Character).filter_by(id=character_id).first()
+        if not char:
+            raise HTTPException(status_code=404, detail="Character not found")
+        return {
+            "id": char.id,
+            "name": char.name,
+            "race": char.race,
+            "character_class": char.character_class,
+            "level": char.level,
+            "current_hp": char.current_hp,
+            "max_hp": char.max_hp,
+            "strength": char.strength,
+            "dexterity": char.dexterity,
+            "constitution": char.constitution,
+            "intelligence": char.intelligence,
+            "wisdom": char.wisdom,
+            "charisma": char.charisma,
+            "base_attack_bonus": char.base_attack_bonus,
+            "armor_class": char.armor_class,
+            "experience": char.experience,
+            "fortitude_base": char.fortitude_base,
+            "reflex_base": char.reflex_base,
+            "will_base": char.will_base,
+        }
+
+
 @app.post("/api/characters")
 async def create_character(char: CharacterCreate):
     """Create a new character."""
