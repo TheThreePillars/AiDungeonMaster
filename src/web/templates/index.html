@@ -373,6 +373,42 @@
             }
         }
 
+        .header-char-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+            border: none;
+            border-radius: 1rem;
+            padding: 0.25rem 0.75rem 0.25rem 0.375rem;
+            color: white;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .header-char-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+        }
+
+        .header-char-btn .char-avatar {
+            font-size: 1.25rem;
+        }
+
+        .header-char-btn .char-name-display {
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 480px) {
+            .header-char-btn .char-name-display {
+                display: none;
+            }
+        }
+
         /* Main Layout */
         .game-main {
             display: flex;
@@ -1377,6 +1413,402 @@
             background: var(--accent-purple);
             color: white;
         }
+
+        /* ===== CHARACTER SHEET MODAL ===== */
+        .sheet-tabs {
+            display: flex;
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .sheet-tab {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 0.25rem 0.25rem 0 0;
+            transition: all 0.2s;
+        }
+
+        .sheet-tab.active {
+            background: var(--bg-elevated);
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .sheet-tab:hover:not(.active) {
+            background: var(--bg-hover);
+        }
+
+        .sheet-content {
+            display: none;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+
+        .sheet-content.active {
+            display: block;
+        }
+
+        /* Currency Display */
+        .currency-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .currency-item {
+            text-align: center;
+            padding: 0.5rem;
+            background: var(--bg-dark);
+            border-radius: 0.375rem;
+        }
+
+        .currency-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--accent-gold);
+        }
+
+        .currency-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .currency-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .currency-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            background: var(--bg-elevated);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .currency-btn:hover {
+            border-color: var(--accent-gold);
+        }
+
+        /* Inventory List */
+        .inventory-section {
+            margin-bottom: 1rem;
+        }
+
+        .inventory-header {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .inventory-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.375rem;
+        }
+
+        .inventory-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg-elevated);
+            border-radius: 0.375rem;
+            font-size: 0.85rem;
+        }
+
+        .inventory-item.equipped {
+            border-left: 3px solid var(--accent-gold);
+        }
+
+        .item-icon {
+            font-size: 1rem;
+        }
+
+        .item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-name {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-meta {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .item-qty {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            padding: 0.125rem 0.375rem;
+            background: var(--bg-dark);
+            border-radius: 0.25rem;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .item-btn {
+            padding: 0.25rem 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 0.25rem;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .item-btn:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .add-item-btn {
+            width: 100%;
+            padding: 0.625rem;
+            margin-top: 0.5rem;
+            border: 1px dashed var(--border);
+            border-radius: 0.375rem;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .add-item-btn:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        /* Spell Slots */
+        .spell-slots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: var(--bg-dark);
+            border-radius: 0.375rem;
+        }
+
+        .slot-group {
+            text-align: center;
+        }
+
+        .slot-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .slot-pips {
+            display: flex;
+            gap: 0.125rem;
+        }
+
+        .slot-pip {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+        }
+
+        .slot-pip.filled {
+            background: var(--accent-purple);
+            border-color: var(--accent-purple);
+        }
+
+        .spell-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.375rem;
+        }
+
+        .spell-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg-elevated);
+            border-radius: 0.375rem;
+        }
+
+        .spell-level {
+            font-size: 0.7rem;
+            padding: 0.125rem 0.375rem;
+            background: var(--accent-purple);
+            color: white;
+            border-radius: 0.25rem;
+            font-weight: 600;
+        }
+
+        .spell-name {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+
+        .cast-btn {
+            padding: 0.25rem 0.5rem;
+            border: 1px solid var(--accent-purple);
+            border-radius: 0.25rem;
+            background: transparent;
+            color: var(--accent-purple);
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .cast-btn:hover {
+            background: var(--accent-purple);
+            color: white;
+        }
+
+        .rest-btn {
+            width: 100%;
+            padding: 0.625rem;
+            margin-top: 0.5rem;
+            border: 1px solid var(--success);
+            border-radius: 0.375rem;
+            background: transparent;
+            color: var(--success);
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .rest-btn:hover {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Party Tab */
+        .party-section {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: var(--bg-dark);
+            border-radius: 0.375rem;
+        }
+
+        .party-section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .loot-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem;
+            background: var(--bg-elevated);
+            border-radius: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .claim-btn {
+            padding: 0.25rem 0.5rem;
+            border: 1px solid var(--accent-gold);
+            border-radius: 0.25rem;
+            background: transparent;
+            color: var(--accent-gold);
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .claim-btn:hover {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+        }
+
+        /* Item Picker Modal */
+        .item-picker-search {
+            margin-bottom: 0.75rem;
+        }
+
+        .item-picker-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 0.75rem;
+        }
+
+        .picker-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            margin-bottom: 0.25rem;
+            cursor: pointer;
+        }
+
+        .picker-item:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .picker-item.selected {
+            border-color: var(--accent-gold);
+            background: rgba(212, 160, 23, 0.1);
+        }
+
+        /* Quick bar indicators */
+        .quick-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.375rem 0.625rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .quick-indicator:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .gold-indicator {
+            color: var(--accent-gold);
+        }
+
+        .slots-indicator .slot-mini {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--bg-dark);
+            border: 1px solid var(--accent-purple);
+        }
+
+        .slots-indicator .slot-mini.filled {
+            background: var(--accent-purple);
+        }
     </style>
 </head>
 <body>
@@ -1583,12 +2015,228 @@
         </div>
     </div>
 
+    <!-- Character Sheet Modal -->
+    <div class="modal-overlay" id="char-sheet-modal">
+        <div class="modal-card char-sheet-card">
+            <div class="sheet-header">
+                <h2 class="modal-title" id="sheet-char-name">Character Sheet</h2>
+                <button class="sheet-close" id="btn-close-sheet">&times;</button>
+            </div>
+
+            <div class="sheet-tabs">
+                <button class="sheet-tab active" data-tab="stats">Stats</button>
+                <button class="sheet-tab" data-tab="inventory">Inventory</button>
+                <button class="sheet-tab" data-tab="spells">Spells</button>
+                <button class="sheet-tab" data-tab="party">Party</button>
+            </div>
+
+            <!-- Stats Tab -->
+            <div class="sheet-content active" id="tab-stats">
+                <div class="stats-grid">
+                    <div class="stat-block">
+                        <div class="stat-label">STR</div>
+                        <div class="stat-value" id="sheet-str">10</div>
+                        <div class="stat-mod" id="sheet-str-mod">+0</div>
+                    </div>
+                    <div class="stat-block">
+                        <div class="stat-label">DEX</div>
+                        <div class="stat-value" id="sheet-dex">10</div>
+                        <div class="stat-mod" id="sheet-dex-mod">+0</div>
+                    </div>
+                    <div class="stat-block">
+                        <div class="stat-label">CON</div>
+                        <div class="stat-value" id="sheet-con">10</div>
+                        <div class="stat-mod" id="sheet-con-mod">+0</div>
+                    </div>
+                    <div class="stat-block">
+                        <div class="stat-label">INT</div>
+                        <div class="stat-value" id="sheet-int">10</div>
+                        <div class="stat-mod" id="sheet-int-mod">+0</div>
+                    </div>
+                    <div class="stat-block">
+                        <div class="stat-label">WIS</div>
+                        <div class="stat-value" id="sheet-wis">10</div>
+                        <div class="stat-mod" id="sheet-wis-mod">+0</div>
+                    </div>
+                    <div class="stat-block">
+                        <div class="stat-label">CHA</div>
+                        <div class="stat-value" id="sheet-cha">10</div>
+                        <div class="stat-mod" id="sheet-cha-mod">+0</div>
+                    </div>
+                </div>
+
+                <div class="combat-stats">
+                    <div class="combat-stat">
+                        <span class="combat-label">HP</span>
+                        <span class="combat-value" id="sheet-hp">10/10</span>
+                    </div>
+                    <div class="combat-stat">
+                        <span class="combat-label">AC</span>
+                        <span class="combat-value" id="sheet-ac">10</span>
+                    </div>
+                    <div class="combat-stat">
+                        <span class="combat-label">Initiative</span>
+                        <span class="combat-value" id="sheet-init">+0</span>
+                    </div>
+                </div>
+
+                <div class="currency-section">
+                    <h3 class="section-label">Currency</h3>
+                    <div class="currency-grid">
+                        <div class="currency-item">
+                            <span class="currency-icon">&#x25C6;</span>
+                            <input type="number" class="currency-value" id="sheet-pp" value="0" min="0">
+                            <span class="currency-label">PP</span>
+                        </div>
+                        <div class="currency-item">
+                            <span class="currency-icon gold">&#x25CF;</span>
+                            <input type="number" class="currency-value" id="sheet-gp" value="0" min="0">
+                            <span class="currency-label">GP</span>
+                        </div>
+                        <div class="currency-item">
+                            <span class="currency-icon silver">&#x25CF;</span>
+                            <input type="number" class="currency-value" id="sheet-sp" value="0" min="0">
+                            <span class="currency-label">SP</span>
+                        </div>
+                        <div class="currency-item">
+                            <span class="currency-icon copper">&#x25CF;</span>
+                            <input type="number" class="currency-value" id="sheet-cp" value="0" min="0">
+                            <span class="currency-label">CP</span>
+                        </div>
+                    </div>
+                    <button class="save-currency-btn" id="btn-save-currency">Save Currency</button>
+                </div>
+            </div>
+
+            <!-- Inventory Tab -->
+            <div class="sheet-content" id="tab-inventory">
+                <div class="inventory-header">
+                    <span class="weight-display">Weight: <span id="inv-weight">0</span> / <span id="inv-capacity">100</span> lbs</span>
+                    <button class="add-item-btn" id="btn-add-item">+ Add Item</button>
+                </div>
+
+                <div class="inventory-section">
+                    <h3 class="section-label">Equipped</h3>
+                    <div class="inventory-list" id="equipped-list">
+                        <div class="inventory-empty">No items equipped</div>
+                    </div>
+                </div>
+
+                <div class="inventory-section">
+                    <h3 class="section-label">Backpack</h3>
+                    <div class="inventory-list" id="backpack-list">
+                        <div class="inventory-empty">Backpack is empty</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spells Tab -->
+            <div class="sheet-content" id="tab-spells">
+                <div class="spell-slots-section">
+                    <h3 class="section-label">Spell Slots</h3>
+                    <div class="spell-slots" id="spell-slots-display">
+                        <div class="slot-level">
+                            <span class="slot-label">1st</span>
+                            <div class="slot-pips" data-level="1"></div>
+                        </div>
+                    </div>
+                    <button class="rest-btn" id="btn-long-rest">Long Rest (Restore All)</button>
+                </div>
+
+                <div class="spells-section">
+                    <div class="spells-header">
+                        <h3 class="section-label">Known Spells</h3>
+                        <button class="add-spell-btn" id="btn-learn-spell">+ Learn Spell</button>
+                    </div>
+                    <div class="spell-list" id="known-spells-list">
+                        <div class="inventory-empty">No spells known</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Party Tab -->
+            <div class="sheet-content" id="tab-party">
+                <div class="party-section">
+                    <h3 class="section-label">Party Treasury</h3>
+                    <div class="treasury-display">
+                        <span class="treasury-gold" id="party-gold">0</span> GP
+                    </div>
+                    <div class="treasury-actions">
+                        <input type="number" id="treasury-amount" placeholder="Amount" min="1" value="10">
+                        <button class="treasury-btn" id="btn-contribute">Contribute</button>
+                        <button class="treasury-btn" id="btn-withdraw">Withdraw</button>
+                    </div>
+                </div>
+
+                <div class="party-section">
+                    <h3 class="section-label">Party Loot Bag</h3>
+                    <div class="loot-list" id="party-loot-list">
+                        <div class="inventory-empty">No unclaimed loot</div>
+                    </div>
+                    <button class="add-item-btn" id="btn-add-loot">+ Add Loot</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Item Picker Modal -->
+    <div class="modal-overlay" id="item-picker-modal">
+        <div class="modal-card item-picker-card">
+            <h2 class="modal-title">Add Item</h2>
+
+            <div class="picker-tabs">
+                <button class="picker-tab active" data-picker="common">Common Items</button>
+                <button class="picker-tab" data-picker="custom">Custom Item</button>
+            </div>
+
+            <div class="picker-content active" id="picker-common">
+                <input type="text" class="picker-search" id="item-search" placeholder="Search items...">
+                <div class="picker-list" id="common-items-list"></div>
+            </div>
+
+            <div class="picker-content" id="picker-custom">
+                <input type="text" class="picker-input" id="custom-item-name" placeholder="Item name">
+                <div class="picker-row">
+                    <input type="number" class="picker-input small" id="custom-item-qty" value="1" min="1" placeholder="Qty">
+                    <input type="number" class="picker-input small" id="custom-item-weight" value="1" min="0" step="0.1" placeholder="Weight">
+                    <input type="number" class="picker-input small" id="custom-item-value" value="0" min="0" placeholder="GP Value">
+                </div>
+                <button class="menu-btn primary" id="btn-add-custom-item">Add Custom Item</button>
+            </div>
+
+            <button class="menu-btn" id="btn-close-picker">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Spell Picker Modal -->
+    <div class="modal-overlay" id="spell-picker-modal">
+        <div class="modal-card item-picker-card">
+            <h2 class="modal-title">Learn Spell</h2>
+            <input type="text" class="picker-search" id="spell-search" placeholder="Search spells...">
+            <select class="picker-select" id="spell-level-filter">
+                <option value="">All Levels</option>
+                <option value="0">Cantrips</option>
+                <option value="1">1st Level</option>
+                <option value="2">2nd Level</option>
+                <option value="3">3rd Level</option>
+                <option value="4">4th Level</option>
+                <option value="5">5th Level</option>
+            </select>
+            <div class="picker-list" id="spell-picker-list"></div>
+            <button class="menu-btn" id="btn-close-spell-picker">Cancel</button>
+        </div>
+    </div>
+
     <!-- Game Screen -->
     <div id="game-screen">
         <!-- Header -->
         <header class="game-header">
             <button class="header-btn" id="btn-menu">&#x2630;</button>
             <span class="header-session-code" id="header-session-code">----</span>
+            <button class="header-char-btn" id="btn-char-sheet" title="Open Character Sheet">
+                <span class="char-avatar">&#x1F9D9;</span>
+                <span class="char-name-display" id="header-char-name">Character</span>
+            </button>
             <div class="location-info">
                 <div class="location-name" id="location-name">The Rusty Dragon Inn</div>
                 <div class="location-time" id="location-time">Evening</div>
@@ -1673,6 +2321,8 @@
 
                 <!-- Quick Bar -->
                 <div class="quick-bar">
+                    <span class="quick-indicator gold-indicator" id="quick-gold" title="Gold">&#x25CF; <span id="quick-gold-val">0</span>g</span>
+                    <span class="quick-indicator slots-indicator" id="quick-slots" title="Spell Slots"><span id="quick-slots-val">-</span></span>
                     <button class="quick-chip" id="btn-dice-toggle">&#x1F3B2; Roll Dice</button>
                     <button class="quick-chip" data-action="I talk to the bartender.">&#x1F5E3; Talk</button>
                     <button class="quick-chip" data-action="I order a drink.">&#x1F37A; Drink</button>
@@ -2312,7 +2962,13 @@
             titleScreen.style.display = 'none';
             gameScreen.style.display = 'flex';
             document.getElementById('header-session-code').textContent = state.sessionCode;
+            // Update header character name
+            if (state.selectedCharacter) {
+                document.getElementById('header-char-name').textContent = state.selectedCharacter.name;
+            }
             connect();
+            // Update quick bar indicators after a short delay
+            setTimeout(updateQuickBarIndicators, 500);
         }
 
         // Load characters for selection
@@ -2844,6 +3500,659 @@
 
         // Test voice button
         document.getElementById('btn-test-voice').addEventListener('click', testDMVoice);
+
+        // ===== CHARACTER SHEET =====
+        const charSheetModal = document.getElementById('char-sheet-modal');
+        const itemPickerModal = document.getElementById('item-picker-modal');
+        const spellPickerModal = document.getElementById('spell-picker-modal');
+        let currentSheetCharId = null;
+        let commonItems = [];
+        let allSpells = [];
+        let addingToPartyLoot = false;
+
+        // Open character sheet
+        async function openCharacterSheet(characterId) {
+            currentSheetCharId = characterId;
+            charSheetModal.classList.add('visible');
+            await loadCharacterSheet();
+            await loadPartyData();
+        }
+
+        // Load character data into sheet
+        async function loadCharacterSheet() {
+            if (!currentSheetCharId) return;
+
+            try {
+                // Load character data
+                const charRes = await fetch(`/api/characters`);
+                const charData = await charRes.json();
+                const char = charData.characters.find(c => c.id == currentSheetCharId);
+                if (!char) return;
+
+                // Update header
+                document.getElementById('sheet-char-name').textContent = char.name;
+
+                // Stats
+                const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+                abilities.forEach(ab => {
+                    const val = char[ab] || 10;
+                    const mod = Math.floor((val - 10) / 2);
+                    document.getElementById(`sheet-${ab}`).textContent = val;
+                    document.getElementById(`sheet-${ab}-mod`).textContent = mod >= 0 ? `+${mod}` : mod;
+                });
+
+                // Combat stats
+                document.getElementById('sheet-hp').textContent = `${char.current_hp || char.max_hp}/${char.max_hp}`;
+                document.getElementById('sheet-ac').textContent = char.ac || 10;
+                const dexMod = Math.floor((char.dex - 10) / 2);
+                document.getElementById('sheet-init').textContent = dexMod >= 0 ? `+${dexMod}` : dexMod;
+
+                // Currency
+                document.getElementById('sheet-pp').value = char.platinum || 0;
+                document.getElementById('sheet-gp').value = char.gold || 0;
+                document.getElementById('sheet-sp').value = char.silver || 0;
+                document.getElementById('sheet-cp').value = char.copper || 0;
+
+                // Load inventory
+                await loadInventory();
+
+                // Load spells
+                await loadSpells();
+
+            } catch (e) {
+                console.error('Failed to load character sheet:', e);
+            }
+        }
+
+        // Load inventory
+        async function loadInventory() {
+            if (!currentSheetCharId) return;
+
+            try {
+                const res = await fetch(`/api/characters/${currentSheetCharId}/inventory`);
+                const data = await res.json();
+
+                const equipped = data.items.filter(i => i.equipped);
+                const backpack = data.items.filter(i => !i.equipped);
+
+                // Update weight
+                document.getElementById('inv-weight').textContent = data.total_weight.toFixed(1);
+                document.getElementById('inv-capacity').textContent = data.capacity;
+
+                // Render equipped items
+                const equippedList = document.getElementById('equipped-list');
+                if (equipped.length === 0) {
+                    equippedList.innerHTML = '<div class="inventory-empty">No items equipped</div>';
+                } else {
+                    equippedList.innerHTML = equipped.map(item => renderInventoryItem(item, true)).join('');
+                }
+
+                // Render backpack items
+                const backpackList = document.getElementById('backpack-list');
+                if (backpack.length === 0) {
+                    backpackList.innerHTML = '<div class="inventory-empty">Backpack is empty</div>';
+                } else {
+                    backpackList.innerHTML = backpack.map(item => renderInventoryItem(item, false)).join('');
+                }
+
+                // Add event listeners
+                document.querySelectorAll('.item-equip-btn').forEach(btn => {
+                    btn.addEventListener('click', () => toggleEquip(btn.dataset.id, btn.dataset.equipped === 'true'));
+                });
+                document.querySelectorAll('.item-delete-btn').forEach(btn => {
+                    btn.addEventListener('click', () => deleteItem(btn.dataset.id));
+                });
+
+            } catch (e) {
+                console.error('Failed to load inventory:', e);
+            }
+        }
+
+        function renderInventoryItem(item, equipped) {
+            const icon = getItemIcon(item.slot || item.name);
+            return `
+                <div class="inventory-item ${equipped ? 'equipped' : ''}">
+                    <span class="item-icon">${icon}</span>
+                    <div class="item-info">
+                        <span class="item-name">${escapeHtml(item.name)}</span>
+                        <span class="item-meta">${item.quantity > 1 ? `x${item.quantity} ` : ''}${item.weight}lb</span>
+                    </div>
+                    <div class="item-actions">
+                        <button class="item-equip-btn" data-id="${item.id}" data-equipped="${equipped}">
+                            ${equipped ? 'Unequip' : 'Equip'}
+                        </button>
+                        <button class="item-delete-btn" data-id="${item.id}">&times;</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getItemIcon(type) {
+            const icons = {
+                'weapon': '&#x2694;', 'main_hand': '&#x2694;',
+                'armor': '&#x1F6E1;', 'body': '&#x1F6E1;',
+                'shield': '&#x1F6E1;', 'off_hand': '&#x1F6E1;',
+                'potion': '&#x1F9EA;', 'scroll': '&#x1F4DC;',
+                'wand': '&#x1FA84;', 'ring': '&#x1F48D;',
+                'default': '&#x1F4E6;'
+            };
+            const lowerType = (type || '').toLowerCase();
+            for (const [key, icon] of Object.entries(icons)) {
+                if (lowerType.includes(key)) return icon;
+            }
+            return icons.default;
+        }
+
+        async function toggleEquip(itemId, currentlyEquipped) {
+            try {
+                await fetch(`/api/characters/${currentSheetCharId}/inventory/${itemId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ equipped: !currentlyEquipped })
+                });
+                await loadInventory();
+            } catch (e) {
+                console.error('Failed to toggle equip:', e);
+            }
+        }
+
+        async function deleteItem(itemId) {
+            if (!confirm('Remove this item?')) return;
+            try {
+                await fetch(`/api/characters/${currentSheetCharId}/inventory/${itemId}`, {
+                    method: 'DELETE'
+                });
+                await loadInventory();
+            } catch (e) {
+                console.error('Failed to delete item:', e);
+            }
+        }
+
+        // Load spells
+        async function loadSpells() {
+            if (!currentSheetCharId) return;
+
+            try {
+                const res = await fetch(`/api/characters/${currentSheetCharId}/spells`);
+                const data = await res.json();
+
+                // Render spell slots
+                const slotsDisplay = document.getElementById('spell-slots-display');
+                if (Object.keys(data.spell_slots).length === 0) {
+                    slotsDisplay.innerHTML = '<div class="inventory-empty">No spell slots</div>';
+                } else {
+                    slotsDisplay.innerHTML = Object.entries(data.spell_slots).map(([level, slots]) => {
+                        const ordinal = getOrdinal(parseInt(level));
+                        const pips = Array(slots.total).fill(null).map((_, i) =>
+                            `<span class="slot-pip ${i < slots.used ? 'used' : ''}"></span>`
+                        ).join('');
+                        return `
+                            <div class="slot-level">
+                                <span class="slot-label">${ordinal}</span>
+                                <div class="slot-pips" data-level="${level}">${pips}</div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                // Render known spells
+                const spellList = document.getElementById('known-spells-list');
+                if (data.spells_known.length === 0) {
+                    spellList.innerHTML = '<div class="inventory-empty">No spells known</div>';
+                } else {
+                    spellList.innerHTML = data.spells_known.map(spell => `
+                        <div class="spell-item">
+                            <div class="spell-info">
+                                <span class="spell-name">${escapeHtml(spell.name)}</span>
+                                <span class="spell-meta">${spell.school} ${spell.level === 0 ? 'Cantrip' : `Lv${spell.level}`}</span>
+                            </div>
+                            ${spell.level > 0 ? `<button class="cast-btn" data-level="${spell.level}">Cast</button>` : ''}
+                        </div>
+                    `).join('');
+
+                    // Add cast button listeners
+                    document.querySelectorAll('.cast-btn').forEach(btn => {
+                        btn.addEventListener('click', () => castSpell(parseInt(btn.dataset.level)));
+                    });
+                }
+
+            } catch (e) {
+                console.error('Failed to load spells:', e);
+            }
+        }
+
+        function getOrdinal(n) {
+            const suffixes = ['th', 'st', 'nd', 'rd'];
+            const v = n % 100;
+            return n + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
+        }
+
+        async function castSpell(level) {
+            try {
+                const res = await fetch(`/api/characters/${currentSheetCharId}/spells/cast`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ level })
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    alert(err.detail || 'Cannot cast spell');
+                    return;
+                }
+                await loadSpells();
+                updateQuickBarIndicators();
+            } catch (e) {
+                console.error('Failed to cast spell:', e);
+            }
+        }
+
+        async function longRest() {
+            try {
+                await fetch(`/api/characters/${currentSheetCharId}/spells/rest`, {
+                    method: 'POST'
+                });
+                await loadSpells();
+                await loadCharacterSheet(); // Also refresh HP
+                updateQuickBarIndicators();
+                addSystemEntry('You take a long rest and recover.');
+            } catch (e) {
+                console.error('Failed to rest:', e);
+            }
+        }
+
+        // Party data
+        async function loadPartyData() {
+            try {
+                // Load treasury
+                const treasuryRes = await fetch(`/api/party/treasury?session_code=${state.sessionCode}`);
+                const treasuryData = await treasuryRes.json();
+                document.getElementById('party-gold').textContent = treasuryData.gold;
+
+                // Load loot
+                const lootRes = await fetch(`/api/party/loot?session_code=${state.sessionCode}`);
+                const lootData = await lootRes.json();
+
+                const lootList = document.getElementById('party-loot-list');
+                if (lootData.items.length === 0) {
+                    lootList.innerHTML = '<div class="inventory-empty">No unclaimed loot</div>';
+                } else {
+                    lootList.innerHTML = lootData.items.map(item => `
+                        <div class="loot-item">
+                            <span class="item-icon">${getItemIcon(item.name)}</span>
+                            <div class="item-info">
+                                <span class="item-name">${escapeHtml(item.name)}</span>
+                                <span class="item-meta">${item.quantity > 1 ? `x${item.quantity}` : ''}</span>
+                            </div>
+                            <button class="claim-btn" data-id="${item.id}">Claim</button>
+                        </div>
+                    `).join('');
+
+                    document.querySelectorAll('.claim-btn').forEach(btn => {
+                        btn.addEventListener('click', () => claimLoot(parseInt(btn.dataset.id)));
+                    });
+                }
+            } catch (e) {
+                console.error('Failed to load party data:', e);
+            }
+        }
+
+        async function contributeGold() {
+            const amount = parseInt(document.getElementById('treasury-amount').value) || 0;
+            if (amount <= 0) return;
+
+            try {
+                // Subtract from character
+                await fetch(`/api/characters/${currentSheetCharId}/currency`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ gold: amount, operation: 'subtract' })
+                });
+
+                // Add to treasury
+                await fetch(`/api/party/treasury?session_code=${state.sessionCode}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ gold: amount, operation: 'add' })
+                });
+
+                await loadCharacterSheet();
+                await loadPartyData();
+                updateQuickBarIndicators();
+            } catch (e) {
+                console.error('Failed to contribute:', e);
+            }
+        }
+
+        async function withdrawGold() {
+            const amount = parseInt(document.getElementById('treasury-amount').value) || 0;
+            if (amount <= 0) return;
+
+            try {
+                // Subtract from treasury
+                await fetch(`/api/party/treasury?session_code=${state.sessionCode}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ gold: amount, operation: 'subtract' })
+                });
+
+                // Add to character
+                await fetch(`/api/characters/${currentSheetCharId}/currency`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ gold: amount, operation: 'add' })
+                });
+
+                await loadCharacterSheet();
+                await loadPartyData();
+                updateQuickBarIndicators();
+            } catch (e) {
+                console.error('Failed to withdraw:', e);
+            }
+        }
+
+        async function claimLoot(lootId) {
+            try {
+                await fetch(`/api/party/loot/claim?session_code=${state.sessionCode}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ loot_id: lootId, character_id: currentSheetCharId })
+                });
+                await loadInventory();
+                await loadPartyData();
+            } catch (e) {
+                console.error('Failed to claim loot:', e);
+            }
+        }
+
+        // Item picker
+        async function openItemPicker(forPartyLoot = false) {
+            addingToPartyLoot = forPartyLoot;
+            itemPickerModal.classList.add('visible');
+
+            // Load common items if not loaded
+            if (commonItems.length === 0) {
+                try {
+                    const res = await fetch('/api/items');
+                    const data = await res.json();
+                    commonItems = data.items;
+                } catch (e) {
+                    console.error('Failed to load items:', e);
+                }
+            }
+
+            renderCommonItems();
+        }
+
+        function renderCommonItems(filter = '') {
+            const list = document.getElementById('common-items-list');
+            const filtered = commonItems.filter(item =>
+                item.name.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            list.innerHTML = filtered.map(item => `
+                <div class="picker-item" data-name="${escapeHtml(item.name)}" data-weight="${item.weight}" data-value="${item.value}">
+                    <span class="item-icon">${getItemIcon(item.category)}</span>
+                    <div class="item-info">
+                        <span class="item-name">${escapeHtml(item.name)}</span>
+                        <span class="item-meta">${item.weight}lb, ${item.value}gp</span>
+                    </div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.picker-item').forEach(item => {
+                item.addEventListener('click', () => addItemFromPicker(item));
+            });
+        }
+
+        async function addItemFromPicker(itemEl) {
+            const item = {
+                name: itemEl.dataset.name,
+                weight: parseFloat(itemEl.dataset.weight),
+                value: parseInt(itemEl.dataset.value),
+                quantity: 1
+            };
+
+            try {
+                if (addingToPartyLoot) {
+                    await fetch(`/api/party/loot?session_code=${state.sessionCode}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(item)
+                    });
+                    await loadPartyData();
+                } else {
+                    await fetch(`/api/characters/${currentSheetCharId}/inventory`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(item)
+                    });
+                    await loadInventory();
+                }
+                itemPickerModal.classList.remove('visible');
+            } catch (e) {
+                console.error('Failed to add item:', e);
+            }
+        }
+
+        async function addCustomItem() {
+            const name = document.getElementById('custom-item-name').value.trim();
+            if (!name) return;
+
+            const item = {
+                name,
+                quantity: parseInt(document.getElementById('custom-item-qty').value) || 1,
+                weight: parseFloat(document.getElementById('custom-item-weight').value) || 1,
+                value: parseInt(document.getElementById('custom-item-value').value) || 0
+            };
+
+            try {
+                if (addingToPartyLoot) {
+                    await fetch(`/api/party/loot?session_code=${state.sessionCode}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(item)
+                    });
+                    await loadPartyData();
+                } else {
+                    await fetch(`/api/characters/${currentSheetCharId}/inventory`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(item)
+                    });
+                    await loadInventory();
+                }
+                itemPickerModal.classList.remove('visible');
+                document.getElementById('custom-item-name').value = '';
+            } catch (e) {
+                console.error('Failed to add custom item:', e);
+            }
+        }
+
+        // Spell picker
+        async function openSpellPicker() {
+            spellPickerModal.classList.add('visible');
+
+            if (allSpells.length === 0) {
+                try {
+                    const res = await fetch('/api/spells');
+                    const data = await res.json();
+                    allSpells = data.spells;
+                } catch (e) {
+                    console.error('Failed to load spells:', e);
+                }
+            }
+
+            renderSpellPicker();
+        }
+
+        function renderSpellPicker(filter = '', levelFilter = '') {
+            const list = document.getElementById('spell-picker-list');
+            const filtered = allSpells.filter(spell => {
+                const matchesName = spell.name.toLowerCase().includes(filter.toLowerCase());
+                const matchesLevel = levelFilter === '' || spell.level === parseInt(levelFilter);
+                return matchesName && matchesLevel;
+            });
+
+            list.innerHTML = filtered.map(spell => `
+                <div class="picker-item spell-picker-item" data-name="${escapeHtml(spell.name)}">
+                    <div class="spell-info">
+                        <span class="spell-name">${escapeHtml(spell.name)}</span>
+                        <span class="spell-meta">${spell.school} ${spell.level === 0 ? 'Cantrip' : `Lv${spell.level}`}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.spell-picker-item').forEach(item => {
+                item.addEventListener('click', () => learnSpell(item.dataset.name));
+            });
+        }
+
+        async function learnSpell(spellName) {
+            try {
+                await fetch(`/api/characters/${currentSheetCharId}/spells/learn`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ spell_name: spellName })
+                });
+                await loadSpells();
+                spellPickerModal.classList.remove('visible');
+            } catch (e) {
+                console.error('Failed to learn spell:', e);
+            }
+        }
+
+        // Save currency
+        async function saveCurrency() {
+            try {
+                await fetch(`/api/characters/${currentSheetCharId}/currency`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        platinum: parseInt(document.getElementById('sheet-pp').value) || 0,
+                        gold: parseInt(document.getElementById('sheet-gp').value) || 0,
+                        silver: parseInt(document.getElementById('sheet-sp').value) || 0,
+                        copper: parseInt(document.getElementById('sheet-cp').value) || 0,
+                        operation: 'set'
+                    })
+                });
+                updateQuickBarIndicators();
+            } catch (e) {
+                console.error('Failed to save currency:', e);
+            }
+        }
+
+        // Character sheet tab switching
+        document.querySelectorAll('.sheet-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.sheet-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.sheet-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+            });
+        });
+
+        // Item picker tab switching
+        document.querySelectorAll('.picker-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.picker-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.picker-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(`picker-${tab.dataset.picker}`).classList.add('active');
+            });
+        });
+
+        // Event listeners for character sheet
+        document.getElementById('btn-close-sheet').addEventListener('click', () => {
+            charSheetModal.classList.remove('visible');
+        });
+
+        document.getElementById('btn-save-currency').addEventListener('click', saveCurrency);
+        document.getElementById('btn-add-item').addEventListener('click', () => openItemPicker(false));
+        document.getElementById('btn-add-loot').addEventListener('click', () => openItemPicker(true));
+        document.getElementById('btn-learn-spell').addEventListener('click', openSpellPicker);
+        document.getElementById('btn-long-rest').addEventListener('click', longRest);
+        document.getElementById('btn-contribute').addEventListener('click', contributeGold);
+        document.getElementById('btn-withdraw').addEventListener('click', withdrawGold);
+
+        // Item picker events
+        document.getElementById('btn-close-picker').addEventListener('click', () => {
+            itemPickerModal.classList.remove('visible');
+        });
+        document.getElementById('item-search').addEventListener('input', (e) => {
+            renderCommonItems(e.target.value);
+        });
+        document.getElementById('btn-add-custom-item').addEventListener('click', addCustomItem);
+
+        // Spell picker events
+        document.getElementById('btn-close-spell-picker').addEventListener('click', () => {
+            spellPickerModal.classList.remove('visible');
+        });
+        document.getElementById('spell-search').addEventListener('input', (e) => {
+            renderSpellPicker(e.target.value, document.getElementById('spell-level-filter').value);
+        });
+        document.getElementById('spell-level-filter').addEventListener('change', (e) => {
+            renderSpellPicker(document.getElementById('spell-search').value, e.target.value);
+        });
+
+        // Character sheet button in header
+        document.getElementById('btn-char-sheet').addEventListener('click', () => {
+            if (state.selectedCharacter && state.selectedCharacter.id) {
+                openCharacterSheet(state.selectedCharacter.id);
+            }
+        });
+
+        // Quick gold indicator click opens character sheet
+        document.getElementById('quick-gold').addEventListener('click', () => {
+            if (state.selectedCharacter && state.selectedCharacter.id) {
+                openCharacterSheet(state.selectedCharacter.id);
+                // Switch to stats tab (currency)
+                document.querySelector('.sheet-tab[data-tab="stats"]').click();
+            }
+        });
+
+        // Quick spell slots indicator click opens character sheet
+        document.getElementById('quick-slots').addEventListener('click', () => {
+            if (state.selectedCharacter && state.selectedCharacter.id) {
+                openCharacterSheet(state.selectedCharacter.id);
+                // Switch to spells tab
+                document.querySelector('.sheet-tab[data-tab="spells"]').click();
+            }
+        });
+
+        // Update quick bar indicators
+        async function updateQuickBarIndicators() {
+            if (!state.selectedCharacter || !state.selectedCharacter.id) return;
+
+            try {
+                // Get character data for gold
+                const charRes = await fetch('/api/characters');
+                const charData = await charRes.json();
+                const char = charData.characters.find(c => c.id == state.selectedCharacter.id);
+                if (char) {
+                    const totalGold = (char.platinum || 0) * 10 + (char.gold || 0) + (char.silver || 0) / 10 + (char.copper || 0) / 100;
+                    document.getElementById('quick-gold-val').textContent = Math.floor(totalGold);
+                }
+
+                // Get spell slots
+                const spellRes = await fetch(`/api/characters/${state.selectedCharacter.id}/spells`);
+                const spellData = await spellRes.json();
+                const slots = spellData.spell_slots;
+                if (Object.keys(slots).length > 0) {
+                    let totalUsed = 0;
+                    let totalSlots = 0;
+                    Object.values(slots).forEach(s => {
+                        totalUsed += s.used;
+                        totalSlots += s.total;
+                    });
+                    const remaining = totalSlots - totalUsed;
+                    document.getElementById('quick-slots-val').textContent = `${remaining}/${totalSlots}`;
+                } else {
+                    document.getElementById('quick-slots-val').textContent = '-';
+                }
+            } catch (e) {
+                console.error('Failed to update quick bar:', e);
+            }
+        }
 
         // Initialize
         checkStatus();
