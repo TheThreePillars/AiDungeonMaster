@@ -8,6 +8,7 @@ import random
 import string
 from collections import deque
 from datetime import datetime
+from pathlib import Path
 from typing import Optional
 from contextlib import asynccontextmanager
 
@@ -70,6 +71,54 @@ class GameSession:
         self.db_session_id: Optional[int] = None
         # Narrator voice preference (dm_male = old wizard, dm_female = old witch)
         self.narrator_voice: str = "dm_male"
+        # Turn-based action collection
+        self.all_characters: list[str] = []  # All individual character names
+        self.pending_actions: dict[str, str] = {}  # char_name -> action
+        self.current_character_index: int = 0  # Whose turn to ask
+        self.awaiting_actions: bool = False  # Are we waiting for player actions?
+        self.opening_scene_done: bool = False  # Has the DM set the opening scene?
+
+    def parse_characters_from_players(self):
+        """Extract all individual character names from player names (handles 'Name1 & Name2' format)."""
+        chars = []
+        for player_name in self.players.keys():
+            if " & " in player_name:
+                chars.extend(player_name.split(" & "))
+            else:
+                chars.append(player_name)
+        self.all_characters = chars
+        return chars
+
+    def get_current_character(self) -> Optional[str]:
+        """Get the character whose turn it is to act."""
+        if not self.all_characters:
+            return None
+        if self.current_character_index >= len(self.all_characters):
+            return None
+        return self.all_characters[self.current_character_index]
+
+    def submit_action(self, character_name: str, action: str) -> bool:
+        """Submit an action for a character. Returns True if all characters have acted."""
+        self.pending_actions[character_name] = action
+        # Check if all characters have submitted
+        return len(self.pending_actions) >= len(self.all_characters)
+
+    def get_all_pending_actions(self) -> list[tuple[str, str]]:
+        """Get all pending actions as (character_name, action) tuples in character order."""
+        return [(char, self.pending_actions.get(char, "")) for char in self.all_characters if char in self.pending_actions]
+
+    def reset_round(self):
+        """Reset for a new round of actions."""
+        self.pending_actions.clear()
+        self.current_character_index = 0
+        self.awaiting_actions = True
+
+    def advance_to_next_character(self) -> Optional[str]:
+        """Move to the next character and return their name, or None if round complete."""
+        self.current_character_index += 1
+        if self.current_character_index >= len(self.all_characters):
+            return None
+        return self.all_characters[self.current_character_index]
 
     def to_world_state(self) -> dict:
         """Serialize world state for saving to database."""
@@ -296,46 +345,46 @@ class CharacterCreate(BaseModel):
 # System prompt for Mobile DM narrator
 DM_SYSTEM_PROMPT = """You are an expert Dungeon Master for Pathfinder 1st Edition. Be CONCISE and INTERACTIVE.
 
+CRITICAL: CONTINUE THE STORY
+- The CONVERSATION HISTORY shows what already happened - BUILD ON IT
+- NEVER restart or repeat the opening scene
+- NEVER re-introduce the setting if players are already there
+- Each response should ADVANCE the plot based on what players do
+
+TURN-BASED FLOW:
+- You receive ALL party members' actions at once
+- Narrate the results of ALL actions together
+- Something should HAPPEN or CHANGE based on their actions
+- End by asking the first character what they do next
+
+STORY PROGRESSION:
+- If players talk to NPCs → NPCs respond with useful info or quests
+- If players explore → they find something interesting
+- If players fight → combat progresses
+- If players investigate → they discover clues
+- ALWAYS move the story forward - never stall
+
 RESPONSE STYLE:
-- Keep responses SHORT (2-3 sentences for actions, 4-5 for scene changes)
-- Only describe a NEW location once when players first arrive
-- For player actions: narrate the result briefly, then prompt for next action
-- ALWAYS end by addressing the character by name and asking what they do
-- ALWAYS finish your thought - never cut off mid-sentence
-
-ENDING FORMAT (IMPORTANT):
-Always end your response by addressing the active character directly:
-- "What do you do, [Character Name]?"
-- "[Character Name], what is your next move?"
-- "How do you respond, [Character Name]?"
-
-PACING EXAMPLES:
-✓ GOOD: "You swing your sword at the goblin and it staggers back, wounded. What do you do next, Thorin?"
-✓ GOOD: "The door creaks open revealing a dusty chamber with something glittering in the corner. What do you do, Elara?"
-✗ BAD: Long paragraphs that don't end with a prompt to the character
+- Keep responses SHORT (3-5 sentences)
+- Narrate results, then prompt for next action
+- End with: "What do you do, [First Character]?"
 
 DICE ROLLS:
-- Ask for rolls clearly: "Roll [type] (DC X)" or "Roll [dice] for damage"
-- When player gives result, narrate outcome based on that number
-- DC 15 with roll of 18 = SUCCESS, roll of 12 = FAIL
+- Ask for rolls: "Roll [type] (DC X)"
+- Narrate outcome based on their result
 
-NPC VOICE TAGS (for text-to-speech):
-Use these tags before NPC dialogue for distinct voices:
+NPC VOICE TAGS (for TTS):
 [VOICE:elderly_male] - wizards, sages
 [VOICE:gruff] - dwarves, guards
 [VOICE:young_female] - barmaids, adventurers
 [VOICE:menacing] - villains, monsters
 [VOICE:cheerful] - friendly NPCs
-[VOICE:authoritative] - kings, commanders
-
-Example: The innkeeper wipes a mug. [VOICE:cheerful] "What'll it be, traveler?" He looks expectantly at you, Gandara.
 
 RULES:
 - Present tense narration
-- Address the active character by name at the end
-- Keep the game moving - don't over-describe
-- React to what players do, then ask what's next
-- IMPORTANT: Keep characters distinct! Each character is a separate person. Do not confuse their names, actions, or identities. Only the CURRENTLY ACTING character is taking the action."""
+- Keep characters distinct
+- ADVANCE the story with each response
+- Be concise but make things happen"""
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -589,6 +638,24 @@ async def get_classes():
             "is_spellcaster": cls.is_spellcaster(),
         })
     return {"classes": classes}
+
+
+@app.get("/api/monsters")
+async def get_monsters():
+    """Get all available monsters for the bestiary."""
+    import json
+    monsters_file = Path(__file__).parent.parent.parent / "data" / "srd" / "monsters.json"
+    try:
+        with open(monsters_file, "r") as f:
+            data = json.load(f)
+        # Sort by CR then name
+        monsters = sorted(data.get("monsters", []), key=lambda m: (m.get("cr", 0), m.get("name", "")))
+        return {"monsters": monsters}
+    except FileNotFoundError:
+        return {"monsters": [], "error": "Monsters data not found"}
+    except Exception as e:
+        logger.error(f"Error loading monsters: {e}")
+        return {"monsters": [], "error": str(e)}
 
 
 @app.get("/api/characters")
@@ -1776,6 +1843,25 @@ async def websocket_endpoint(websocket: WebSocket, session_code: str, player_nam
         "players": list(game_session.players.keys()),
     })
 
+    # Update character list for turn-based system
+    game_session.parse_characters_from_players()
+
+    # If this is the first player, initialize the turn system and generate opening scene
+    if len(game_session.all_characters) > 0 and not game_session.opening_scene_done:
+        game_session.reset_round()
+
+        # Generate the opening scene (DM sets the stage)
+        await generate_opening_scene(game_session)
+
+        # Now tell the first character it's their turn
+        first_char = game_session.get_current_character()
+        if first_char:
+            await game_session.broadcast({
+                "type": "character_turn",
+                "character": first_char,
+                "all_characters": game_session.all_characters,
+            })
+
     try:
         while True:
             # Receive message
@@ -1819,7 +1905,7 @@ async def websocket_endpoint(websocket: WebSocket, session_code: str, player_nam
                     elif voice == "female":
                         voice = "dm_female"
                     game_session.narrator_voice = voice
-                    logger.info(f"[{code}] Narrator voice set to: {voice}")
+                    logger.info(f"[{session_code}] Narrator voice set to: {voice}")
 
             elif msg_type == "voice_transcription":
                 # Voice input transcribed to text
@@ -1849,36 +1935,151 @@ async def websocket_endpoint(websocket: WebSocket, session_code: str, player_nam
         session_manager.remove_empty_sessions()
 
 
+async def generate_opening_scene(game_session: GameSession):
+    """Generate the opening scene for a new game."""
+    if game_session.opening_scene_done:
+        return
+
+    if not llm_client or not is_llm_available():
+        # Fallback for offline mode
+        await game_session.broadcast({
+            "type": "dm_response",
+            "content": f"Welcome to the Rusty Dragon Inn! The smell of roasted meat and fresh bread fills the air. What do you do, {game_session.all_characters[0]}?",
+            "timestamp": datetime.now().isoformat(),
+        })
+        game_session.opening_scene_done = True
+        return
+
+    game_session.opening_scene_done = True
+    party_list = ", ".join(game_session.all_characters)
+
+    opening_prompt = f"""Set the opening scene for a new adventure. The party has just arrived at the Rusty Dragon Inn in Sandpoint.
+
+PARTY MEMBERS: {party_list}
+
+Create a vivid but SHORT opening (3-4 sentences max):
+1. Describe the scene briefly
+2. End by asking {game_session.all_characters[0]} what they do
+
+Example: "The warmth of the Rusty Dragon Inn washes over you as you push through its heavy oak doors. Locals chat over mugs of ale while a bard strums a lute in the corner. The innkeeper, a striking Tian woman with a knowing smile, looks up from polishing a glass. What do you do, {game_session.all_characters[0]}?"
+
+Generate the opening scene now:"""
+
+    try:
+        # Broadcast typing indicator
+        await game_session.broadcast({"type": "dm_typing", "status": True})
+
+        full_response = ""
+        config = GenerationConfig(temperature=0.8, max_tokens=300)
+
+        async for token in llm_client.agenerate_stream(
+            prompt=opening_prompt,
+            system_prompt=DM_SYSTEM_PROMPT,
+            config=config,
+        ):
+            full_response += token
+            display_token = strip_voice_tags(token)
+            if display_token:
+                await game_session.broadcast({
+                    "type": "dm_response_stream",
+                    "token": display_token,
+                })
+
+        display_response = strip_voice_tags(full_response)
+
+        await game_session.broadcast({
+            "type": "dm_response",
+            "content": display_response,
+            "timestamp": datetime.now().isoformat(),
+        })
+
+        # Generate TTS for opening
+        if tts_available():
+            segments = extract_voice_segments(full_response, game_session.narrator_voice)
+            for i, (voice_name, segment_text) in enumerate(segments):
+                if segment_text.strip():
+                    audio_bytes = await tts_synthesize(segment_text, voice_name)
+                    if audio_bytes:
+                        audio_b64 = base64.b64encode(audio_bytes).decode("utf-8")
+                        await game_session.broadcast({
+                            "type": "dm_audio_chunk",
+                            "audio": audio_b64,
+                            "format": "wav",
+                            "index": i,
+                            "voice": voice_name,
+                        })
+
+        # Store in history
+        game_session.conversation_history.append({
+            "player": "System",
+            "action": "Game started",
+            "response": display_response,
+            "timestamp": datetime.now().isoformat(),
+        })
+
+    except Exception as e:
+        logger.error(f"Opening scene error: {e}")
+        await game_session.broadcast({
+            "type": "dm_response",
+            "content": f"Welcome, adventurers! You find yourselves in the Rusty Dragon Inn. What do you do, {game_session.all_characters[0]}?",
+            "timestamp": datetime.now().isoformat(),
+        })
+
+    finally:
+        await game_session.broadcast({"type": "dm_typing", "status": False})
+
+
 async def handle_player_action(websocket: WebSocket, player_name: str, data: dict, game_session: GameSession):
-    """Process a player action through the AI."""
+    """Process a player action through the AI with turn-based system."""
     action = data.get("action", "").strip()
+    character_name = data.get("character", player_name)  # Which character is acting
     if not action:
         return
 
-    # Broadcast that player is taking action
+    # Broadcast that this character is taking action
     await game_session.broadcast({
         "type": "player_action",
-        "player": player_name,
+        "player": character_name,
         "action": action,
         "timestamp": datetime.now().isoformat(),
     })
 
+    # Submit action for this character
+    all_acted = game_session.submit_action(character_name, action)
+
+    if not all_acted:
+        # Not everyone has acted yet - move to next character
+        next_char = game_session.advance_to_next_character()
+        if next_char:
+            await game_session.broadcast({
+                "type": "action_submitted",
+                "character": character_name,
+            })
+            await game_session.broadcast({
+                "type": "character_turn",
+                "character": next_char,
+                "all_characters": game_session.all_characters,
+            })
+            return
+    else:
+        # All characters have acted - notify and proceed to DM narration
+        await game_session.broadcast({
+            "type": "all_actions_received",
+        })
+
     # Build conversation history for context
     history_text = ""
-    # Include last 8 exchanges to keep context manageable and TTS faster
-    # Convert deque to list for slicing (deque doesn't support slice notation)
     recent_history = list(game_session.conversation_history)[-8:]
     for entry in recent_history:
         history_text += f"\n[{entry['player']}]: {entry['action']}\n"
         history_text += f"[DM]: {entry['response']}\n"
 
-    # Build context for AI
-    # Extract first character name for addressing (handles "Name1 & Name2" format)
-    active_character = player_name.split(" & ")[0] if " & " in player_name else player_name
+    # Build combined actions from all characters
+    all_actions = game_session.get_all_pending_actions()
+    actions_text = "\n".join([f"- {char}: \"{act}\"" for char, act in all_actions])
 
     # Build list of all characters in the party
-    all_players = list(game_session.players.keys())
-    party_list = ", ".join(all_players) if all_players else player_name
+    party_list = ", ".join(game_session.all_characters)
 
     context = f"""CURRENT SITUATION:
 Location: {game_session.current_location}
@@ -1887,14 +2088,13 @@ Time: {game_session.time_of_day}
 In Combat: {"Yes" if game_session.in_combat else "No"}
 
 PARTY MEMBERS: {party_list}
-CURRENTLY ACTING: {active_character}
 
 CONVERSATION HISTORY:{history_text if history_text else " (This is the start of the adventure)"}
 
-CURRENT ACTION by {active_character}:
-"{action}"
+ACTIONS THIS ROUND:
+{actions_text}
 
-Respond to {active_character}'s action. Keep characters distinct - do not confuse who did what. End by asking {active_character} what they do next:"""
+Narrate the results of ALL characters' actions together in a cohesive scene. After narrating, start a new round by asking {game_session.all_characters[0]} what they do next:"""
 
     # Get AI response (streaming)
     if llm_client and is_llm_available():
@@ -1993,13 +2193,24 @@ Respond to {active_character}'s action. Keep characters distinct - do not confus
             if tts_enabled and sentence_buffer.strip():
                 asyncio.create_task(send_tts_chunk(sentence_buffer.strip(), sent_sentences))
 
-            # Store in history (without voice tags)
+            # Store in history (all actions from this round)
+            all_actions_text = "; ".join([f"{char}: {act}" for char, act in all_actions])
             game_session.conversation_history.append({
-                "player": player_name,
-                "action": action,
+                "player": "Party",
+                "action": all_actions_text,
                 "response": display_response,
                 "timestamp": datetime.now().isoformat(),
             })
+
+            # Start a new round - reset and ask the first character
+            game_session.reset_round()
+            first_char = game_session.get_current_character()
+            if first_char:
+                await game_session.broadcast({
+                    "type": "character_turn",
+                    "character": first_char,
+                    "all_characters": game_session.all_characters,
+                })
 
         except Exception as e:
             logger.error(f"AI error: {e}")
@@ -2017,7 +2228,7 @@ Respond to {active_character}'s action. Keep characters distinct - do not confus
         # Offline mode - simple response
         await game_session.broadcast({
             "type": "dm_response",
-            "content": f"[Offline] {player_name} attempts to: {action}\n\nThe DM will respond shortly...",
+            "content": f"[Offline] Actions submitted. The DM will respond when online.",
             "timestamp": datetime.now().isoformat(),
         })
 

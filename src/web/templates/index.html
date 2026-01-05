@@ -1980,6 +1980,40 @@
         </div>
     </div>
 
+    <!-- Bestiary Modal -->
+    <div class="modal-overlay" id="bestiary-modal">
+        <div class="modal-card" style="max-width: 600px; max-height: 90vh; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 class="modal-title" style="margin: 0;">Bestiary</h2>
+                <button class="header-btn" id="btn-close-bestiary" style="font-size: 1.5rem;">&times;</button>
+            </div>
+
+            <!-- Search and Filter -->
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                <input type="text" id="bestiary-search" placeholder="Search monsters..." class="text-input" style="flex: 1;">
+                <select id="bestiary-cr-filter" class="select-input" style="width: 100px;">
+                    <option value="">All CR</option>
+                    <option value="0.25">CR 1/4</option>
+                    <option value="0.5">CR 1/2</option>
+                    <option value="1">CR 1</option>
+                    <option value="2">CR 2</option>
+                    <option value="3">CR 3</option>
+                    <option value="4">CR 4</option>
+                    <option value="5">CR 5+</option>
+                </select>
+            </div>
+
+            <!-- Monster List -->
+            <div id="bestiary-list" style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem;">
+                <div style="color: var(--text-muted); text-align: center; padding: 2rem;">Loading monsters...</div>
+            </div>
+
+            <!-- Monster Detail (hidden by default) -->
+            <div id="monster-detail" style="display: none; margin-top: 1rem; padding: 1rem; background: var(--card-bg); border-radius: 8px; max-height: 40vh; overflow-y: auto;">
+            </div>
+        </div>
+    </div>
+
     <!-- Settings Modal -->
     <div class="modal-overlay" id="settings-modal">
         <div class="modal-card" style="max-width: 400px;">
@@ -2324,6 +2358,10 @@
                     <div class="quick-actions">
                         <button class="action-btn" id="btn-save-game">&#x1F4BE; Save Game</button>
                         <button class="action-btn" id="btn-load-game">&#x1F4C2; Load Game</button>
+                        <button class="action-btn" id="btn-sidebar-characters">&#x1F9D9; Characters</button>
+                        <button class="action-btn" id="btn-sidebar-bestiary">&#x1F432; Bestiary</button>
+                        <button class="action-btn" id="btn-sidebar-settings">&#x2699; Settings</button>
+                        <button class="action-btn" id="btn-leave-game" style="background: rgba(185, 28, 28, 0.2); color: #ef4444;">&#x1F6AA; Leave Game</button>
                     </div>
                 </div>
             </aside>
@@ -2431,6 +2469,10 @@
             activeCharacterIndex: 0, // Which character is active for actions
             ws: null,
             connected: false,
+            // Turn-based action tracking
+            currentTurnCharacter: null, // Whose turn is it to act?
+            allCharacters: [], // All characters in the session
+            myCharacters: [], // Character names I control
             // Voice recording with VAD
             recording: false,
             listening: false, // Waiting for speech
@@ -2583,7 +2625,8 @@
                     break;
 
                 case 'player_action':
-                    if (data.player !== state.playerName) {
+                    // Only show if it's not one of my characters (I already added it locally)
+                    if (!state.myCharacters.includes(data.player)) {
                         addPlayerEntry(data.player, data.action);
                     }
                     break;
@@ -2628,7 +2671,54 @@
                         addDMEntry(data.description);
                     }
                     break;
+
+                case 'character_turn':
+                    // Server telling us whose turn it is to act
+                    state.currentTurnCharacter = data.character;
+                    state.allCharacters = data.all_characters || [];
+                    updateTurnIndicator();
+                    break;
+
+                case 'action_submitted':
+                    // Confirm action was received for a character
+                    addSystemEntry(`${data.character}'s action recorded. Waiting for others...`);
+                    break;
+
+                case 'all_actions_received':
+                    // All characters have submitted - DM will narrate
+                    addSystemEntry('All characters have acted. The Dungeon Master is narrating...');
+                    break;
             }
+        }
+
+        // Turn indicator UI
+        function updateTurnIndicator() {
+            const isMyTurn = state.myCharacters.includes(state.currentTurnCharacter);
+            const turnText = isMyTurn
+                ? `Your turn: ${state.currentTurnCharacter}`
+                : `Waiting for: ${state.currentTurnCharacter}`;
+
+            // Update input placeholder
+            const actionInput = document.getElementById('action-input');
+            if (isMyTurn) {
+                actionInput.placeholder = `What does ${state.currentTurnCharacter} do?`;
+                actionInput.disabled = false;
+            } else {
+                actionInput.placeholder = `Waiting for ${state.currentTurnCharacter}'s turn...`;
+                actionInput.disabled = true;
+            }
+
+            // Show turn indicator in header or status area
+            let turnIndicator = document.getElementById('turn-indicator');
+            if (!turnIndicator) {
+                turnIndicator = document.createElement('div');
+                turnIndicator.id = 'turn-indicator';
+                turnIndicator.style.cssText = 'position: fixed; top: 60px; left: 50%; transform: translateX(-50%); background: var(--accent-gold); color: #000; padding: 0.5rem 1rem; border-radius: 4px; font-weight: bold; z-index: 100;';
+                document.body.appendChild(turnIndicator);
+            }
+            turnIndicator.textContent = turnText;
+            turnIndicator.style.background = isMyTurn ? 'var(--accent-gold)' : 'var(--bg-tertiary)';
+            turnIndicator.style.color = isMyTurn ? '#000' : 'var(--text-muted)';
         }
 
         // Narrative entries
@@ -2935,10 +3025,13 @@
                 return;
             }
 
-            addPlayerEntry(state.playerName, action);
+            // Determine which character is acting
+            const actingCharacter = state.currentTurnCharacter || state.playerName;
+            addPlayerEntry(actingCharacter, action);
             state.ws.send(JSON.stringify({
                 type: 'player_action',
                 action: action,
+                character: actingCharacter,  // Which character is acting
             }));
 
             actionInput.value = '';
@@ -3347,6 +3440,7 @@
                 return;
             }
             state.playerName = state.selectedCharacters.map(c => c.name).join(' & ');
+            state.myCharacters = state.selectedCharacters.map(c => c.name);  // Track my character names
             newGameModal.classList.remove('visible');
             startGame();
         });
@@ -3418,6 +3512,7 @@
 
             state.sessionCode = code;
             state.playerName = state.selectedCharacters.map(c => c.name).join(' & ');
+            state.myCharacters = state.selectedCharacters.map(c => c.name);  // Track my character names
             joinGameModal.classList.remove('visible');
             startGame();
         });
@@ -3576,6 +3671,45 @@
 
         document.getElementById('btn-cancel-load').addEventListener('click', () => {
             loadGameModal.style.display = 'none';
+        });
+
+        // ===== SIDEBAR MENU BUTTONS =====
+        document.getElementById('btn-sidebar-characters').addEventListener('click', () => {
+            // Close sidebar and show character screen
+            sidebar.classList.remove('visible');
+            sidebarOverlay.classList.remove('visible');
+            gameScreen.style.display = 'none';
+            document.getElementById('character-screen').style.display = 'block';
+            loadCharacters();
+            loadRacesAndClasses();
+        });
+
+        document.getElementById('btn-sidebar-bestiary').addEventListener('click', () => {
+            sidebar.classList.remove('visible');
+            sidebarOverlay.classList.remove('visible');
+            document.getElementById('bestiary-modal').classList.add('visible');
+            loadBestiary();
+        });
+
+        document.getElementById('btn-sidebar-settings').addEventListener('click', () => {
+            sidebar.classList.remove('visible');
+            sidebarOverlay.classList.remove('visible');
+            document.getElementById('settings-modal').classList.add('visible');
+        });
+
+        document.getElementById('btn-leave-game').addEventListener('click', () => {
+            if (confirm('Leave this game session? You can rejoin with the session code.')) {
+                if (state.ws) {
+                    state.ws.close();
+                }
+                state.sessionCode = null;
+                state.selectedCharacter = null;
+                state.selectedCharacters = [];
+                gameScreen.style.display = 'none';
+                titleScreen.style.display = 'flex';
+                sidebar.classList.remove('visible');
+                sidebarOverlay.classList.remove('visible');
+            }
         });
 
         // ===== CHARACTER CREATION =====
@@ -3822,7 +3956,12 @@
 
         document.getElementById('btn-back-to-menu').addEventListener('click', () => {
             characterScreen.style.display = 'none';
-            titleScreen.style.display = 'flex';
+            // Return to game screen if we have an active session, otherwise title screen
+            if (state.sessionCode && state.ws) {
+                gameScreen.style.display = 'flex';
+            } else {
+                titleScreen.style.display = 'flex';
+            }
         });
 
         document.getElementById('btn-create-new').addEventListener('click', () => {
@@ -3841,6 +3980,136 @@
             btn.addEventListener('click', () => {
                 adjustAbility(btn.dataset.ability, btn.dataset.dir);
             });
+        });
+
+        // ===== BESTIARY =====
+        const bestiaryModal = document.getElementById('bestiary-modal');
+        const bestiaryList = document.getElementById('bestiary-list');
+        const bestiarySearch = document.getElementById('bestiary-search');
+        const bestiaryCRFilter = document.getElementById('bestiary-cr-filter');
+        const monsterDetail = document.getElementById('monster-detail');
+        let allMonsters = [];
+
+        async function loadBestiary() {
+            try {
+                const res = await fetch('/api/monsters');
+                const data = await res.json();
+                allMonsters = data.monsters || [];
+                renderBestiary(allMonsters);
+            } catch (e) {
+                console.error('Failed to load bestiary:', e);
+                bestiaryList.innerHTML = '<div style="color: var(--danger); padding: 1rem;">Failed to load monsters.</div>';
+            }
+        }
+
+        function formatCR(cr) {
+            if (cr === 0.125) return '1/8';
+            if (cr === 0.25) return '1/4';
+            if (cr === 0.5) return '1/2';
+            return cr.toString();
+        }
+
+        function renderBestiary(monsters) {
+            if (monsters.length === 0) {
+                bestiaryList.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 2rem;">No monsters found.</div>';
+                return;
+            }
+
+            bestiaryList.innerHTML = monsters.map(m => `
+                <div class="monster-item" data-name="${escapeHtml(m.name)}" style="display: flex; justify-content: space-between; padding: 0.75rem; border-bottom: 1px solid var(--border); cursor: pointer;">
+                    <div>
+                        <div style="font-weight: bold; color: var(--text);">${escapeHtml(m.name)}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">${m.size || 'Medium'} ${m.type || 'creature'}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="color: var(--accent-gold);">CR ${formatCR(m.cr)}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">${m.xp || 0} XP</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add click handlers to show monster details
+            document.querySelectorAll('.monster-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const name = item.dataset.name;
+                    const monster = allMonsters.find(m => m.name === name);
+                    if (monster) showMonsterDetail(monster);
+                });
+            });
+        }
+
+        function showMonsterDetail(m) {
+            // Format AC
+            let acDisplay = m.ac;
+            if (typeof m.ac === 'object') {
+                acDisplay = `${m.ac.total} (touch ${m.ac.touch}, flat-footed ${m.ac.flat_footed})`;
+            }
+
+            // Format abilities
+            let abilities = '';
+            if (m.abilities && typeof m.abilities === 'object') {
+                abilities = `<strong>Abilities:</strong> Str ${m.abilities.str}, Dex ${m.abilities.dex}, Con ${m.abilities.con}, Int ${m.abilities.int}, Wis ${m.abilities.wis}, Cha ${m.abilities.cha}<br>`;
+            }
+
+            // Format attacks
+            let attacks = '';
+            if (m.melee && Array.isArray(m.melee)) {
+                attacks += '<strong>Melee:</strong> ' + m.melee.map(a => `${a.name} +${a.attack} (${a.damage})`).join(', ') + '<br>';
+            }
+            if (m.ranged && Array.isArray(m.ranged)) {
+                attacks += '<strong>Ranged:</strong> ' + m.ranged.map(a => `${a.name} +${a.attack} (${a.damage})`).join(', ') + '<br>';
+            }
+
+            monsterDetail.innerHTML = `
+                <h3 style="margin: 0 0 0.5rem 0; color: var(--accent-gold);">${escapeHtml(m.name)}</h3>
+                <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                    ${m.size || 'Medium'} ${m.type || 'creature'}, ${m.alignment || 'N'}
+                </div>
+                <hr style="border-color: var(--border); margin: 0.5rem 0;">
+                <div style="font-size: 0.9rem; line-height: 1.6;">
+                    <strong>AC:</strong> ${acDisplay}<br>
+                    <strong>HP:</strong> ${m.hp}${m.hit_dice ? ` (${m.hit_dice})` : ''}<br>
+                    <strong>Speed:</strong> ${m.speed || '30 ft.'}<br>
+                    ${abilities}
+                    ${attacks}
+                    ${m.special_attacks ? `<strong>Special Attacks:</strong> ${m.special_attacks}<br>` : ''}
+                    ${m.special_qualities ? `<strong>Special Qualities:</strong> ${m.special_qualities}<br>` : ''}
+                </div>
+            `;
+            monsterDetail.style.display = 'block';
+        }
+
+        function filterBestiary() {
+            const search = bestiarySearch.value.toLowerCase();
+            const crFilter = bestiaryCRFilter.value;
+
+            const filtered = allMonsters.filter(m => {
+                const matchesSearch = m.name.toLowerCase().includes(search);
+                let matchesCR = true;
+                if (crFilter) {
+                    if (crFilter === '5') {
+                        matchesCR = m.cr >= 5;
+                    } else {
+                        matchesCR = m.cr == parseFloat(crFilter);
+                    }
+                }
+                return matchesSearch && matchesCR;
+            });
+            renderBestiary(filtered);
+            monsterDetail.style.display = 'none';
+        }
+
+        bestiarySearch.addEventListener('input', filterBestiary);
+        bestiaryCRFilter.addEventListener('change', filterBestiary);
+
+        document.getElementById('btn-close-bestiary').addEventListener('click', () => {
+            bestiaryModal.classList.remove('visible');
+        });
+
+        // Title screen bestiary button
+        document.getElementById('btn-bestiary').addEventListener('click', () => {
+            bestiaryModal.classList.add('visible');
+            loadBestiary();
         });
 
         // ===== SETTINGS =====
