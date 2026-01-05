@@ -1,0 +1,2090 @@
+{
+  "feats": [
+    {
+      "name": "Aberrant Tumor",
+      "prerequisites": "",
+      "benefit": "You gain a tumor familiar, as the tumor familiar alchemist discovery, with an effective alchemist level equal to the level of the class that grants your aberrant bloodline for determining the tumor familiar’s abilities. If multiple classes grant you the aberrant bloodline, those class levels stack for determining your effective alchemist level.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Aberration-Bane Caster",
+      "prerequisites": "Caster level 4th, gillman, favored enemy (aberrations) class feature.",
+      "benefit": "Add half of your favored enemy bonus against aberrations to the saving throw DC of spells that you cast against aberrations and on caster level checks to overcome the spell resistance of aberrations.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Aboleth Deceiver",
+      "prerequisites": "Iron Will, gillman, enchantment resistance racial trait.",
+      "benefit": "Once per day, if you fail a Will save against a compulsion spell or effect, you can reroll that saving throw but must take the second result, even if it’s worse. If the compulsion spell or effect originates from an aboleth, you do not apply your racial –2 penalty on such saving throws, and the reroll does not count against your daily use of this feat.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Abundant Revelations",
+      "prerequisites": "Mystery class feature.",
+      "benefit": "Choose one of your revelations that has a number of uses per day. You gain 1 additional use per day of that revelation.",
+      "normal": "",
+      "special": "You can gain this feat multiple times. Its effects do not stack. Each time you take the feat, it applies to a new revelation."
+    },
+    {
+      "name": "Accursed Critical (Critical)",
+      "prerequisites": "Critical Focus, ability to cast bestow curse or major curse, caster level 9th.",
+      "benefit": "When you confirm a critical hit with a spell or spell-like ability, you may cast bestow curse or major curse on that target as an immediate action. This works even with ranged spells. You must have bestow curse or major curse prepared or otherwise available to cast, and using this ability casts the corresponding spell.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Accursed Hex",
+      "prerequisites": "Hex class feature",
+      "benefit": "When you target a creature with a hex that cannot target the same creature more than once per day, and that creature succeeds at its saving throw against the hex’s effect, you can target the creature with the same hex a second time before the end of your next turn. If the second attempt fails, you can make no further attempts to target that creature with the same hex for 1 day.",
+      "normal": "You can only target a creature with these hexes once per day.",
+      "special": ""
+    },
+    {
+      "name": "Acrobatic",
+      "prerequisites": "",
+      "benefit": "You get a +2 bonus on all Acrobatics and Fly skill checks. If you have 10 or more ranks in one of these skills, the bonus increases to +4 for that skill.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Acrobatic Steps",
+      "prerequisites": "Dex 15, Nimble Moves.",
+      "benefit": "Whenever you move, you may move through up to 15 feet of difficult terrain each round as if it were normal terrain. The effects of this feat stack with those provided by Nimble Moves (allowing you to move normally through a total of 20 feet of difficult terrain each round).",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Acupuncture Specialist",
+      "prerequisites": "Heal 5 ranks.",
+      "benefit": "You can incorporate the art of acupuncture into your healing procedures, allowing you to use physical means to cleanse spiritual ailments. Doing so requires that you have an acupuncture kit (same as a healer’s kit) and takes 1 hour. Attempt a Heal check, and compare the result to a single curse or spell with the curse descriptor that the patient is suffering from. If the result of your Heal check exceeds the DC of the curse by 10 or more, the curse’s effects are suppressed for 1d4 days. If the result of your Heal check exceeds the DC of the curse by 20 or more, the curse is removed.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Additional Traits",
+      "prerequisites": "",
+      "benefit": "You gain two character traits of your choice. These traits must be chosen from different lists, and cannot be chosen from lists from which you have already selected a character trait. You must meet any additional qualifications for the character traits you choose — this feat cannot enable you to select a dwarf character trait if you are an elf, for example.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Adept Champion",
+      "prerequisites": "Smite evil class feature, base attack bonus +5.",
+      "benefit": "While using your smite evil class feature, as a swift action at the start of your turn, you can forgo the bonus on damage rolls and instead gain half that bonus as a bonus oncombat maneuver checks against the target of your smite. The effects of your smite evil feature return to normal at the start of your next turn.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Adept Channel",
+      "prerequisites": "",
+      "benefit": "You gain the channel energy class feature, as a cleric, usable 2 times per day. This ability otherwise functions like the cleric’s channel energy ability, except that your effective cleric level is equal to your divine spellcasting class level –3. Unlike a cleric, however, the number of times per day you may channel energy is not affected by your Charisma modifier.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Advanced Gathlain Magic",
+      "prerequisites": "Cha 13, character level 3rd, gathlain.",
+      "benefit": "You gain the following spells as spell-like abilities, each of which are usable 1/day: wood meld (as meld with stone, but only with wood), wood shape.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Advanced Ranger Trap",
+      "prerequisites": "Trap class feature, ranger level 5th.",
+      "benefit": "Add +1 to the Difficulty Class on all Perception and Disable Device skill checks to find or disable the traps you make with your trap class feature. Add a +1 to the Difficulty Class on all saving throws against the effects of the trap you make with your trap class feature.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Alertness",
+      "prerequisites": "",
+      "benefit": "You get a +2 bonus on Perception and Sense Motive skill checks. If you have 10 or more ranks in one of these skills, the bonus increases to +4 for that skill.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Alignment Channel",
+      "prerequisites": "Ability to channel energy.",
+      "benefit": "Instead of its normal effect, you can choose to have your ability to channel energy heal or harm outsiders of the chosen alignment subtype. You must make this choice each time you channel energy. If you choose to heal or harm creatures of the chosen alignment subtype, your channel energy has no effect on other creatures. The amount of damage healed or dealt and the DC to halve the damage is otherwise unchanged.",
+      "normal": "",
+      "special": "You can gain this feat multiple times. Its effects do not stack. Each time you take this feat, it applies to a new alignment subtype. Whenever you channel energy, you must choose which type to effect."
+    },
+    {
+      "name": "Allied Spellcaster (Teamwork)",
+      "prerequisites": "",
+      "benefit": "Whenever you are adjacent to an ally who also has this feat, you receive a +2 competence bonus on level checks made to overcome spell resistance. If your ally has the same spell prepared (or known with a slot available if they are spontaneous spellcasters), this bonus increases to +4 and you receive a +1 bonus to the caster level for all level-dependent variables, such as duration, range, and effect.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Ally Caller",
+      "prerequisites": "Triton, summon nature’s ally II spell-like ability, character level 3rd.",
+      "benefit": "You gain two additional uses of summon nature’s ally II per day.",
+      "normal": "",
+      "special": "You may take this feat multiple times. Each time you select it, you gain two additional uses of summon nature’s ally II."
+    },
+    {
+      "name": "Altitude Affinity",
+      "prerequisites": "Endurance.",
+      "benefit": "You are automatically acclimated at high altitudes. In addition, you gain a +2 competence bonus on all Survival checks made at altitudes of 5,000 feet or higher.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Amateur Investigator",
+      "prerequisites": "",
+      "benefit": "Like an investigator, you have the ability to augment your Knowledge, Linguistics, and Spellcraft skill checks. You gain a pool of inspiration equal to your Intelligence modifier. You can expend one use of inspiration as a free action to add 1d6 to the result of a Knowledge, Linguistics, or Spellcraft check, as long as you are trained in that skill (even if you take 10 or 20 on that check). You make this choice after the check is rolled and before the results of the roll are revealed. You can use inspiration only once per skill check. Your pool of inspiration refreshes each day, typically after you get a restful night’s sleep.",
+      "normal": "",
+      "special": "If you gain levels in a class that has the inspiration class feature, you can immediately trade this feat for the Extra Inspiration feat."
+    },
+    {
+      "name": "Amplified Rage (Teamwork)",
+      "prerequisites": "Half-orc or orc, rage class feature.",
+      "benefit": "Whenever you are raging and adjacent to a raging ally who also has this feat or flanking the same opponent as a raging ally with this feat, your morale bonuses to Strength and Constitution increase by +4. This feat does not stack with itself (you only gain this bonus from one qualifying ally, regardless of how many are adjacent to you).",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Ancestor’s Visage",
+      "prerequisites": "",
+      "benefit": "You share a strong resemblances with an individual of renown. The similarity is not so strong that you’re indistinguishable from that being, but none can doubt the resemblance. When you employ the Intimidate skill to influence or demoralize members of the same race as you, you gain a bonus equal to your Charisma modifier on the check. Additionally, you gain a +2 bonus on Knowledge checks related to this figure and on Disguise checks to impersonate this individual.",
+      "normal": "",
+      "special": "For the purposes of mixed-blood races, such as aasimars, dhampirs, and tieflings, this feat’s effects apply to both of your parent races."
+    },
+    {
+      "name": "Ancestral Scorn",
+      "prerequisites": "Intimidate 5 ranks, tiefling.",
+      "benefit": "Whenever you successfully demoralize an outsider of the evil subtype with an Intimidate check, it becomes sickened for 1 round in addition to being affected by the normal effects of being demoralized. If you beat the DC by 5 or more, the creature is nauseated for 1 round instead.",
+      "normal": "Demoralizing a foe with a successful Intimidate check causes it to become shaken for 1 round, +1 round for every 5 by which you beat the DC.",
+      "special": ""
+    },
+    {
+      "name": "Ancient Tradition",
+      "prerequisites": "Knowledge (history) 3 ranks, must have a connection to a lost culture (see text).",
+      "benefit": "Each lost culture has its own daily ritual, but none of them take more than 1 hour per day to perform. Once you’ve performed the daily ritual, you gain the benefit of a special ability or resistance as indicated in the Daily Ritual entry for the culture in question. Specific cultures and their rituals are listed below.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Animal Affinity",
+      "prerequisites": "",
+      "benefit": "You get a +2 bonus on all Handle Animal and Ride skill checks. If you have 10 or more ranks in one of these skills, the bonus increases to +4 for that skill.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Animal Ally",
+      "prerequisites": "Nature Soul, character level 4th, must not have an animal companion or mount that advances as an animal companion.",
+      "benefit": "You gain an animal companion as if you were a druid of your character level –3 from the following list: badger, bird, camel, cat (small), dire rat, dog, horse, pony, snake (viper), or wolf. If you later gain an animal companion through another source (such as the Animal domain, divine bond, hunter’s bond, mount, or nature bond class features), the effective druid level granted by this feat stacks with that granted by other sources.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Animal Call",
+      "prerequisites": "Bluff 1 rank, Knowledge (nature) 1 rank.",
+      "benefit": "Pick one of the ranger’s favored terrains. You can use your Bluff skill to mimic the calls of animals native to that terrain. Creatures with ranks in Knowledge (nature) can use that skill in place of Sense Motive to detect your mimicry and realize that the sound is false.",
+      "normal": "",
+      "special": "You can take this feat multiple times. Each time you do, select an additional favored terrain to which this feat applies."
+    },
+    {
+      "name": "Animal Disguise",
+      "prerequisites": "Disguise 6 ranks, Knowledge (nature) 6 ranks.",
+      "benefit": "You can use Disguise to disguise yourself as an animal of your size category. You must have an appropriate pelt and any other animal parts needed to complete the disguise. You also gain a +2 bonus on Disguise checks when you disguise yourself as an animal. Creatures with ranks in Knowledge (nature) can use that skill in place of Sense Motive to detect this type of disguise.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Animal Soul",
+      "prerequisites": "",
+      "benefit": "You can choose not to allow spells and effects to affect you if they would not be capable of affecting both your original creature type and the animal creature type.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Antagonize",
+      "prerequisites": "",
+      "benefit": "You can make Diplomacy and Intimidate checks to make creatures respond to you with hostility. No matter which skill you use, antagonizing a creature takes a standard action that does not provoke attacks of opportunity, and has a DC equal to 10 + the target’s Hit Dice + the target’s Wisdom modifier. You cannot make this check against a creature that does not understand you or has an Intelligence score of 3 or lower. Before you make these checks, you may make a Sense Motive check (DC 20) as a swift action to gain an insight bonus on these Diplomacy or Intimidate checks equal to your Charisma bonus until the end of your next turn. The benefits you gain for this check depend on the skill you use. This is a mind-affecting effect.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Aphotic Explorer",
+      "prerequisites": "Endurance, gillman.",
+      "benefit": "While you are in darkness or dim light, you can take a swift action to gain cold resistance 5 for 1 round. If you have 11 or more Hit Dice, you gain cold resistance 10 instead.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Aquatic Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "An aquatic spell functions normally underwater and requires no caster level check to cast, even if it has the fire descriptor. In addition, the spell can be cast from the surface into water and still be effective.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Arcane Strike (Combat)",
+      "prerequisites": "",
+      "benefit": "As a swift action, you can imbue your weapons with a fraction of your power. For 1 round, your weapons deal +1 damage and are treated as magic for the purpose of overcoming damage reduction. For every five caster levels you possess, this bonus increases by +1, to a maximum of +5 at 20th level.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Athletic",
+      "prerequisites": "",
+      "benefit": "You get a +2 bonus on Climb and Swim skill checks. If you have 10 or more ranks in one of these skills, the bonus increases to +4 for that skill.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Augment Summoning",
+      "prerequisites": "Spell Focus (conjuration)",
+      "benefit": "Each creature you conjure with any summon spell gains a +4 enhancement bonus to Strength and Constitution for the duration of the spell.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Awesome Blow (Combat, Monster)",
+      "prerequisites": "Str 25, Power Attack, Improved Bull Rush, size Large or larger.",
+      "benefit": "As a standard action, the creature may perform an awesome blow combat maneuver. If the creature’s maneuver succeeds against a corporeal opponent smaller than itself, its opponent takes damage (typically slam damage plus Strength bonus) and is knocked flying 10 feet in a direction of the attacking creature’s choice and falls prone. The attacking creature can only push the opponent in a straight line, and the opponent can’t move closer to the attacking creature than the square it started in. If an obstacle prevents the completion of the opponent’s move, the opponent and the obstacle each take 1d6 points of damage, and the opponent is knocked prone in the space adjacent to the obstacle.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Back to Back (Teamwork)",
+      "prerequisites": "",
+      "benefit": "While you are flanked and adjacent to an ally with this feat, you receive a +2 circumstance bonus to AC against attacks from opponents flanking you.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Banishing Critical (Combat, Critical)",
+      "prerequisites": "Critical Focus, ability to cast dismissal or banishment, caster level 9th.",
+      "benefit": "When you confirm a critical hit with a slashing or bludgeoning weapon, you may cast dismissal or banishment on that target as an immediate action, and the target takes a –4 penalty on its Will save to resist the spell’s effect. You must have dismissal or banishment prepared or otherwise available to cast, and using this ability casts the corresponding spell.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Beastmaster Ire (Combat)",
+      "prerequisites": "Cha 13, Alertness, Beastmaster Salvation, Beastmaster Style, Handle Animal 9 ranks, Sense Motive 5 ranks.",
+      "benefit": "When you activate Beastmaster Style’s benefit, you gain a +2 morale bonus on melee weapon attack rolls and +4 morale bonus on weapon damage rolls against the attacking creature. If the enemy attack dealt damage to your animal companion, these bonuses increase to +4 and +8, respectively. These bonuses last until the end of your next turn.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Benthic Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "You can modify a spell that deals acid, cold, electricity, or fire damage to deal damage through high-pressure water instead. The spell gains the water descriptor, and you can either replace the spell’s normal damage with bludgeoning damage or split the spell’s damage so that half is bludgeoning and half is of its normal type. Creatures with damage reduction apply their damage reduction to bludgeoning damage from a benthic spell, but the spell counts as bludgeoning and magic for the purposes of bypassing damage reduction.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Big Game Hunter (Local)",
+      "prerequisites": "",
+      "benefit": "You gain a +1 bonus on attack rolls and a +2 bonus on weapon damage rolls against Large or larger creatures.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Bleeding Critical",
+      "prerequisites": "Critical Focus, base attack bonus +11",
+      "benefit": "Whenever you score a critical hit with a slashing or piercing weapon, your opponent takes 2d6 points of bleed damage each round on his turn, in addition to the damage dealt by the critical hit.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Bleeding Critical (Combat, Critical)",
+      "prerequisites": "Critical Focus, base attack bonus +11.",
+      "benefit": "Whenever you score a critical hit with a slashing or piercing weapon, your opponent takes 2d6 points of bleed damage each round on his turn, in addition to the damage dealt by the critical hit. Bleed damage can be stopped by a DC 15 Heal skill check or through any magical healing. The effects of this feat stack.",
+      "normal": "",
+      "special": "You can only apply the effects of one critical feat to a given critical hit unless you possess Critical Mastery."
+    },
+    {
+      "name": "Blind-Fight",
+      "prerequisites": "",
+      "benefit": "In melee, every time you miss because of concealment, you can reroll your miss chance percentile roll one time to see if you actually hit. An invisible attacker gets no advantages related to hitting you in melee.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Blinding Critical",
+      "prerequisites": "Critical Focus, base attack bonus +15",
+      "benefit": "Whenever you score a critical hit, your opponent is permanently blinded. A successful Fortitude save reduces this to dazzled for 1d4 rounds. The DC is 10 + your base attack bonus.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Blinding Critical (Combat, Critical)",
+      "prerequisites": "Critical Focus, base attack bonus +15.",
+      "benefit": "Whenever you score a critical hit, your opponent is permanently blinded. A successful Fortitude save reduces this to dazzled for 1d4 rounds. The DC of this Fortitude save is equal to 10 + your base attack bonus. This feat has no effect on creatures that do not rely on eyes for sight or creatures with more than two eyes (although multiple critical hits might cause blindness, at the GM’s discretion). Blindness can be cured by heal, regenerate, remove blindness, or similar abilities.",
+      "normal": "",
+      "special": "You can only apply the effects of one critical feat to a given critical hit unless you possess Critical Mastery."
+    },
+    {
+      "name": "Bloatmage Initiate",
+      "prerequisites": "",
+      "benefit": "You learn the basics of the ancient art of hemotheurgy.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Bodyguard (Combat)",
+      "prerequisites": "",
+      "benefit": "When an adjacent ally is attacked, you may use an attack of opportunity to attempt the aid another action to improve your ally’s AC. You may not use the aid another action to improve your ally’s attack roll with this attack.",
+      "normal": "Aid another is a standard action.",
+      "special": ""
+    },
+    {
+      "name": "Bouncing Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "Whenever a bouncing spell targeting a single creature has no effect on its intended target (whether due to spell resistance or a successful saving throw) you may, as a swift action, redirect it to target another eligible creature within range. The redirected spell behaves in all ways as if its new target were the original target for the spell. Spells that affect a target in any way (including a lesser effect from a successful saving throw) may not be redirected in this manner.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Brackish Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "This feat can be applied only to spells with the water descriptor. You can modify the spell to surround you with a thin sheath of brackish salt water in addition to the spell’s normal effect. You gain DR/piercing equal to the spell’s level for 1 round after you finish casting the spell.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Brew Potion",
+      "prerequisites": "Caster level 3rd",
+      "benefit": "You can create a potion of any 3rd-level or lower spell that you know and that targets one or more creatures or objects. Brewing a potion takes 2 hours if its base price is 250 gp or less.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Brilliant Spell Preparation",
+      "prerequisites": "Int 13, ability to prepare 3rd-level spells.",
+      "benefit": "Select one class for which you prepare spells of 3rd level or higher. Once you select a class, it can’t be changed. When you prepare spells for that class, you can leave one spell slot open as a special slot. The slot must be at least 2 levels lower than the highest-level spell you can cast. You can then prepare a spell in this special open slot as a standard action instead of it taking 15 minutes.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Bullying Blow (Combat, Orc)",
+      "prerequisites": "Intimidate 1 rank, orc.",
+      "benefit": "As a standard action, you may make a melee attack with a –2 penalty on the attack roll. If the attack damages your opponent, you may make an Intimidate check to demoralize that opponent as a free action.",
+      "normal": "Intimidating an opponent is a standard action.",
+      "special": ""
+    },
+    {
+      "name": "Burning Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "The acid or fire effects of the affected spell adhere to the creature, causing more damage the next round. When a creature takes acid or fire damage from the affected spell, that creature takes damage equal to 2x the spell’s actual level at the start of its next turn. The damage is acid or fire, as determined by the spell’s descriptor. If a burning spell has both the fire and acid descriptor, the caster chooses what kind of damage is dealt by the burning spell effect.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Cleave",
+      "prerequisites": "Str 13, Power Attack, base attack bonus +1",
+      "benefit": "As a standard action, you can make a single attack at your full base attack bonus against a foe within reach. If you hit, you deal damage normally and can make an additional attack at your full base attack bonus against a foe adjacent to the first and within reach.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Coaxing Spell (Metamagic)",
+      "prerequisites": "Spell Focus (enchantment), Knowledge (dungeoneering) 6 ranks.",
+      "benefit": "This feat only works with mind-affecting effects. A coaxing spell affects mindless oozes and vermin as if they weren’t mindless, but has no effect on other creature types.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Combat Casting",
+      "prerequisites": "",
+      "benefit": "You get a +4 bonus on concentration checks made to cast a spell or use a spell-like ability when casting on the defensive or while grappled.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Combat Expertise",
+      "prerequisites": "Int 13",
+      "benefit": "You can choose to take a -1 penalty on melee attack rolls and combat maneuver checks to gain a +1 dodge bonus to your Armor Class. This penalty increases by -1 for every +4 base attack bonus you have. You can only choose to use this feat when you declare an attack.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Combat Medic (Teamwork)",
+      "prerequisites": "",
+      "benefit": "Whenever you use Heal to provide first aid, treat caltrop wounds, or treat poison on an ally who also has this feat, you provoke no attacks of opportunity, and can take 10 on the check.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Combat Patrol (Combat)",
+      "prerequisites": "Combat reflexes, Mobility, base attack bonus +5.",
+      "benefit": "As a full-round action, you may set up a combat patrol, increasing your threatened area by 5 feet for every 5 points of your base attack bonus. Until the beginning of your next turn, you may make attacks of opportunity against any opponent in this threatened area that provokes attacks of opportunity. You may move as part of these attacks, provided your total movement before your next turn does not exceed your speed. Any movement you make provokes attacks of opportunity as normal.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Combat Reflexes",
+      "prerequisites": "",
+      "benefit": "You may make a number of additional attacks of opportunity per round equal to your Dexterity bonus. With this feat, you may also make attacks of opportunity while flat-footed.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Combat Reflexes (Combat)",
+      "prerequisites": "",
+      "benefit": "You may make a number of additional attacks of opportunity per round equal to your Dexterity bonus. With this feat, you may also make attacks of opportunity while flat-footed.",
+      "normal": "A character without this feat can make only one attack of opportunity per round and can’t make attacks of opportunity while flat-footed.",
+      "special": "The Combat Reflexes feat does not allow a rogue to use her opportunist ability more than once per round."
+    },
+    {
+      "name": "Concussive Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "With sonic damage comes a concussive wave of energy that rattles creatures affected by the spell. A concussive spell causes creatures that take damage from a spell that has the sonic descriptor to take a –2 penalty on attack rolls, saving throws, skill checks, and ability checks for a number of rounds equal to the actual spell level of the spell. A concussive spell only affects spells with the sonic descriptor.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Consecrate Spell (Metamagic)",
+      "prerequisites": "Aasimar, able to prepare or cast consecrate.",
+      "benefit": "A consecrated spell is treated as a maximized spell against evil creatures and creatures with the evil subtype. Against all other creatures, this feat does not modify the spell in any way (for example, a consecrated fireball acts as a normal fireball against neutral or good creatures). This feat does not stack with Maximize Spell.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Craft Magic Arms and Armor",
+      "prerequisites": "Caster level 5th",
+      "benefit": "You can create magic weapons, armor, or shields. Enhancing a weapon, suit of armor, or shield takes 1 day for each 1,000 gp in the price of its magical features.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Craft Poppet (Item Creation)",
+      "prerequisites": "",
+      "benefit": "You can craft poppets and add augmentations to existing poppets that you control. You are treated as having both Craft Magic Arms and Armor and Craft Wondrous Item for the purpose of fulfilling the prerequisites for Craft Construct.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Craft Rod",
+      "prerequisites": "Caster level 9th",
+      "benefit": "You can create magic rods. Crafting a rod takes 1 day for each 1,000 gp in its base price.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Craft Staff",
+      "prerequisites": "Caster level 11th",
+      "benefit": "You can create any staff whose prerequisites you meet. Crafting a staff takes 1 day for each 1,000 gp in its base price.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Craft Wand",
+      "prerequisites": "Caster level 5th",
+      "benefit": "You can create a wand of any 4th-level or lower spell that you know. Crafting a wand takes 1 day for each 1,000 gp in its base price.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Craft Wondrous Item",
+      "prerequisites": "Caster level 3rd",
+      "benefit": "You can create a wide variety of magic wondrous items. Crafting a wondrous item takes 1 day for each 1,000 gp in its price.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Crashing Wave Buffet (Combat)",
+      "prerequisites": "Wis 15, Crashing Wave Style, Improved Drag, Improved Reposition, Improved Unarmed Strike, base attack bonus +6.",
+      "benefit": "When dragging or repositioning an opponent, you use your full body to knock your opponent around like a constant wave. At the end of the drag or reposition maneuver, your opponent must succeed at a Fortitude save (DC = 10 + half your character level + your Wisdom modifier + 2 for every 5 feet you drag or reposition your opponent). On a failed save, your opponent becomes disorientated from the movement and takes a –2 penalty on attack rolls, combat maneuver checks, and Dexterity-based skill checks until the end of its next turn.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Crippling Critical (Combat, Critical)",
+      "prerequisites": "Critical Focus, base attack bonus +13.",
+      "benefit": "Whenever you score a critical hit against an opponent, its speed is halved for 1 minute. A successful Fortitude save reduces this duration to 1d4 rounds. The DC of this save is equal to 10 + your base attack bonus. Against creatures with multiple types of movement, you must choose which movement type to affect. A flying creature hit by this attack must make a DC 10 Fly check to remain airborne, and has its maneuverability reduced by one step.",
+      "normal": "",
+      "special": "You can only apply the effects of one critical feat to a given critical hit unless you possess Critical Mastery."
+    },
+    {
+      "name": "Critical Feats",
+      "prerequisites": "",
+      "benefit": "What the feat enables the character (“you” in the feat description) to do. If a character has the same feat more than once, its benefits do not stack unless indicated otherwise in the description.",
+      "normal": "What a character who does not have this feat is limited to or restricted from doing. If not having the feat causes no particular drawback, this entry is absent.",
+      "special": "Additional unusual facts about the feat."
+    },
+    {
+      "name": "Critical Focus",
+      "prerequisites": "Base attack bonus +9",
+      "benefit": "You receive a +4 circumstance bonus on attack rolls made to confirm critical hits.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Critical Focus (Combat)",
+      "prerequisites": "Base attack bonus +9.",
+      "benefit": "You receive a +4 circumstance bonus on attack rolls made to confirm critical hits",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Critical Mastery (Combat, Critical)",
+      "prerequisites": "Critical Focus, any two critical feats, 14th-level fighter.",
+      "benefit": "When you score a critical hit, you can apply the effects of two critical feats in addition to the damage dealt.",
+      "normal": "You can only apply the effects of one critical feat to a given critical hit in addition to the damage dealt.",
+      "special": ""
+    },
+    {
+      "name": "Critical Versatility (Combat, Human)",
+      "prerequisites": "Fighter level 11th, human.",
+      "benefit": "Once per day, you can spend 1 hour practicing maneuvers to gain one single critical feat that you meet the prerequisites for. You gain the benefits of the chosen critical feat until you choose to practice a different critical feat.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Dazing Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "You can modify a spell to daze a creature damaged by the spell. When a creature takes damage from this spell, they become dazed for a number of rounds equal to the original level of the spell. If the spell allows a saving throw, a successful save negates the daze effect. If the spell does not allow a save, the target can make a Will save to negate the daze effect. If the spell effect also causes the creature to become dazed, the duration of this metamagic effect is added to the duration of the spell.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Deadly Aim",
+      "prerequisites": "Dex 13, base attack bonus +1",
+      "benefit": "You can choose to take a -1 penalty on all ranged attack rolls to gain a +2 bonus on all ranged damage rolls. For every +4 base attack bonus, the penalty increases by -1 and the bonus to damage increases by +2.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Deafening Critical (Combat, Critical)",
+      "prerequisites": "Critical Focus, base attack bonus +13.",
+      "benefit": "Whenever you score a critical hit against an opponent, the victim is permanently deafened. A successful Fortitude save reduces the deafness to 1 round. The DC of this Fortitude save is equal to 10 + your base attack bonus. This feat has no effect on deaf creatures. This deafness can be cured by heal, regeneration, remove deafness, or a similar ability.",
+      "normal": "",
+      "special": "You can only apply the effects of one critical feat to a given critical hit unless you possess Critical Mastery."
+    },
+    {
+      "name": "Deceitful",
+      "prerequisites": "",
+      "benefit": "You get a +2 bonus on Bluff and Disguise skill checks. If you have 10 or more ranks in one of these skills, the bonus increases to +4 for that skill.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Deflect Arrows",
+      "prerequisites": "Dex 13, Improved Unarmed Strike",
+      "benefit": "You must have at least one hand free to use this feat. Once per round when you would normally be hit with an attack from a ranged weapon, you may deflect it so that you take no damage from it.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Diehard",
+      "prerequisites": "Endurance",
+      "benefit": "When your hit point total is below 0, but you are not dead, you automatically stabilize. You do not need to make a Constitution check each round to avoid losing additional hit points. You may choose to act as if you were disabled, rather than dying.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Disruptive (Combat)",
+      "prerequisites": "6th-level fighter.",
+      "benefit": "The DC to cast spells defensively increases by +4 for all enemies that are within your threatened area. This increase to casting spells defensively only applies if you are aware of the enemy’s location and are capable of taking an attack of opportunity. If you can only take one attack of opportunity per round and have already used that attack, this increase does not apply.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Disruptive Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "Targets affected by a disruptive spell must make concentration checks when using spells or spell-like abilities (DC equals the save DC of the disruptive spell plus the level of the spell being cast) for 1 round. Targets that avoid the spell’s effects avoid this feat’s effect as well.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Dodge",
+      "prerequisites": "Dex 13",
+      "benefit": "You gain a +1 dodge bonus to your AC. A condition that makes you lose your Dex bonus to AC also makes you lose the benefits of this feat.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Dodge (Combat)",
+      "prerequisites": "",
+      "benefit": "You gain a +1 dodge bonus to your AC. A condition that makes you lose your Dex bonus to AC also makes you lose the benefits of this feat.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Dolphin Circle (Combat)",
+      "prerequisites": "Dolphin Dart, Dolphin Style, Improved Unarmed Strike, Swim 10 ranks, base attack bonus +10 or monk level 10th.",
+      "benefit": "While in Dolphin Style, as a full-round action underwater you can choose a circular path starting and ending in your current space whose length is no longer than you could swim with a single move action. You circle around that path until your next turn, and this movement doesn’t provoke attacks of opportunity. You are considered to be in every space along the path for the purpose of threatening squares and providing flanking for other allies (but not yourself), as well as whether you are in the area of an area effect. Other creatures can attack you (and touch you with beneficial touch spells) as if you were in every space along the path. However, you don’t count as being in any of the spaces for the purpose of other creatures moving through an occupied space. At the beginning of your next turn, choose any space along the path to stop circling.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Dolphin Dart (Combat)",
+      "prerequisites": "Dolphin Style, Improved Unarmed Strike, Swim 6 ranks, base attack bonus +6 or monk level 6th.",
+      "benefit": "While in Dolphin Style, as a standard action underwater you can move up to half your swim speed, make a single melee attack against a creature within your reach, and then retreat back to your previous position. Your movement and attack don’t provoke attacks of opportunity, even if your foe has an ability that allows attacks of opportunity with triggers other than moving out of a threatened area.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Dolphin Style (Combat, Style)",
+      "prerequisites": "Improved Unarmed Strike, Swim 3 ranks, base attack bonus +3 or monk level 3rd.",
+      "benefit": "You gain a +1 bonus on melee attack rolls against any creature adjacent to at least two of its other allies as long as you aren’t flanking that creature, and your melee attacks ignore any bonus to AC gained by use of the aid another action.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Double Slice",
+      "prerequisites": "Dex 15, Two-Weapon Fighting",
+      "benefit": "Add your Strength bonus to damage rolls made with your off-hand weapon.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Echoing Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "When you cast an echoing spell, it does not disappear entirely from memory, and you can cast it one additional time during that day. No effect that allows you to reprepare or recast a spell can affect the echoed spell.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Ectoplasmic Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "An ectoplasmic spell has full effect against incorporeal or ethereal creatures.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Electric Eel Conduit (Combat, Style)",
+      "prerequisites": "Wis 17, Electric Eel Shock, Electric Eel Style, Elemental Fist, Improved Unarmed Strike, base attack bonus +13 or monk level 9th.",
+      "benefit": "You gain one additional Elemental Fist attempt per day. When you successfully grapple a creature, you may expend two uses of Elemental Fist as a swift action to set up an electric charge between yourself and the creature. If you do, the target takes electricity damage equal to 1d6 plus your Wisdom modifier each round you maintain the grapple. This damage ceases when you are no longer grappling the target.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Electric Eel Shock (Combat, Style)",
+      "prerequisites": "Wis 15, Electric Eel Style, Elemental Fist, Improved Unarmed Strike, base attack bonus +11 or monk level 7th.",
+      "benefit": "You gain one additional Elemental Fist attempt per day. Creatures that take electricity damage from your Elemental Fist attack must succeed at a Fortitude save (DC 10 + half your character level + your Wisdom modifier) or be staggered for 1 round. This also applies to creatures that take electricity damage from your Electric Eel Conduit feat while grappled.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Electric Eel Style (Combat, Style)",
+      "prerequisites": "Wis 13, Elemental Fist, Improved Unarmed Strike, base attack bonus +9 or monk level 5th.",
+      "benefit": "You gain one additional Elemental Fist attempt per day. While you are in this style, your Elemental Fist attack deals electricity damage. When a creature takes electricity damage from your Elemental Fist attack, you gain a +4 bonus for 1 round on combat maneuver checks to grapple the creature.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Elemental Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "Choose one energy type: acid, cold, electricity, or fire. You may replace a spell’s normal damage with that energy type or split the spell’s damage, so that half is of that energy type and half is of its normal type.",
+      "normal": "",
+      "special": "You can gain this feat multiple times. Each time you must choose a different energy type."
+    },
+    {
+      "name": "Empower Spell",
+      "prerequisites": "",
+      "benefit": "All variable, numeric effects of an empowered spell are increased by half including bonuses to those dice rolls. An empowered spell uses up a spell slot two levels higher than the spell's actual level.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Empower Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "All variable, numeric effects of an empowered spell are increased by half including bonuses to those dice rolls.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Endurance",
+      "prerequisites": "",
+      "benefit": "You gain a +4 bonus on the following checks and saves: Swim checks made to resist nonlethal damage from exhaustion; Constitution checks made to continue running; Constitution checks made to avoid nonlethal damage from a forced march; Constitution checks made to hold your breath; Constitution checks made to avoid nonlethal damage from starvation or thirst; Fortitude saves made to avoid nonlethal damage from hot or cold environments; and Fortitude saves made to resist damage from suffocation.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Enlarge Spell",
+      "prerequisites": "",
+      "benefit": "You can alter a spell with a range of close, medium, or long to increase its range by 100%. An enlarged spell uses up a spell slot one level higher than the spell's actual level.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Enlarge Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "You can alter a spell with a range of close, medium, or long to increase its range by 100%. An enlarged spell with a range of close now has a range of 50 ft. + 5 ft./level, while medium-range spells have a range of 200 ft. + 20 ft./level and long-range spells have a range of 800 ft. + 80 ft./level.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Ensemble (Teamwork)",
+      "prerequisites": "Perform 5 ranks",
+      "benefit": "When you are performing, allies within 20 feet who also have this feat can aid you with your Perform checks (including those made as part of bardic performance) as if they were aiding another as an immediate action. The allies make their aid another rolls before you make your check. No more than four allies can grant you a bonus with aid another. Allies aiding you do not need to use the same category of the Perform skill that you are using in order to aid you.",
+      "normal": "",
+      "special": "If you possess one or more levels of the bard class, you can choose any one ally within 20 feet to be part of the ensemble. The ally is considered to have the ensemble teamwork feat for the purposes of aiding your performance."
+    },
+    {
+      "name": "Exhausting Critical (Combat, Critical)",
+      "prerequisites": "Critical Focus, Tiring Critical, base attack bonus +15.",
+      "benefit": "When you score a critical hit on a foe, your target immediately becomes exhausted. This feat has no effect on exhausted creatures.",
+      "normal": "",
+      "special": "You can only apply the effects of one critical feat to a given critical hit unless you possess the Critical Mastery feat."
+    },
+    {
+      "name": "Extend Spell",
+      "prerequisites": "",
+      "benefit": "An extended spell lasts twice as long as normal. An extended spell uses up a spell slot one level higher than the spell's actual level.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Extend Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "An extended spell lasts twice as long as normal. A spell with a duration of concentration, instantaneous, or permanent is not affected by this feat.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Extra Channel",
+      "prerequisites": "Channel energy class feature",
+      "benefit": "You can channel energy two additional times per day.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Extra Ki",
+      "prerequisites": "Ki pool class feature",
+      "benefit": "Your ki pool increases by 2.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Extra Rage",
+      "prerequisites": "Rage class feature",
+      "benefit": "You can rage for 6 additional rounds per day.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Familiar Spell (Metamagic)",
+      "prerequisites": "Spellcaster with familiar class feature.",
+      "benefit": "You can transfer a prepared spell to your familiar, allowing the familiar to cast that spell at a later time. Variables that rely on caster level function according to your caster level, not your familiar’s Hit Dice, though your familiar’s Intelligence may influence how precisely it can follow your instructions on how to use these spells.",
+      "normal": "",
+      "special": "If you are a spontaneous caster, you must select a specific spell with which to imbue your familiar; you cannot imbue your familiar with an open spell slot."
+    },
+    {
+      "name": "Far Shot",
+      "prerequisites": "Point-Blank Shot",
+      "benefit": "You only suffer a -1 penalty per full range increment between you and your target when using a ranged weapon.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Fire God’s Blessing",
+      "prerequisites": "",
+      "benefit": "When in combat, if you deal fire damage to an enemy, you heal 1 hit point. You can only benefit from this healing once per round. Attacks that cause a target to catch on fire heal you each round the target takes fire damage.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Flaring Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "The electricity, fire, or light effects of the affected spell create a flaring that dazzles creatures that take damage from the spell. A flare spell causes a creature that takes fire or electricity damage from the affected spell to become dazzled for a number of rounds equal to the actual level of the spell. A flaring spell only affects spells with a fire, light, or electricity descriptor.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Fleet",
+      "prerequisites": "",
+      "benefit": "While you are wearing light or no armor, your base speed increases by 5 feet. You lose the benefits of this feat if you carry a medium or heavy load.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Focused Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "When casting a spell that affects or targets more than one creature, you can choose one target or creature within the spell effect. That creature’s saving throw DC to resist the spell is increased by +2. You must choose which target to focus the spell on before casting the spell.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Focusing Blow (Teamwork, Hobgoblin)",
+      "prerequisites": "Hobgoblin Discipline, hobgoblin.",
+      "benefit": "An ally who also has this feat can deal damage to you in order to break an ongoing mind-affecting effect that allows a saving throw. The ally must cause at least 5 points of damage to you with an attack, spell, or other ability. You then reroll your saving throw, with a +1 bonus for every 5 additional points of damage the attack caused. If your save is successful, the mind-affecting effect ends. Only damage actually dealt counts for purposes of this feat; nonlethal damage and damage reduced or eliminated by damage reduction, resistances, and so on does not qualify.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Following Step",
+      "prerequisites": "Dex 13, Step Up",
+      "benefit": "When using Step Up, you may move up to 10 feet. You still cannot move farther than your speed.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Forge Ring",
+      "prerequisites": "Caster level 7th",
+      "benefit": "You can create magic rings. Crafting a ring takes 1 day for each 1,000 gp in its base price.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Great Cleave",
+      "prerequisites": "Str 13, Cleave, Power Attack, base attack bonus +4",
+      "benefit": "As a standard action, you can make a single attack at your full base attack bonus against a foe within reach. If you hit, you deal damage normally and can make additional attacks against foes adjacent to the previous foe at your full base attack bonus, as long as they are within reach.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Great Fortitude",
+      "prerequisites": "",
+      "benefit": "You get a +2 bonus on all Fortitude saving throws.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Greater Blind-Fight",
+      "prerequisites": "Perception 15 ranks, Improved Blind-Fight, Blind-Fight",
+      "benefit": "Your melee attacks ignore the miss chance for less than total concealment, and you treat opponents with total concealment as if they had normal concealment (20% miss chance).",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Greater Bull Rush",
+      "prerequisites": "Str 13, Improved Bull Rush, Power Attack, base attack bonus +6",
+      "benefit": "You receive a +2 bonus on checks made to bull rush a foe. This bonus stacks with Improved Bull Rush. Whenever you bull rush an opponent, his movement provokes attacks of opportunity from all of your allies.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Greater Disarm",
+      "prerequisites": "Int 13, Combat Expertise, Improved Disarm, base attack bonus +6",
+      "benefit": "You receive a +2 bonus on checks made to disarm a foe. This bonus stacks with Improved Disarm. Whenever you successfully disarm an opponent, the weapon lands 15 feet away in a random direction.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Greater Feint",
+      "prerequisites": "Int 13, Combat Expertise, Improved Feint, base attack bonus +6",
+      "benefit": "Whenever you use feint to cause an opponent to lose his Dexterity bonus, he loses that bonus until the beginning of your next turn, in addition to losing his Dexterity bonus against your next attack.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Greater Grapple",
+      "prerequisites": "Dex 13, Improved Grapple, Improved Unarmed Strike, base attack bonus +6",
+      "benefit": "You receive a +2 bonus on checks made to grapple a foe. This bonus stacks with Improved Grapple. Once you have grappled a creature, maintaining the grapple is a move action.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Greater Overrun",
+      "prerequisites": "Str 13, Improved Overrun, Power Attack, base attack bonus +6",
+      "benefit": "You receive a +2 bonus on checks made to overrun a foe. This bonus stacks with Improved Overrun. Whenever you overrun opponents, they provoke attacks of opportunity if they are knocked prone.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Greater Shield Focus",
+      "prerequisites": "Shield Focus, Shield Proficiency, fighter level 8th",
+      "benefit": "Increase the AC bonus granted by any shield you are using by 1. This bonus stacks with the bonus granted by Shield Focus.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Greater Spell Focus",
+      "prerequisites": "Spell Focus",
+      "benefit": "Add +1 to the Difficulty Class for all saving throws against spells from the school of magic you select. This bonus stacks with Spell Focus.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Greater Spell Penetration",
+      "prerequisites": "Spell Penetration",
+      "benefit": "You get a +2 bonus on caster level checks made to overcome a creature's spell resistance. This bonus stacks with Spell Penetration.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Greater Sunder",
+      "prerequisites": "Str 13, Improved Sunder, Power Attack, base attack bonus +6",
+      "benefit": "You receive a +2 bonus on checks made to sunder an item. This bonus stacks with Improved Sunder. Whenever you sunder to destroy a weapon, shield, or suit of armor, any excess damage is applied to the item's wielder.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Greater Trip",
+      "prerequisites": "Int 13, Combat Expertise, Improved Trip, base attack bonus +6",
+      "benefit": "You receive a +2 bonus on checks made to trip a foe. This bonus stacks with the bonus granted by Improved Trip. Whenever you successfully trip an opponent, that opponent provokes attacks of opportunity.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Greater Two-Weapon Fighting",
+      "prerequisites": "Dex 19, Improved Two-Weapon Fighting, Two-Weapon Fighting, base attack bonus +11",
+      "benefit": "You get a third attack with your off-hand weapon, albeit at a -10 penalty.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Greater Vital Strike",
+      "prerequisites": "Improved Vital Strike, Vital Strike, base attack bonus +16",
+      "benefit": "When you use the attack action, you can make one attack at your highest base attack bonus that deals additional damage. Roll the weapon's damage dice for the attack four times and add the results together.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Greater Weapon Focus",
+      "prerequisites": "Proficiency with selected weapon, Weapon Focus with selected weapon, fighter level 8th",
+      "benefit": "You gain a +1 bonus on attack rolls you make using the selected weapon. This bonus stacks with other bonuses on attack rolls, including the one from Weapon Focus.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Greater Weapon Specialization",
+      "prerequisites": "Proficiency with selected weapon, Greater Weapon Focus, Weapon Focus, Weapon Specialization, fighter level 12th",
+      "benefit": "You gain a +2 bonus on all damage rolls you make using the selected weapon. This bonus stacks with other bonuses on damage rolls, including the one from Weapon Specialization.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Group Shared Spells (Teamwork)",
+      "prerequisites": "",
+      "benefit": "You and any of your allies with this feat can cast spells with a target of “you” on each other’s familiars as touch spells. Both the target familiar and that familiar’s master must be willing for the spell to take effect. You can cast spells on each other’s familiars even if the spells would not normally affect creatures of the targeted familiar’s type.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Harder They Fall (Combat, Teamwork)",
+      "prerequisites": "Str 13, Int 13, Combat Expertise, Power Attack.",
+      "benefit": "When you use the aid another action to grant an ally who also has this feat a +2 bonus on a bull rush or trip combat maneuver check, the ally can attempt that maneuver even against foes two or more size categories larger than herself.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Heighten Spell",
+      "prerequisites": "",
+      "benefit": "A heightened spell has a higher spell level than normal (up to 9th level). Unlike other metamagic feats, Heighten Spell actually increases the effective level of the spell.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Heighten Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "A heightened spell has a higher spell level than normal (up to a maximum of 9th level). Unlike other metamagic feats, Heighten Spell actually increases the effective level of the spell that it modifies. All effects dependent on spell level (such as saving throw DCs and ability to penetrate a lesser globe of invulnerability) are calculated according to the heightened level.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Horde Charge (Teamwork, Orc/Half-Orc)",
+      "prerequisites": "Base attack bonus +1, half-orc or orc.",
+      "benefit": "When charging during the same round as an ally with this feat, you gain a +2 bonus on attack and damage rolls in addition to the normal bonus for charging. If you can make multiple attacks on a charge, this bonus only applies to the first attack.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Impaling Critical (Combat, Critical)",
+      "prerequisites": "",
+      "benefit": "Whenever you score a critical hit with the selected piercing melee weapon, you can impale your opponent on your weapon. While your opponent is impaled in this way, each time he starts his turn, you deal damage equal to your weapon’s damage dice plus the extra damage dice from your weapon’s properties. As an immediate action, you can pull your weapon out of your opponent. If your opponent is ever outside your reach, you must spend a free action to let go of your weapon or pull it out of him. Your opponent can also spend a move action to pull your weapon out. When the weapon comes out, your opponent takes damage as if starting his turn impaled. While you impale your opponent with your weapon, you cannot use it to attack, and you must hold on to it.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Back to Back (Teamwork)",
+      "prerequisites": "",
+      "benefit": "While you are adjacent to an ally who is flanked and also has this feat, you can spend a swift action to gain a +2 bonus to AC against all flankers until the start of your next turn.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Blind-Fight",
+      "prerequisites": "Perception 10 ranks, Blind-Fight",
+      "benefit": "Your melee attacks ignore the miss chance for less than total concealment. You may still reroll your miss chance percentile roll for total concealment.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Bull Rush",
+      "prerequisites": "Str 13, Power Attack",
+      "benefit": "You do not provoke an attack of opportunity when performing a bull rush combat maneuver. In addition, you receive a +2 bonus on checks made to bull rush a foe. You also receive a +2 bonus to your CMD whenever an opponent tries to bull rush you.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Channel",
+      "prerequisites": "Channel energy class feature",
+      "benefit": "Add 2 to the DC of saving throws made to resist the effects of your channel energy ability.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Critical (Combat)",
+      "prerequisites": "",
+      "benefit": "When using the weapon you selected, your threat range is doubled.",
+      "normal": "",
+      "special": "You can gain Improved Critical multiple times. The effects do not stack. Each time you take the feat, it applies to a new type of weapon."
+    },
+    {
+      "name": "Improved Disarm",
+      "prerequisites": "Int 13, Combat Expertise",
+      "benefit": "You do not provoke an attack of opportunity when performing a disarm combat maneuver. In addition, you receive a +2 bonus on checks made to disarm a foe. You also receive a +2 bonus to your CMD when an opponent tries to disarm you.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Duck and Cover (Teamwork)",
+      "prerequisites": "",
+      "benefit": "Whenever you use Duck and Cover, your ally has evasion or improved evasion, and your ally’s saving throw roll succeeds, half of the damage you would have taken is transferred to your ally. (This damage is not reduced by the ally’s evasion or improved evasion.)",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Feint",
+      "prerequisites": "Int 13, Combat Expertise",
+      "benefit": "You can make a Bluff check to feint in combat as a move action.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Feint (Combat)",
+      "prerequisites": "Int 13, Combat Expertise.",
+      "benefit": "You can make a Bluff check to feint in combat as a move action.",
+      "normal": "Feinting in combat is a standard action.",
+      "special": ""
+    },
+    {
+      "name": "Improved Grapple",
+      "prerequisites": "Dex 13, Improved Unarmed Strike",
+      "benefit": "You do not provoke an attack of opportunity when performing a grapple combat maneuver. In addition, you receive a +2 bonus on checks made to grapple a foe. You also receive a +2 bonus to your CMD whenever an opponent tries to grapple you.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Great Fortitude",
+      "prerequisites": "Great Fortitude",
+      "benefit": "Once per day, you may reroll a Fortitude save. You must decide to use this ability before the results are revealed. You must take the second roll, even if it is worse.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Impaling Critical (Combat, Critical)",
+      "prerequisites": "",
+      "benefit": "While you are using Impaling Critical to impale an opponent, and you are still holding onto that weapon, that opponent must succeed at a grapple combat maneuver check against you to pull your weapon out. If you have let go of your weapon, the impaled opponent must spend a standard action to remove the weapon. Until the opponent pulls the weapon out, his speed in all modes is halved and his maneuverability, if any, is reduced by one step. When the weapon comes out, instead of dealing the damage normal for Impaling Critical, you can deal bleed damage equal to your weapon’s damage dice result once per round at the start of that opponent’s turn.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Initiative",
+      "prerequisites": "",
+      "benefit": "You get a +4 bonus on initiative checks.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Iron Will",
+      "prerequisites": "Iron Will",
+      "benefit": "Once per day, you may reroll a Will save. You must decide to use this ability before the results are revealed. You must take the second roll, even if it is worse.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Lightning Reflexes",
+      "prerequisites": "Lightning Reflexes",
+      "benefit": "Once per day, you may reroll a Reflex save. You must decide to use this ability before the results are revealed. You must take the second roll, even if it is worse.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Natural Attack",
+      "prerequisites": "Natural weapon, base attack bonus +4",
+      "benefit": "Choose one of the creature's natural attack forms. The damage for this natural attack increases by one step.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Overrun",
+      "prerequisites": "Str 13, Power Attack",
+      "benefit": "You do not provoke an attack of opportunity when performing an overrun combat maneuver. In addition, you receive a +2 bonus on checks made to overrun a foe. You also receive a +2 bonus to your CMD when an opponent tries to overrun you.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Precise Shot",
+      "prerequisites": "Dex 19, Point-Blank Shot, Precise Shot, base attack bonus +11",
+      "benefit": "Your ranged attacks ignore the AC bonus granted to targets by anything less than total cover, and the miss chance granted to targets by anything less than total concealment.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Shield Bash",
+      "prerequisites": "Shield Proficiency",
+      "benefit": "When you perform a shield bash, you may still apply the shield's shield bonus to your AC.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Spell Sharing (Teamwork)",
+      "prerequisites": "",
+      "benefit": "When you are adjacent to or sharing a square with your companion creature and that companion creature has this feat, you can cast a spell on yourself and divide the duration evenly between yourself and the companion creature. You can use this feat only on spells with a duration of at least 2 rounds. For example, you could cast bull’s strength on yourself, and instead of the spell lasting 1 minute per level on yourself, it lasts 5 rounds per level on yourself and 5 rounds per level on your companion.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Sunder",
+      "prerequisites": "Str 13, Power Attack",
+      "benefit": "You do not provoke an attack of opportunity when performing a sunder combat maneuver. In addition, you receive a +2 bonus on checks made to sunder an item. You also receive a +2 bonus to your CMD when an opponent tries to sunder your gear.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Trip",
+      "prerequisites": "Int 13, Combat Expertise",
+      "benefit": "You do not provoke an attack of opportunity when performing a trip combat maneuver. In addition, you receive a +2 bonus on checks made to trip a foe. You also receive a +2 bonus to your Combat Maneuver Defense whenever an opponent tries to trip you.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Two-Weapon Fighting",
+      "prerequisites": "Dex 17, Two-Weapon Fighting, base attack bonus +6",
+      "benefit": "In addition to the standard single extra attack you get with an off-hand weapon, you get a second attack with it, albeit at a -5 penalty.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Unarmed Strike",
+      "prerequisites": "",
+      "benefit": "You are considered to be armed even when unarmed. You do not provoke attacks of opportunity when you attack foes while unarmed. You can make an unarmed attack as either a main hand or off-hand attack.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improved Unarmed Strike (Combat)",
+      "prerequisites": "",
+      "benefit": "You are considered to be armed even when unarmed—you do not provoke attacks of opportunity when you attack foes while unarmed. Your unarmed strikes can deal lethal or nonlethal damage, at your choice.",
+      "normal": "Without this feat, you are considered unarmed when attacking with an unarmed strike, and you can deal only nonlethal damage with such an attack.",
+      "special": ""
+    },
+    {
+      "name": "Improved Vital Strike",
+      "prerequisites": "Vital Strike, base attack bonus +11",
+      "benefit": "When you use the attack action, you can make one attack at your highest base attack bonus that deals additional damage. Roll the weapon's damage dice for the attack three times and add the results together.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Improvisational Healer",
+      "prerequisites": "",
+      "benefit": "When attempting a Heal check that normally requires a healer’s kit, you don’t take a penalty on the check for not having a healer’s kit. When you use a healer’s kit, you can augment it with improvised supplies, gaining an additional +2 circumstance bonus on your check. Finally, you can treat any potion of cure light wounds, potion of cure moderate wounds, or potion of cure serious wounds you drink yourself or administer to another character as though its caster level were equal to the number of ranks you have in the Heal skill. The spell’s normal limitations apply; for example, a potion of cure light wounds can cure a maximum of 1d8+5 points of damage, even if you have more than 5 ranks in the Heal skill.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Indomitable Mountain Peak (Combat)",
+      "prerequisites": "Wis 15, Combat Reflexes, Improved Unarmed Strike, Indomitable Mountain Style, base attack bonus +6.",
+      "benefit": "Whenever an opponent succeeds at a combat maneuver against you or at an Acrobatics check to avoid provoking an attack of opportunity when moving through a square you threaten, you immediately gain a +2 morale bonus to your CMD against the next combat maneuver against you or to the DC of the next Acrobatics check to avoid an attack of opportunity when moving through a square you threaten. This bonus stacks until either attempt fails against you.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Indomitable Mountain Style (Combat, Style)",
+      "prerequisites": "Wis 13, Combat Reflexes, Improved Unarmed Strike, base attack bonus +4.",
+      "benefit": "As long as you do not take a move action, you gain a +4 morale bonus to your CMD and to the DC of Bluff checks used for feint attempts against you. Additionally, you are considered to be one size category larger for the purpose of calculating your CMD when creatures attempt Acrobatics checks to move through spaces you threaten without provoking attacks of opportunity.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Intensified Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "An intensified spell increases the maximum number of damage dice by 5 levels. You must actually have sufficient caster levels to surpass the maximum in order to benefit from this feat. No other variables of the spell are affected, and spells that inflict damage that is not modified by caster level are not affected by this feat.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Iron Will",
+      "prerequisites": "",
+      "benefit": "You get a +2 bonus on all Will saving throws.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Jinxed Spell (Metamagic)",
+      "prerequisites": "Any two metamagic feats, Halfling Jinx alternate racial trait.",
+      "benefit": "Any creature that fails its saving throw against a jinxed spell also suffers the effects of your jinx. This feat has no effect on spells that do not allow a saving throw. If the spell affects an area or multiple creatures, you must select one creature to take the jinx, unless you have the Area Jinx feat; if you have the Area Jinx feat, choose a jinx burst area within the spell’s area or among its targets and apply the jinx to those in the burst that failed their save.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Latent Curse (Metamagic)",
+      "prerequisites": "",
+      "benefit": "You can alter a spell with the curse descriptor to target an object rather than a person. Your spell immediately targets the next creature to pick up, handle, or interact with the object as if that creature were the spell’s original target.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Lightning Reflexes",
+      "prerequisites": "",
+      "benefit": "You get a +2 bonus on all Reflex saving throws.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Lightning Stance",
+      "prerequisites": "Dex 17, Dodge, Wind Stance, base attack bonus +11",
+      "benefit": "If you take two actions to move or a withdraw action in a turn, you gain 50% concealment for 1 round.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Lingering Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "You may cause an instantaneous spell that affects an area to persist until the beginning of your next turn. Those already in the area suffer no additional harm, but other creatures or objects entering the area are subject to its effects. A lingering spell with a visual manifestation obscures vision, providing concealment (20% miss chance) beyond 5 feet and total concealment (50% miss chance) beyond 20 feet.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Lunge",
+      "prerequisites": "Base attack bonus +6",
+      "benefit": "You can increase the reach of your melee attacks by 5 feet until the end of your turn by taking a -2 penalty to your AC until your next turn.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Manyshot",
+      "prerequisites": "Dex 17, Point-Blank Shot, Rapid Shot, base attack bonus +6",
+      "benefit": "When making a full-attack action with a bow, your first attack fires two arrows. If the attack hits, both arrows hit. Apply precision-based damage only once. Critical hits and other effects only apply to one arrow.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Master Combat Performer (Combat)",
+      "prerequisites": "Performing Combatant or at least three performance feats, base attack bonus +6.",
+      "benefit": "You can make performance combat checks as a free action. You are proficient in all weapons with the performance special quality.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Maximize Spell",
+      "prerequisites": "",
+      "benefit": "All variable, numeric effects of a spell are maximized. A maximized spell uses up a spell slot three levels higher than the spell's actual level.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Maximize Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "All variable, numeric effects of a spell modified by this feat are maximized. Saving throws and opposed rolls are not affected, nor are spells without random variables.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Merciful Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "You can alter spells that inflict damage to inflict nonlethal damage instead. Spells that inflict damage of a particular type (such as fire) inflict nonlethal damage of that same type.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Mobility",
+      "prerequisites": "Dex 13, Dodge",
+      "benefit": "You get a +4 dodge bonus to Armor Class against attacks of opportunity caused when you move out of or within a threatened area.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Mobility (Combat)",
+      "prerequisites": "Dex 13, Dodge.",
+      "benefit": "You get a +4 dodge bonus to Armor Class against attacks of opportunity caused when you move out of or within a threatened area. A condition that makes you lose your Dexterity bonus to Armor Class (if any) also makes you lose dodge bonuses.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Monastic Legacy (Combat)",
+      "prerequisites": "",
+      "benefit": "Add half the levels you have in classes other than monk to your monk level to determine your effective monk level for your base unarmed strike damage. This feat does not make levels in classes other than monk count toward any other monk class features.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Mounted Combat",
+      "prerequisites": "Ride 1 rank",
+      "benefit": "Once per round when your mount is hit in combat, you may attempt a Ride check to negate the hit. The hit is negated if your Ride check result is greater than the opponent's attack roll.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Multiattack (Monster)",
+      "prerequisites": "",
+      "benefit": "The creature’s secondary attacks with natural weapons take only a –2 penalty.",
+      "normal": "Without this feat, the creature’s secondary attacks with natural weapons take a –5 penalty.",
+      "special": ""
+    },
+    {
+      "name": "Murky Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "You can apply Murky Spell only to a mist or fog spell that normally doesn’t work underwater, such as cloudkill, fog cloud, mind fog, obscuring mist, or solid fog. When cast underwater, a murky spell clouds the water with sediments, producing roughly the same effects as the normal spell would above water except as follows. Due to the dilution, a murky spell has only one-tenth of the duration of a normal spell (generally 1 minute per level, though mind fog lasts 3 minutes), but this reduction doesn’t affect the duration of secondary effects like mind fog’s mental penalties. Abilities that see through mist and fog can’t see through a murky spell unless they also specifically see through murky water (like the mistsight universal monster rule). Instead of wind, currents can disperse a murky spell; any current with a speed of at least 10 feet disperses a murky spell in 1 round. A murky spell has no effect above the water. A murky spell uses up a slot the same spell level as the spell’s actual level.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Natural Spell",
+      "prerequisites": "Wis 13, wild shape class feature",
+      "benefit": "You can complete the verbal and somatic components of spells while in a wild shape. You substitute various noises and gestures for the normal verbal and somatic components of a spell.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Nature Soul",
+      "prerequisites": "",
+      "benefit": "You get a +2 bonus on all Knowledge (nature) checks and Survival checks. If you have 10 or more ranks in one of these skills, the bonus increases to +4 for that skill.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Out of the Sun (Teamwork)",
+      "prerequisites": "Bluff 3 ranks, Stealth 3 ranks.",
+      "benefit": "When you hit with a melee attack, you can attempt a Bluff check as a move action to feint. You do not gain the benefits of this feint; instead, if you succeed at your Bluff check, an ally with this feat who is adjacent to you or your opponent gains the benefits, such that the opponent is denied its Dexterity bonus to AC (if any) against your ally’s next melee attack against that opponent. This attack must be made before the end of your ally’s next turn. You gain a +2 circumstance bonus on your Bluff check in bright light. This bonus increases to +4 in natural sunlight. You cannot use this feat in dim light or darkness.",
+      "normal": "",
+      "special": "If you have the Improved Feint feat, you can feint with Out of the Sun as a swift action after you hit with a melee attack."
+    },
+    {
+      "name": "Perfect Strike (Combat)",
+      "prerequisites": "Dex 13, Wis 13, Improved Unarmed Strike, base attack bonus +8.",
+      "benefit": "You must declare that you are using this feat before you make your attack roll (thus a failed attack roll ruins the attempt). You must use one of the following weapons to make the attack: kama, nunchaku, quarterstaff, sai, and siangham. You can roll your attack roll twice and take the higher result. If one of these rolls is a critical threat, the other roll is used as your confirmation roll (your choice if they are both critical threats). You may attempt a perfect attack once per day for every four levels you have attained (but see Special), and no more than once per round.",
+      "normal": "",
+      "special": "A weapon master monk or zen archer monk receives Perfect Strike as a bonus feat at 1st level, even if he does not meet the prerequisites. A monk may attempt an perfect strike attack a number of times per day equal to his monk level, plus one more time per day for every four levels he has in classes other than monk."
+    },
+    {
+      "name": "Performance Weapon Mastery (Combat)",
+      "prerequisites": "",
+      "benefit": "You treat all weapons you are proficient in as if they had the performance weapon quality.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Performing Combatant (Combat)",
+      "prerequisites": "Dazzling Display, any one performance feat.",
+      "benefit": "You can make performance combat checks in any combat. When making a performance check outside of performance combat, you can pick a single performance feat to use. You automatically gain any bonus on the performance combat check the feat grants, and then you make a DC 20 performance combat check. On a success, you gain the full effect of the performance feat you chose.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Persistent Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "Whenever a creature targeted by a persistent spell or within its area succeeds on its saving throw against the spell, it must make another saving throw against the effect. If a creature fails this second saving throw, it suffers the full effects of the spell, as if it had failed its first saving throw.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Persuasive",
+      "prerequisites": "",
+      "benefit": "You get a +2 bonus on Diplomacy and Intimidate skill checks. If you have 10 or more ranks in one of these skills, the bonus increases to +4 for that skill.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Phalanx Fighter (Teamwork)",
+      "prerequisites": "Base attack bonus +3, good alignment.",
+      "benefit": "You gain a sacred bonus to your AC against the attacks of evil creatures and a sacred bonus to saves against the spells and abilities of evil creatures equal to the number of adjacent allies who also have this feat.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Piercing Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "When you cast a piercing spell against a target with spell resistance, it treats the spell resistance of the target as 5 lower than its actual SR.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Point Blank Master (Combat)",
+      "prerequisites": "",
+      "benefit": "Choose one type of ranged weapon. You do not provoke attacks of opportunity when firing the selected weapon while threatened.",
+      "normal": "Using a ranged weapon while you are threatened provokes attacks of opportunity.",
+      "special": "Starting at 6th level, a ranger with the archery combat style may select Point Blank Master as a combat style feat, but he must have Weapon Focus instead of Weapon ization in the selected weapon."
+    },
+    {
+      "name": "Point-Blank Shot",
+      "prerequisites": "",
+      "benefit": "You get a +1 bonus on attack and damage rolls with ranged weapons at ranges of up to 30 feet.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Point-Blank Shot (Combat)",
+      "prerequisites": "",
+      "benefit": "You get a +1 bonus on attack and damage rolls with ranged weapons at ranges of up to 30 feet.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Power Attack",
+      "prerequisites": "Str 13, base attack bonus +1",
+      "benefit": "You can choose to take a -1 penalty on all melee attack rolls and combat maneuver checks to gain a +2 bonus on all melee damage rolls. This bonus to damage is increased by half (+50%) if you are making an attack with a two-handed weapon, a one handed weapon using two hands, or a primary natural weapon that adds 1-1/2 times your Strength modifier on damage rolls. This bonus to damage is halved (-50%) if you are making an attack with an off-hand weapon or secondary natural weapon. When your base attack bonus reaches +4, and every 4 points thereafter, the penalty increases by -1 and the bonus to damage increases by +2.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Power Attack (Combat)",
+      "prerequisites": "Str 13, base attack bonus +1.",
+      "benefit": "You can choose to take a –1 penalty on all melee attack rolls and combat maneuver checks to gain a +2 bonus on all melee damage rolls. This bonus to damage is increased by half (+50%) if you are making an attack with a two-handed weapon, a one handed weapon using two hands, or a primary natural weapon that adds 1-1/2 times your Strength modifier on damage rolls. This bonus to damage is halved (–50%) if you are making an attack with an off-hand weapon or secondary natural weapon.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Precise Shot",
+      "prerequisites": "Point-Blank Shot",
+      "benefit": "You can shoot or throw ranged weapons at an opponent engaged in melee without taking the standard -4 penalty on your attack roll.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Precise Shot (Combat)",
+      "prerequisites": "",
+      "benefit": "You can shoot or throw ranged weapons at an opponent engaged in melee without taking the standard –4 penalty on your attack roll.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Psychovore Master (Combat)",
+      "prerequisites": "Improved Unarmed Strike, Psychovore Strike, Psychovore Style, Sense Motive 15 ranks.",
+      "benefit": "When you score a critical hit against the creature you are gaining a dodge bonus to AC against from Psychovore Style with your unarmed strike, that target also takes 1 point of Intelligence and Wisdom damage and you gain 2d8 temporary hit points. These temporary hit points last for 1 hour and don’t stack with other temporary hit points you might gain with this feat.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Psychovore Strike (Combat)",
+      "prerequisites": "Improved Unarmed Strike, Psychovore Style, Sense Motive 9 ranks.",
+      "benefit": "When you strike the creature you are gaining a dodge bonus to AC against from Psychovore Style with your unarmed strike, you can force that creature to attempt a Will saving throw (DC = 10 + 1/2 your character level + your Wisdom modifier), in addition to dealing damage normally. A creature who fails its save is confused for 1d6 rounds. You must declare that you are using this feat before you make your attack roll (thus, a failed attack roll ruins the attempt). You can use this ability a number of times per day equal to 1 + your Wisdom bonus (minimum once per day), and no more than once per round. This is a mind-affecting effect, and a creature confused in this way never attacks you.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Psychovore Style (Combat, Style)",
+      "prerequisites": "Improved Unarmed Strike, Sense Motive 3 ranks.",
+      "benefit": "When using this style, you can attempt a Sense Motive check (DC = 15 + CR of target) as a move action against a creature with an Intelligence score of 3 or higher. If you succeed, you gain a +1 dodge bonus to your AC against attacks from the target creature until you are no longer using this style. You can have this bonus against only one creature at a time: if you succeed at this Sense Motive check against another creature, you lose the bonus against the first creature. This bonus increases to +2 when you have 8 ranks in Sense Motive, and to +3 when you have 13 ranks in Sense Motive.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Punch Through (Combat, Teamwork)",
+      "prerequisites": "",
+      "benefit": "As a full-round action, you may make a single attack against a target. If the attack hits and deals damage to the target, all of your allies with this feat ignore up to 5 points of damage reduction against the same target for 1 round. This feat does not apply to damage reduction without a type (such as DR 10/—).",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Quicken Spell",
+      "prerequisites": "",
+      "benefit": "Casting a quickened spell is a swift action. You can perform another action, even casting another spell, in the same round. A quickened spell uses up a spell slot four levels higher than the spell's actual level.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Quicken Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "Casting a quickened spell is a swift action. You can perform another action, even casting another spell, in the same round as you cast a quickened spell. A spell whose casting time is more than 1 full-round action cannot be quickened. [FAQ]",
+      "normal": "",
+      "special": "You can apply the effects of this feat to a spell cast spontaneously, so long as it has a casting time that is not more than 1 full-round action, without increasing the spell’s casting time."
+    },
+    {
+      "name": "Rapid Reload (Combat)",
+      "prerequisites": "",
+      "benefit": "The time required for you to reload your chosen type of weapon is reduced to a free action (for a hand or light crossbow), a move action (for heavy crossbow or one-handed firearm), or a standard action (two-handed firearm). Reloading a crossbow or firearm still provokes attacks of opportunity. If you have selected this feat for a hand crossbow or light crossbow, you may fire that weapon as many times in a full-attack action as you could attack if you were using a bow.",
+      "normal": "A character without this feat needs a move action to reload a hand or light crossbow, a standard action to reload a one-handed firearm, or a full-round action to load a heavy crossbow or a two-handed firearm.",
+      "special": "You can gain Rapid Reload multiple times. Each time you take the feat, it applies to a new type of crossbow or a new type of firearm."
+    },
+    {
+      "name": "Rapid Shot",
+      "prerequisites": "Dex 13, Point-Blank Shot",
+      "benefit": "When making a full-attack action with a ranged weapon, you can fire one additional time this round at your highest bonus. All of your attack rolls take a -2 penalty when using Rapid Shot.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Rapid Shot (Combat)",
+      "prerequisites": "Dex 13, Point-Blank Shot.",
+      "benefit": "When making a full-attack action with a ranged weapon, you can fire one additional time this round at your highest bonus. All of your attack rolls take a –2 penalty when using Rapid Shot.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Reach Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "You can alter a spell with a range of touch, close, or medium to increase its range to a higher range category, using the following order: touch, close, medium, and long.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Ride-By Attack",
+      "prerequisites": "Ride 1 rank, Mounted Combat",
+      "benefit": "When you are mounted and use the charge action, you may move and attack as if with a standard charge and then move again. Your total movement for the round can't exceed double your mounted speed.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Rime Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "The frost of your cold spell clings to the target, impeding it for a short time. A rime spell causes creatures that takes cold damage from the spell to become entangled for a number of rounds equal to the original level of the spell.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Run",
+      "prerequisites": "",
+      "benefit": "When running, you move five times your normal speed (if wearing medium, light, or no armor and carrying no more than a medium load) or four times your speed (if wearing heavy armor or carrying a heavy load). You retain your Dexterity bonus to AC when running.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Scion of the Land (Teamwork)",
+      "prerequisites": "",
+      "benefit": "When traveling through terrain in which you can leave no trail and be impossible to track (as a result of favored terrain, trackless step, or a similar class feature), you grant that ability to allies within 60 feet who also have this feat.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Scribe Scroll",
+      "prerequisites": "Caster level 1st",
+      "benefit": "You can create a scroll of any spell that you know. Scribing a scroll takes 2 hours if its base price is 250 gp or less, otherwise scribing a scroll takes 1 day for each 1,000 gp in its base price.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Selective Channeling",
+      "prerequisites": "Cha 13, channel energy class feature",
+      "benefit": "When you channel energy, you can choose a number of targets in the area up to your Charisma modifier. These targets are not affected by your channeled energy.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Selective Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "When casting a selective spell with an area effect and a duration of instantaneous, you can choose a number of targets in the area equal to the ability score modifier used to determine bonus spells of the same type (Charisma for bards, oracles, paladins, sorcerers, and summoners; Intelligence for witches and wizards; Wisdom for clerics, druids, inquisitors, and rangers). These targets are excluded from the effects of your spell.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Shadow Grasp (Metamagic)",
+      "prerequisites": "Tenebrous Spell, Umbral Spell.",
+      "benefit": "When you cast a spell with the darkness descriptor that affects an area, creatures in the area are entangled. If the spell allows a saving throw, a successful save negates the entangle effect. If the spell does not normally allow a save, a creature can make a Reflex save (DC = the spell’s DC if it had a saving throw) to negate the effect. If the spell allows spell resistance, failing to overcome a creature’s spell resistance means it is not entangled. An entangled creature remains so as long as it is in the area of the spell and for 1 round after it leaves. A creature that leaves and reenters the area must make a new saving throw to avoid becoming entangled. Creatures that succeed at a save to resist being entangled do not have to make additional saves if they stay within the darkened area. You are never impeded by the effects of your spells modified by this feat.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Shake It Off (Teamwork)",
+      "prerequisites": "",
+      "benefit": "When you are adjacent to one or more allies who also have this feat, you gain a +1 bonus on saving throws per such ally (maximum +4).",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Share Healing (Teamwork)",
+      "prerequisites": "",
+      "benefit": "When you and your companion creature have this feat, your companion creature is adjacent to you or sharing your square, and you receive the benefit of a healing spell (whether from yourself or another source), you can divide the hit points healed evenly between yourself and your companion creature.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Shark Leap (Combat)",
+      "prerequisites": "Improved Unarmed Strike, Shark Style, Shark Tear, Swim 10 ranks, base attack bonus +10 or monk level 10th.",
+      "benefit": "While in Shark Style, when you’re underwater with neutral, rising, or swiftly rising buoyancy, you can perform a terrifying leap to attack opponents directly above you. This works similarly to the charge action, except you can move only straight up, and you make a single piercing unarmed strike or bite attack. If the attack hits, it deals double damage; if the attack roll’s result is also higher than 11 + the target’s Swim modifier, the attack knocks the target off-balance until its next turn. Like with a charge, you can perform a partial version when limited to a single standard action (such as in the surprise round); in addition to moving half as far as normal for a partial charge, the attack doubles only the damage dice (as per Vital Strike) rather than the full damage roll.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Shark Style (Combat, Style)",
+      "prerequisites": "Improved Unarmed Strike, Swim 3 ranks, base attack bonus +3 or monk level 3rd.",
+      "benefit": "You can deal piercing or bludgeoning damage with your unarmed strikes. Your piercing unarmed strikes and bite attacks deal an additional 1d6 points of bleed damage.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Shark Tear (Combat)",
+      "prerequisites": "Improved Unarmed Strike, Shark Style, Swim 6 ranks, base attack bonus +6 or monk level 6th.",
+      "benefit": "While in Shark Style, you gain scent while in water, but only against bleeding creatures. You also gain a +1 bonus on attack and damage rolls against bleeding creatures.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Shield Focus",
+      "prerequisites": "Shield Proficiency, base attack bonus +1",
+      "benefit": "Increase the AC bonus granted by any shield you are using by 1.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Shield Focus (Combat)",
+      "prerequisites": "Shield Proficiency, base attack bonus +1.",
+      "benefit": "Increase the AC bonus granted by any shield you are using by 1.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Shield Slam",
+      "prerequisites": "Improved Shield Bash, Shield Proficiency, Two-Weapon Fighting, base attack bonus +6",
+      "benefit": "Any opponents hit by your shield bash are also hit with a free bull rush attack, substituting your attack roll for the combat maneuver check.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Shielded Caster (Teamwork)",
+      "prerequisites": "",
+      "benefit": "Whenever you are adjacent to an ally who also has this feat, you receive a +4 competence bonus on concentration checks.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Shot on the Run",
+      "prerequisites": "Dex 13, Dodge, Mobility, Point-Blank Shot, base attack bonus +4",
+      "benefit": "As a full-round action, you can move up to your speed and make a single ranged attack at any point during your movement.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Shot on the Run (Combat)",
+      "prerequisites": "Dex 13, Dodge, Mobility, Point-Blank Shot, base attack bonus +4.",
+      "benefit": "As a full-round action, you can move up to your speed and make a single ranged attack at any point during your movement.",
+      "normal": "You cannot move before and after an attack with a ranged weapon.",
+      "special": ""
+    },
+    {
+      "name": "Sickening Critical (Combat, Critical)",
+      "prerequisites": "Critical Focus, base attack bonus +11.",
+      "benefit": "Whenever you score a critical hit, your opponent becomes sickened for 1 minute. The effects of this feat do not stack. Additional hits instead add to the effect’s duration.",
+      "normal": "",
+      "special": "You can only apply the effects of one critical feat to a given critical hit unless you possess Critical Mastery."
+    },
+    {
+      "name": "Sickening Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "You can modify a spell to sicken a creature damaged by the spell. When a creature takes damage from this spell, they become sickened for a number of rounds equal to the original level of the spell. If the spell allows a saving throw, a successful save negates the sickening effect. If the spell does not allow a save, the target can make a Fortitude save to negate the sickening effect. If the spell effect also causes the creature to become sickened, the duration of this metamagic effect is added on to the duration of the spell.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Silent Spell",
+      "prerequisites": "",
+      "benefit": "A silent spell can be cast with no verbal components. A silent spell uses up a spell slot one level higher than the spell's actual level.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Silent Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "A silent spell can be cast with no verbal components. Spells without verbal components are not affected.",
+      "normal": "",
+      "special": "Bard spells cannot be enhanced by this feat."
+    },
+    {
+      "name": "Skill Focus",
+      "prerequisites": "",
+      "benefit": "You get a +3 bonus on all checks involving the chosen skill. If you have 10 or more ranks in that skill, this bonus increases to +6.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Skyseeker Impact (Combat)",
+      "prerequisites": "Con 13, Skyseeker Style, Skyseeker Thrash, Step Up, base attack bonus +9.",
+      "benefit": "While using Skyseeker Style, whenever you hit an opponent larger than you with a melee attack, your weapon deals damage as if that weapon were one size category larger. You also gain a +4 bonus on sunder combat maneuver checks against targets larger than you.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Skyseeker Style (Combat, Style)",
+      "prerequisites": "Step Up, base attack bonus +1.",
+      "benefit": "Once per round, when an opponent attacks you with a reach weapon, you can take a 5-foot step towards your opponent as an immediate action. If the movement takes you to a square that the opponent’s reach weapon does not threaten, you receive a +4 bonus to AC against that attack. If you take this step, you cannot take a 5-foot step during your next turn. If you take an action to move during your next turn, subtract 5 feet from your total available movement.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Skyseeker Thrash (Combat)",
+      "prerequisites": "Con 13, Skyseeker Style, Step Up, base attack bonus +4.",
+      "benefit": "While using Skyseeker Style, you gain a cumulative +1 bonus on melee damage rolls for every size category your opponent is larger than you.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Snatch Arrows",
+      "prerequisites": "Dex 15, Deflect Arrows, Improved Unarmed Strike",
+      "benefit": "When using the Deflect Arrows feat you may catch the weapon instead of just deflecting it. Thrown weapons can immediately be thrown back as an attack against the original attacker.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Spell Focus",
+      "prerequisites": "",
+      "benefit": "Add +1 to the Difficulty Class for all saving throws against spells from the school of magic you select.",
+      "normal": "",
+      "special": "You can gain this feat multiple times. Its effects do not stack. Each time you take the feat, it applies to a new school of magic."
+    },
+    {
+      "name": "Spell Penetration",
+      "prerequisites": "",
+      "benefit": "You get a +2 bonus on caster level checks (1d20 + caster level) made to overcome a creature's spell resistance.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Spirited Charge",
+      "prerequisites": "Ride 1 rank, Mounted Combat, Ride-By Attack",
+      "benefit": "When mounted and using the charge action, you deal double damage with a melee weapon (or triple damage with a lance).",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Spring Attack",
+      "prerequisites": "Dex 13, Dodge, Mobility, base attack bonus +4",
+      "benefit": "As a full-round action, you can move up to your speed and make a single melee attack without provoking any attacks of opportunity from the target of your attack.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Spring Attack (Combat)",
+      "prerequisites": "Dex 13, Dodge, Mobility, base attack bonus +4.",
+      "benefit": "As a full-round action, you can move up to your speed and make a single melee attack without provoking any attacks of opportunity from the target of your attack. You can move both before and after the attack, but you must move at least 10 feet before the attack and the total distance that you move cannot be greater than your speed. You cannot use this ability to attack a foe that is adjacent to you at the start of your turn.",
+      "normal": "You cannot move before and after an attack.",
+      "special": ""
+    },
+    {
+      "name": "Stabbing Shot (Combat)",
+      "prerequisites": "Rapid Shot, elf.",
+      "benefit": "When adjacent to an opponent and making a full-attack action with a longbow or shortbow (including composite bows), you may choose to make a melee attack against that opponent with a drawn arrow rather than firing it. If the attack hits—whether or not it does damage—your target is pushed back 5 feet away from you. You can then fire arrows from your bow normally, at the original target, or at another target within range. This melee attack replaces the extra attack from Rapid Shot, and all of your attack rolls for the round (the melee attack and the ranged attacks) take a –2 penalty. If your initial attack leaves you with no enemies threatening you, you can make the subsequent ranged attack or attacks without provoking attacks of opportunity.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Stage Combatant (Combat)",
+      "prerequisites": "Weapon Focus, base attack bonus +5",
+      "benefit": "When you make an attack with a weapon that you have Weapon Focus in, you take no penalty on the attack roll when you are attempting to make an attack that deals no damage or nonlethal damage.",
+      "normal": "When making attacks that deal no damage or nonlethal damage, you take a –4 penalty on attack rolls.",
+      "special": ""
+    },
+    {
+      "name": "Staggering Critical",
+      "prerequisites": "Critical Focus, base attack bonus +13",
+      "benefit": "Whenever you score a critical hit, your opponent becomes staggered for 1d4+1 rounds. A successful Fortitude save reduces the duration to 1 round. The DC is 10 + your base attack bonus.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Staggering Critical (Combat, Critical)",
+      "prerequisites": "Critical Focus, base attack bonus +13.",
+      "benefit": "Whenever you score a critical hit, your opponent becomes staggered for 1d4+1 rounds. A successful Fortitude save reduces the duration to 1 round. The DC of this Fortitude save is equal to 10 + your base attack bonus. The effects of this feat do not stack. Additional hits instead add to the duration.",
+      "normal": "",
+      "special": "You can only apply the effects of one critical feat to a given critical hit unless you possess Critical Mastery."
+    },
+    {
+      "name": "Stand Still",
+      "prerequisites": "Combat Reflexes",
+      "benefit": "When a foe provokes an attack of opportunity from you, you can give up that attack and instead attempt to stop the foe in his tracks. Make a combat maneuver check. If successful, the foe cannot move until your next turn.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Star Initiate",
+      "prerequisites": "Knowledge (arcana) 1 rank, Knowledge (nature) 1 rank, Knowledge (planes) 1 rank.",
+      "benefit": "Gain a +3 bonus on skill checks to detect an astrological event. All bonuses you gain from astrological events are increased by 1, and any penalties are decreased by 1 (to a minimum penalty of –1).",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Star Scholar",
+      "prerequisites": "Star Initiate, Knowledge (arcana) 5 ranks, Knowledge (nature) 5 ranks, Knowledge (planes) 5 ranks.",
+      "benefit": "You increase the duration of effects caused by astrological events. The duration of effects that last less than a day is increased by 50%, while those that last 24 hours or longer last 1 additional day.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Stealth Synergy (Teamwork)",
+      "prerequisites": "",
+      "benefit": "While you can see one or more allies who also have this feat, whenever you and your allies make a Stealth check, you all take the highest roll and add all your modifiers to Stealth.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Stealthy",
+      "prerequisites": "",
+      "benefit": "You get a +2 bonus on Escape Artist and Stealth skill checks. If you have 10 or more ranks in one of these skills, the bonus increases to +4 for that skill.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Steam Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "You can apply Steam Spell only to a spell with the fire descriptor. A steam spell works underwater without a caster level check, but it requires a caster level check to function above water. A steam spell uses up a slot the same spell level as the spell’s actual level.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Step Up",
+      "prerequisites": "Base attack bonus +1",
+      "benefit": "Whenever an adjacent foe attempts to take a 5-foot step away from you, you may also make a 5-foot step as an immediate action so long as you end up adjacent to the foe that triggered this ability.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Step Up and Strike",
+      "prerequisites": "Dex 13, Following Step, Step Up, base attack bonus +6",
+      "benefit": "When using Step Up or Following Step to follow an adjacent foe, you may also make a single melee attack against that foe at your highest base attack bonus.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Still Spell",
+      "prerequisites": "",
+      "benefit": "A stilled spell can be cast with no somatic components. A stilled spell uses up a spell slot one level higher than the spell's actual level.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Still Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "A stilled spell can be cast with no somatic components. Spells without somatic components are not affected.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Stone Dodger (Teamwork)",
+      "prerequisites": "",
+      "benefit": "Whenever you are able to see and hear at least one ally with this feat, you receive a +4 dodge bonus to AC against attacks from hurled rocks (or projectiles of similar shape, including bludgeoning ranged attacks from siege weapons). If you are hit by such an attack while you have this bonus, you can attempt a Reflex save to take only half damage from the attack. The DC for this save is equal to the bonus of the ranged attack used to hurl the rock.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Stunning Critical",
+      "prerequisites": "Critical Focus, Staggering Critical, base attack bonus +17",
+      "benefit": "Whenever you score a critical hit, your opponent becomes stunned for 1d4 rounds. A successful Fortitude save reduces this to staggered for 1d4 rounds. The DC is 10 + your base attack bonus.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Stunning Critical (Combat, Critical)",
+      "prerequisites": "Critical Focus, Staggering Critical, base attack bonus +17.",
+      "benefit": "Whenever you score a critical hit, your opponent becomes stunned for 1d4 rounds. A successful Fortitude save reduces this to staggered for 1d4 rounds. The DC of this Fortitude save is equal to 10 + your base attack bonus. The effects of this feat do not stack. Additional hits instead add to the duration.",
+      "normal": "",
+      "special": "You can only apply the effects of one critical feat to a given critical hit unless you possess Critical Mastery."
+    },
+    {
+      "name": "Stunning Fist",
+      "prerequisites": "Dex 13, Wis 13, Improved Unarmed Strike, base attack bonus +8",
+      "benefit": "You must declare that you are using this feat before you make your attack roll. Stunning Fist forces a foe damaged by your unarmed attack to make a Fortitude saving throw (DC 10 + 1/2 your character level + your Wis modifier), in addition to dealing damage normally. A defender who fails this saving throw is stunned for 1 round.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Stunning Fist (Combat)",
+      "prerequisites": "Dex 13, Wis 13, Improved Unarmed Strike, base attack bonus +8.",
+      "benefit": "You must declare that you are using this feat before you make your attack roll (thus, a failed attack roll ruins the attempt). Stunning Fist forces a foe damaged by your unarmed attack to make a Fortitude saving throw (DC 10 + 1/2 your character level + your Wis modifier), in addition to dealing damage normally. A defender who fails this saving throw is stunned for 1 round (until just before your next turn). A stunned character drops everything held, can’t take actions, loses any Dexterity bonus to AC, and takes a –2 penalty to AC. You may attempt a stunning attack once per day for every four levels you have attained (but see Special), and no more than once per round. Constructs, oozes, plants, undead, incorporeal creatures, and creatures immune to critical hits cannot be stunned.",
+      "normal": "",
+      "special": "A monk receives Stunning Fist as a bonus feat at 1st level, even if he does not meet the prerequisites. A monk may attempt a stunning attack a number of times per day equal to his monk level, plus one more time per day for every four levels he has in classes other than monk."
+    },
+    {
+      "name": "Swamper",
+      "prerequisites": "",
+      "benefit": "You gain a +2 bonus on Climb checks, Swim checks, and Acrobatics checks to maintain your balance when moving across a slippery surface, and you can move at full speed through shallow and deep bog terrain. You can see twice as far as normal in fog, mist, murky water, vegetation, and similarly obscuring conditions, and creatures adjacent to you never gain concealment from fog, mist, murky water, or vegetation.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Swing About (Teamwork)",
+      "prerequisites": "",
+      "benefit": "If you have a free hand, as a move action you can grab a willing adjacent ally who also has this feat and place her in any other space adjacent to you. This movement does not provoke attacks of opportunity. You can do this only with allies who are able to move freely (not grappled, held, prone, slowed, or otherwise suffering restricted movement) and who are of your size or smaller.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Team Pickpocketing (Teamwork)",
+      "prerequisites": "",
+      "benefit": "Whenever an ally with this feat succeeds a Bluff check to feint an opponent, if you are adjacent to that creature, you can spend an immediate action to make a Sleight of Hand check to pickpocket that opponent and gain a +4 bonus on that attempt.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Tenebrous Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "When you cast a tenebrous spell in darkness or dim light, the spell’s effective caster level and any associated save DCs are increased by 1. Any attempts at dispelling a tenebrous spell in darkness or dim light take a –2 penalty on the dispel check.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Thanatopic Spell (Metamagic)",
+      "prerequisites": "Knowledge (religion) 6 ranks, Spell Focus (necromancy).",
+      "benefit": "A thanatopic spell pierces defenses and immunities that protect against death effects, negative levels, and energy drain, affecting the target as if the protective barrier did not exist.",
+      "normal": "Defenses such as death ward negate death effects, negative levels, and energy drain. Undead are immune to these attacks.",
+      "special": ""
+    },
+    {
+      "name": "Threatening Illusion (Metamagic)",
+      "prerequisites": "Spell Focus (illusion), gnome.",
+      "benefit": "You can use this metamagic feat only on illusion (figment) spells.",
+      "normal": "Illusion spells do not threaten squares.",
+      "special": ""
+    },
+    {
+      "name": "Threnodic Spell (Metamagic)",
+      "prerequisites": "Knowledge (religion) 6 ranks, Spell Focus (necromancy).",
+      "benefit": "This feat only works on mind-affecting spells. A threnodic spell affects undead creatures (even mindless undead) as if they weren’t immune to mind-affecting effects, but has no effect on living creatures.",
+      "normal": "Undead are immune to mind-affecting effects.",
+      "special": ""
+    },
+    {
+      "name": "Thundering Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "You can modify a spell to deafen a creature damaged by the spell. When a creature takes damage from this spell, it becomes deafened for a number of rounds equal to the original level of the spell. If the spell allows a saving throw, a successful save negates the deafening effect. If the spell does not allow a save, the target can make a Fortitude save to negate the deafening effect. If the spell effect also causes the creature to become deafened, the duration of this metamagic effect is added to the duration of the spell.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Tiring Critical (Combat, Critical)",
+      "prerequisites": "Critical Focus, base attack bonus +13.",
+      "benefit": "Whenever you score a critical hit, your opponent becomes fatigued. This feat has no additional effect on a fatigued or exhausted creature.",
+      "normal": "",
+      "special": "You can only apply the effects of one critical feat to a given critical hit unless you possess Critical Mastery."
+    },
+    {
+      "name": "Toppling Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "The impact of your force spell is strong enough to knock the target prone. If the target takes damage, fails its saving throw, or is moved by your force spell, make a trip check against the target, using your caster level plus your casting ability score bonus (Wisdom for clerics, Intelligence for wizards, and so on). This does not provoke an attack of opportunity. If the check fails, the target cannot attempt to trip you or the force effect in response.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Toughness",
+      "prerequisites": "",
+      "benefit": "You gain +3 hit points. For every Hit Die you possess beyond 3, you gain an additional +1 hit point. If you have more than 3 Hit Dice, you gain +1 hit points whenever you gain a Hit Die.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Tower Shield Proficiency (Combat)",
+      "prerequisites": "",
+      "benefit": "When you use a tower shield, the shield’s armor check penalty only applies to Strength and Dexterity-based skills.",
+      "normal": "A character using a shield with which he is not proficient takes the shield’s armor check penalty on attack rolls and on all skill checks that involve moving, including Ride.",
+      "special": "Fighters automatically have Tower Shield Proficiency as a bonus feat. They need not select it."
+    },
+    {
+      "name": "Trample",
+      "prerequisites": "Ride 1 rank, Mounted Combat",
+      "benefit": "When you attempt to overrun an opponent while mounted, your target may not choose to avoid you. Your mount may make one hoof attack against any target you knock down.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Tribal Hunter (Combat, Teamwork)",
+      "prerequisites": "",
+      "benefit": "When either you or an ally with this feat is adjacent to and flanking an opponent that is larger than either of you, you both are considered to be flanking the opponent as long as you remain adjacent to it.",
+      "normal": "You must be positioned opposite an ally to flank an opponent.",
+      "special": ""
+    },
+    {
+      "name": "Two-Weapon Defense",
+      "prerequisites": "Dex 15, Two-Weapon Fighting",
+      "benefit": "When wielding a double weapon or two weapons, you gain a +1 shield bonus to your AC. When you are fighting defensively or using the total defense action, this shield bonus increases to +2.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Two-Weapon Fighting",
+      "prerequisites": "Dex 15",
+      "benefit": "Your penalties on attack rolls for fighting with two weapons are reduced. The penalty for your primary hand lessens by 2 and the one for your off hand lessens by 6.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Two-Weapon Fighting (Combat)",
+      "prerequisites": "",
+      "benefit": "Your penalties on attack rolls for fighting with two weapons are reduced. The penalty for your primary hand lessens by 2 and the one for your off hand lessens by 6. See Two-Weapon Fighting.",
+      "normal": "If you wield a second weapon in your off hand, you can get one extra attack per round with that weapon. When fighting in this way you suffer a –6 penalty with your regular attack or attacks with your primary hand and a –10 penalty to the attack with your off hand. If your off-hand weapon is light, the penalties are reduced by 2 each. An unarmed strike is always considered light.",
+      "special": ""
+    },
+    {
+      "name": "Umbral Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "An umbral spell gains the darkness descriptor. As long as the spell is in effect, the creature or object affected radiates darkness in a 10-foot radius, reducing illumination similar to the effects of the darkness spell. Nonmagical sources of light, such as torches or lanterns, do not increase the light level in this area. Magical light sources only increase the light level in an area affected by an umbral spell if they are of a higher level than the umbral spell’s unmodified spell level. This effect does not stack with itself or with any other effect that creates darkness.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Verdant Spell (Metamagic)",
+      "prerequisites": "Spell Focus (enchantment), Knowledge (nature) 6 ranks.",
+      "benefit": "A verdant spell affects plant creatures (even mindless plant creatures) as if they weren’t immune to mind-affecting effects, but it has no effect on other types of creatures. This feat works only on mind-affecting spells.",
+      "normal": "Creatures of the plant type are immune to mind-affecting effects.",
+      "special": ""
+    },
+    {
+      "name": "Vital Strike",
+      "prerequisites": "Base attack bonus +6",
+      "benefit": "When you use the attack action, you can make one attack at your highest base attack bonus that deals additional damage. Roll the weapon's damage dice for the attack twice and add the results together before adding bonuses.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Weapon Finesse",
+      "prerequisites": "",
+      "benefit": "With a light weapon, elven curve blade, rapier, whip, or spiked chain made for a creature of your size category, you may use your Dexterity modifier instead of your Strength modifier on attack rolls.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Weapon Focus",
+      "prerequisites": "Proficiency with selected weapon, base attack bonus +1",
+      "benefit": "You gain a +1 bonus on all attack rolls you make using the selected weapon.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Weapon Focus (Combat)",
+      "prerequisites": "Proficiency with selected weapon, base attack bonus +1.",
+      "benefit": "You gain a +1 bonus on all attack rolls you make using the selected weapon.",
+      "normal": "",
+      "special": "You can gain this feat multiple times. Its effects do not stack. Each time you take the feat, it applies to a new type of weapon."
+    },
+    {
+      "name": "Weapon Specialization",
+      "prerequisites": "Proficiency with selected weapon, Weapon Focus with selected weapon, fighter level 4th",
+      "benefit": "You gain a +2 bonus on all damage rolls you make using the selected weapon.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Weapon Specialization (Combat)",
+      "prerequisites": "Proficiency with selected weapon, Weapon Focus with selected weapon, fighter level 4th.",
+      "benefit": "You gain a +2 bonus on all damage rolls you make using the selected weapon.",
+      "normal": "",
+      "special": "You can gain this feat multiple times. Its effects do not stack. Each time you take the feat, it applies to a new type of weapon."
+    },
+    {
+      "name": "Widen Spell",
+      "prerequisites": "",
+      "benefit": "You can alter a burst, emanation, or spread-shaped spell to increase its area. Any numeric measurements of the spell's area increase by 100%. A widened spell uses up a spell slot three levels higher than the spell's actual level.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Widen Spell (Metamagic)",
+      "prerequisites": "",
+      "benefit": "You can alter a burst, emanation, or spread-shaped spell to increase its area. Any numeric measurements of the spell’s area increase by 100%.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Wind Stance",
+      "prerequisites": "Dex 15, Dodge, base attack bonus +6",
+      "benefit": "If you move more than 5 feet this turn, you gain 20% concealment for 1 round.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Wind Stance (Combat)",
+      "prerequisites": "Dex 15, Dodge, base attack bonus +6.",
+      "benefit": "If you move more than 5 feet this turn, you gain 20% concealment for 1 round against ranged attacks.",
+      "normal": "",
+      "special": ""
+    },
+    {
+      "name": "Yai-Mimic Spell (Metamagic)",
+      "prerequisites": "Int 15, Still Spell.",
+      "benefit": "You can modify a ray spell to issue from the center of your forehead, where the third eye would be on a yai. This spell doesn’t require somatic components.",
+      "normal": "",
+      "special": ""
+    }
+  ]
+}
