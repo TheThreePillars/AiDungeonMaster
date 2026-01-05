@@ -17,14 +17,29 @@ _voice_models: dict = {}
 
 # Voice profile mappings for NPCs
 VOICE_PROFILES = {
-    "default": "en_US-lessac-medium",
-    "dm": "en_US-lessac-medium",
-    "elderly_male": "en_US-lessac-medium",
-    "young_female": "en_US-lessac-medium",
-    "gruff": "en_US-lessac-medium",
-    "mysterious": "en_US-lessac-medium",
-    "noble": "en_US-lessac-medium",
-    "commoner": "en_US-lessac-medium",
+    # Default/DM voices - distinguished British storyteller
+    "default": "en_GB-alan-medium",
+    "dm": "en_GB-alan-medium",
+    "narrator": "en_GB-alan-medium",
+
+    # Male character voices
+    "elderly_male": "en_US-john-medium",      # Wise old sage, wizard
+    "young_male": "en_US-lessac-medium",      # Young adventurer
+    "gruff": "en_US-danny-low",               # Dwarf, guard, blacksmith
+    "noble_male": "en_GB-alan-medium",        # Lord, elf noble, refined
+    "commoner_male": "en_US-danny-low",       # Farmer, merchant, tavern keeper
+
+    # Female character voices
+    "elderly_female": "en_GB-southern_english_female-low",  # Old witch, wise woman
+    "young_female": "en_US-amy-medium",       # Barmaid, princess, young adventurer
+    "noble_female": "en_GB-southern_english_female-low",    # Lady, elf noble
+    "commoner_female": "en_US-amy-medium",    # Villager, merchant
+
+    # Special character types
+    "mysterious": "en_GB-alan-medium",        # Mysterious stranger, hooded figure
+    "menacing": "en_US-danny-low",            # Villain, bandit leader
+    "cheerful": "en_US-amy-medium",           # Friendly NPC, happy merchant
+    "authoritative": "en_US-john-medium",     # King, commander, priest
 }
 
 
