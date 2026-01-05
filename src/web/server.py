@@ -29,7 +29,7 @@ from .tts import (
 )
 from ..game.dice import roll
 from ..database.session import init_db, session_scope
-from ..database.models import Campaign, Party, Character, InventoryItem
+from ..database.models import Campaign, Party, Character, InventoryItem, Session as DBSession
 from ..characters.races import RACES
 from ..characters.classes import CLASSES
 from ..game.spells import SPELLS
@@ -61,6 +61,27 @@ class GameSession:
         self.current_turn: int = 0
         self.in_combat = False
         self.created_at = datetime.now()
+        # Database linkage for save/load
+        self.campaign_id: Optional[int] = None
+        self.db_session_id: Optional[int] = None
+
+    def to_world_state(self) -> dict:
+        """Serialize world state for saving to database."""
+        return {
+            "location_description": self.location_description,
+            "time_of_day": self.time_of_day,
+            "in_combat": self.in_combat,
+            "initiative_order": self.initiative_order,
+            "current_turn": self.current_turn,
+        }
+
+    def load_world_state(self, world_state: dict):
+        """Restore world state from database."""
+        self.location_description = world_state.get("location_description", "")
+        self.time_of_day = world_state.get("time_of_day", "day")
+        self.in_combat = world_state.get("in_combat", False)
+        self.initiative_order = world_state.get("initiative_order", [])
+        self.current_turn = world_state.get("current_turn", 0)
 
     async def broadcast(self, message: dict):
         """Send message to all connected clients, removing dead sockets."""
@@ -158,6 +179,32 @@ def is_llm_available() -> bool:
     return available
 
 
+async def auto_save_session(game_session: GameSession):
+    """Save a single game session to database."""
+    if not game_session.campaign_id:
+        return  # No campaign linked yet, skip
+
+    try:
+        with session_scope() as db:
+            campaign = db.query(Campaign).filter_by(id=game_session.campaign_id).first()
+            if campaign:
+                campaign.current_location = game_session.current_location
+                campaign.world_state = game_session.to_world_state()
+                logger.debug(f"Auto-saved session {game_session.code}")
+    except Exception as e:
+        logger.warning(f"Auto-save failed for session {game_session.code}: {e}")
+
+
+async def auto_save_loop():
+    """Background task that auto-saves all active sessions every 5 minutes."""
+    while True:
+        await asyncio.sleep(300)  # 5 minutes
+        for session in list(session_manager.sessions.values()):
+            await auto_save_session(session)
+        if session_manager.sessions:
+            logger.info(f"Auto-saved {len(session_manager.sessions)} active session(s)")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Initialize resources on startup."""
@@ -174,9 +221,14 @@ async def lifespan(app: FastAPI):
     else:
         logger.warning("AI not available - running in offline mode")
 
+    # Start auto-save background task
+    auto_save_task = asyncio.create_task(auto_save_loop())
+    logger.info("Auto-save enabled (every 5 minutes)")
+
     yield
 
     # Cleanup
+    auto_save_task.cancel()
     logger.info("Shutting down...")
 
 
@@ -339,6 +391,112 @@ async def get_session(code: str):
 async def list_sessions():
     """List all active sessions."""
     return {"sessions": session_manager.list_sessions()}
+
+
+@app.get("/api/saves")
+async def list_saves():
+    """List all saved games."""
+    with session_scope() as db:
+        campaigns = db.query(Campaign).order_by(Campaign.updated_at.desc()).all()
+        return [
+            {
+                "id": c.id,
+                "name": c.name,
+                "location": c.current_location or "Unknown",
+                "updated_at": c.updated_at.isoformat() if c.updated_at else None,
+                "total_sessions": c.total_sessions,
+            }
+            for c in campaigns
+        ]
+
+
+@app.post("/api/sessions/{code}/save")
+async def save_game(code: str, save_name: str = "Adventure Save"):
+    """Save current game session to database."""
+    game_session = session_manager.get_session(code)
+    if not game_session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    with session_scope() as db:
+        # Create or update Campaign
+        if game_session.campaign_id:
+            campaign = db.query(Campaign).filter_by(id=game_session.campaign_id).first()
+            if not campaign:
+                campaign = Campaign(name=save_name)
+                db.add(campaign)
+                db.flush()
+                game_session.campaign_id = campaign.id
+        else:
+            campaign = Campaign(name=save_name)
+            db.add(campaign)
+            db.flush()
+            game_session.campaign_id = campaign.id
+
+        # Update campaign state
+        campaign.current_location = game_session.current_location
+        campaign.world_state = game_session.to_world_state()
+
+        # Save conversation log to a new Session record
+        session_record = DBSession(
+            campaign_id=campaign.id,
+            session_number=(campaign.total_sessions or 0) + 1,
+            conversation_log=list(game_session.conversation_history),
+        )
+        db.add(session_record)
+        campaign.total_sessions = (campaign.total_sessions or 0) + 1
+        game_session.db_session_id = session_record.id
+
+        logger.info(f"Saved game '{save_name}' for session {code}, campaign_id={campaign.id}")
+
+    return {"saved": True, "campaign_id": game_session.campaign_id, "name": save_name}
+
+
+@app.post("/api/sessions/{code}/load/{campaign_id}")
+async def load_game(code: str, campaign_id: int):
+    """Load a saved game into current session."""
+    game_session = session_manager.get_session(code)
+    if not game_session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    with session_scope() as db:
+        campaign = db.query(Campaign).filter_by(id=campaign_id).first()
+        if not campaign:
+            raise HTTPException(status_code=404, detail="Save not found")
+
+        # Restore session state
+        game_session.campaign_id = campaign.id
+        game_session.current_location = campaign.current_location or "The Rusty Dragon Inn"
+        game_session.load_world_state(campaign.world_state or {})
+
+        # Load latest conversation history
+        latest_session = (
+            db.query(DBSession)
+            .filter_by(campaign_id=campaign_id)
+            .order_by(DBSession.id.desc())
+            .first()
+        )
+        if latest_session and latest_session.conversation_log:
+            game_session.conversation_history.clear()
+            for entry in latest_session.conversation_log[-50:]:
+                game_session.conversation_history.append(entry)
+            game_session.db_session_id = latest_session.id
+
+        logger.info(f"Loaded game '{campaign.name}' into session {code}")
+
+    # Broadcast loaded state to all players
+    await game_session.broadcast({
+        "type": "game_loaded",
+        "name": campaign.name,
+        "location": game_session.current_location,
+        "description": game_session.location_description,
+        "history_count": len(game_session.conversation_history),
+    })
+
+    return {
+        "loaded": True,
+        "name": campaign.name,
+        "location": game_session.current_location,
+    }
 
 
 @app.post("/api/transcribe")

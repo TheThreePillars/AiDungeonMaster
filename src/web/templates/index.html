@@ -2286,7 +2286,29 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Game Menu -->
+                <div class="sidebar-section">
+                    <div class="section-title">&#x1F4BE; Game</div>
+                    <div class="quick-actions">
+                        <button class="action-btn" id="btn-save-game">&#x1F4BE; Save Game</button>
+                        <button class="action-btn" id="btn-load-game">&#x1F4C2; Load Game</button>
+                    </div>
+                </div>
             </aside>
+
+            <!-- Load Game Modal -->
+            <div class="modal-overlay" id="load-game-modal" style="display: none;">
+                <div class="modal" style="max-width: 400px;">
+                    <h2 style="margin-bottom: 1rem; color: var(--accent-gold);">&#x1F4C2; Load Game</h2>
+                    <div id="saves-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;">
+                        <p style="color: var(--text-muted);">Loading saves...</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-secondary" id="btn-cancel-load" style="flex: 1;">Cancel</button>
+                    </div>
+                </div>
+            </div>
 
             <!-- Sidebar Overlay (mobile) -->
             <div class="sidebar-overlay" id="sidebar-overlay"></div>
@@ -2564,6 +2586,13 @@
 
                 case 'error':
                     addSystemEntry(`Error: ${data.message}`);
+                    break;
+
+                case 'game_loaded':
+                    addSystemEntry(`Game loaded: "${data.name}" - ${data.location}`);
+                    if (data.description) {
+                        addDMEntry(data.description);
+                    }
                     break;
             }
         }
@@ -3291,6 +3320,94 @@
         sidebarOverlay.addEventListener('click', () => {
             sidebar.classList.remove('visible');
             sidebarOverlay.classList.remove('visible');
+        });
+
+        // ===== SAVE/LOAD GAME =====
+        const loadGameModal = document.getElementById('load-game-modal');
+        const savesList = document.getElementById('saves-list');
+
+        document.getElementById('btn-save-game').addEventListener('click', async () => {
+            if (!state.sessionCode) {
+                addSystemMessage('No active session to save.');
+                return;
+            }
+            const saveName = prompt('Enter save name:', 'Adventure Save');
+            if (saveName) {
+                try {
+                    const res = await fetch(`/api/sessions/${state.sessionCode}/save?save_name=${encodeURIComponent(saveName)}`, {
+                        method: 'POST'
+                    });
+                    const data = await res.json();
+                    if (data.saved) {
+                        addSystemMessage(`Game saved: "${data.name}"`);
+                    } else {
+                        addSystemMessage('Failed to save game.');
+                    }
+                } catch (e) {
+                    console.error('Save error:', e);
+                    addSystemMessage('Error saving game.');
+                }
+            }
+            sidebar.classList.remove('visible');
+            sidebarOverlay.classList.remove('visible');
+        });
+
+        document.getElementById('btn-load-game').addEventListener('click', async () => {
+            if (!state.sessionCode) {
+                addSystemMessage('Join a session first before loading a save.');
+                return;
+            }
+            loadGameModal.style.display = 'flex';
+            savesList.innerHTML = '<p style="color: var(--text-muted);">Loading saves...</p>';
+
+            try {
+                const res = await fetch('/api/saves');
+                const saves = await res.json();
+
+                if (saves.length === 0) {
+                    savesList.innerHTML = '<p style="color: var(--text-muted);">No saved games found.</p>';
+                } else {
+                    savesList.innerHTML = saves.map(save => `
+                        <div class="save-item" data-id="${save.id}" style="padding: 0.75rem; background: var(--bg-elevated); border-radius: 0.5rem; margin-bottom: 0.5rem; cursor: pointer; border: 1px solid var(--border);">
+                            <div style="font-weight: 600; color: var(--text-primary);">${save.name}</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">${save.location}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">${save.updated_at ? new Date(save.updated_at).toLocaleDateString() : 'Unknown date'}</div>
+                        </div>
+                    `).join('');
+
+                    // Add click handlers for each save
+                    savesList.querySelectorAll('.save-item').forEach(item => {
+                        item.addEventListener('click', async () => {
+                            const saveId = item.dataset.id;
+                            try {
+                                const loadRes = await fetch(`/api/sessions/${state.sessionCode}/load/${saveId}`, {
+                                    method: 'POST'
+                                });
+                                const loadData = await loadRes.json();
+                                if (loadData.loaded) {
+                                    addSystemMessage(`Loaded save: "${loadData.name}" at ${loadData.location}`);
+                                    loadGameModal.style.display = 'none';
+                                } else {
+                                    addSystemMessage('Failed to load save.');
+                                }
+                            } catch (e) {
+                                console.error('Load error:', e);
+                                addSystemMessage('Error loading save.');
+                            }
+                        });
+                    });
+                }
+            } catch (e) {
+                console.error('Fetch saves error:', e);
+                savesList.innerHTML = '<p style="color: var(--danger);">Error loading saves.</p>';
+            }
+
+            sidebar.classList.remove('visible');
+            sidebarOverlay.classList.remove('visible');
+        });
+
+        document.getElementById('btn-cancel-load').addEventListener('click', () => {
+            loadGameModal.style.display = 'none';
         });
 
         // ===== CHARACTER CREATION =====
