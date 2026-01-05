@@ -24,6 +24,8 @@ from .tts import (
     is_available as tts_available,
     list_voices as tts_list_voices,
     split_into_sentences,
+    extract_voice_segments,
+    strip_voice_tags,
 )
 from ..game.dice import roll
 from ..database.session import init_db, session_scope
@@ -249,6 +251,24 @@ DICE ROLL HANDLING:
 - Example: If you asked for DC 15 and they rolled 18, they SUCCEED
 - Example: If you asked for DC 15 and they rolled 12, they FAIL
 - Always narrate the outcome based on their actual roll
+
+NPC VOICE TAGS (for text-to-speech):
+When an NPC speaks dialogue, prefix their speech with a voice tag to give them a distinct voice:
+- [VOICE:elderly_male] for wise old men, wizards, sages
+- [VOICE:young_male] for young male adventurers, squires
+- [VOICE:gruff] for dwarves, guards, blacksmiths, grizzled warriors
+- [VOICE:noble_male] for lords, elf nobles, refined gentlemen
+- [VOICE:commoner_male] for farmers, merchants, tavern keepers
+- [VOICE:elderly_female] for old witches, wise women, crones
+- [VOICE:young_female] for barmaids, princesses, young women
+- [VOICE:noble_female] for ladies, elf nobles, queens
+- [VOICE:commoner_female] for villagers, female merchants
+- [VOICE:mysterious] for hooded strangers, enigmatic figures
+- [VOICE:menacing] for villains, bandits, threatening NPCs
+- [VOICE:cheerful] for happy, friendly NPCs
+- [VOICE:authoritative] for kings, commanders, priests
+
+Example: The old wizard strokes his beard. [VOICE:elderly_male] "Ah, young adventurer, I have waited long for one such as you."
 
 IMPORTANT RULES:
 - Use present tense for narration
@@ -1387,17 +1407,26 @@ Respond as the Dungeon Master:"""
             )
 
             async def send_tts_chunk(text: str, chunk_index: int):
-                """Generate and send TTS for a sentence chunk."""
+                """Generate and send TTS for a sentence chunk with voice detection."""
                 try:
-                    audio_bytes = await tts_synthesize(text, "dm")
-                    if audio_bytes:
-                        audio_b64 = base64.b64encode(audio_bytes).decode("utf-8")
-                        await game_session.broadcast({
-                            "type": "dm_audio_chunk",
-                            "audio": audio_b64,
-                            "format": "wav",
-                            "index": chunk_index,
-                        })
+                    # Parse text for voice segments (e.g., [VOICE:elderly_male])
+                    segments = extract_voice_segments(text)
+                    sub_index = 0
+                    for voice_name, segment_text in segments:
+                        if not segment_text.strip():
+                            continue
+                        audio_bytes = await tts_synthesize(segment_text, voice_name)
+                        if audio_bytes:
+                            audio_b64 = base64.b64encode(audio_bytes).decode("utf-8")
+                            await game_session.broadcast({
+                                "type": "dm_audio_chunk",
+                                "audio": audio_b64,
+                                "format": "wav",
+                                "index": chunk_index,
+                                "subIndex": sub_index,
+                                "voice": voice_name,
+                            })
+                            sub_index += 1
                 except Exception as e:
                     logger.warning(f"TTS chunk failed: {e}")
 
@@ -1409,17 +1438,19 @@ Respond as the Dungeon Master:"""
                 full_response += token
                 sentence_buffer += token
 
-                # Send streaming update
-                await websocket.send_json({
-                    "type": "dm_response_stream",
-                    "token": token,
-                })
+                # Send streaming update (strip voice tags for display)
+                display_token = strip_voice_tags(token)
+                if display_token:  # Only send if there's content after stripping
+                    await websocket.send_json({
+                        "type": "dm_response_stream",
+                        "token": display_token,
+                    })
 
                 # Check for sentence completion and generate TTS
                 if tts_enabled and token.rstrip().endswith(('.', '!', '?')):
                     sentences = split_into_sentences(sentence_buffer)
                     if len(sentences) > 1 or sentence_buffer.rstrip().endswith(('.', '!', '?')):
-                        # Send TTS for complete sentences
+                        # Send TTS for complete sentences (keep voice tags for TTS)
                         text_to_speak = sentences[0] if len(sentences) > 1 else sentence_buffer.strip()
                         if text_to_speak and len(text_to_speak) > 3:
                             asyncio.create_task(send_tts_chunk(text_to_speak, sent_sentences))
@@ -1427,22 +1458,25 @@ Respond as the Dungeon Master:"""
                             # Keep remainder in buffer
                             sentence_buffer = ' '.join(sentences[1:]) if len(sentences) > 1 else ""
 
+            # Strip voice tags for display and history
+            display_response = strip_voice_tags(full_response)
+
             # Send complete response to all
             await game_session.broadcast({
                 "type": "dm_response",
-                "content": full_response,
+                "content": display_response,
                 "timestamp": datetime.now().isoformat(),
             })
 
-            # Generate TTS for any remaining text
+            # Generate TTS for any remaining text (use original with tags)
             if tts_enabled and sentence_buffer.strip():
                 asyncio.create_task(send_tts_chunk(sentence_buffer.strip(), sent_sentences))
 
-            # Store in history
+            # Store in history (without voice tags)
             game_session.conversation_history.append({
                 "player": player_name,
                 "action": action,
-                "response": full_response,
+                "response": display_response,
                 "timestamp": datetime.now().isoformat(),
             })
 

@@ -214,6 +214,20 @@ def extract_voice_segments(text: str) -> list[tuple[str, str]]:
     return segments
 
 
+def strip_voice_tags(text: str) -> str:
+    """
+    Remove [VOICE:name] tags from text for display.
+
+    Args:
+        text: Text potentially containing [VOICE:name] tags
+
+    Returns:
+        Text with voice tags removed
+    """
+    import re
+    return re.sub(r'\[VOICE:\w+\]\s*', '', text)
+
+
 def split_into_sentences(text: str) -> list[str]:
     """
     Split text into sentences for streaming TTS.
