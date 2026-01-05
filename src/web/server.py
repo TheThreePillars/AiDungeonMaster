@@ -398,6 +398,9 @@ async def create_character(char: CharacterCreate):
 
     try:
         with session_scope() as session:
+            # Get starting equipment for this class
+            starting = STARTING_EQUIPMENT.get(char.character_class, {"gold": 100, "items": []})
+
             new_char = Character(
                 name=char.name,
                 race=char.race,
@@ -412,9 +415,62 @@ async def create_character(char: CharacterCreate):
                 max_hp=max_hp,
                 current_hp=max_hp,
                 armor_class=ac,
+                gold=starting["gold"],  # Starting gold
             )
             session.add(new_char)
             session.flush()
+
+            # Add starting equipment
+            for item_data in starting["items"]:
+                # Determine item type from slot or name
+                item_type = "gear"
+                name_lower = item_data["name"].lower()
+                if item_data.get("slot") == "main_hand" or any(w in name_lower for w in ["sword", "axe", "mace", "bow", "dagger", "staff", "scimitar", "rapier", "sling"]):
+                    item_type = "weapon"
+                elif item_data.get("slot") == "body" or any(a in name_lower for a in ["armor", "mail", "shirt"]):
+                    item_type = "armor"
+                elif "shield" in name_lower:
+                    item_type = "shield"
+                elif "potion" in name_lower:
+                    item_type = "potion"
+                elif "arrow" in name_lower or "bolt" in name_lower or "bullet" in name_lower:
+                    item_type = "ammunition"
+                elif "tool" in name_lower or "kit" in name_lower:
+                    item_type = "tool"
+
+                item = InventoryItem(
+                    character_id=new_char.id,
+                    name=item_data["name"],
+                    item_type=item_type,
+                    quantity=item_data.get("quantity", 1),
+                    weight=item_data.get("weight", 0),
+                    value=item_data.get("value", 0),
+                    equipped=item_data.get("equipped", False),
+                    slot=item_data.get("slot", ""),
+                )
+                session.add(item)
+
+            # Recalculate AC based on equipped armor
+            armor_bonus = 0
+            shield_bonus = 0
+            for item_data in starting["items"]:
+                if item_data.get("equipped"):
+                    if item_data.get("slot") == "body":
+                        # Armor - estimate AC bonus from value
+                        if "Chain" in item_data["name"]:
+                            armor_bonus = 4
+                        elif "Scale" in item_data["name"]:
+                            armor_bonus = 5
+                        elif "Leather" in item_data["name"]:
+                            armor_bonus = 2
+                        elif "Hide" in item_data["name"]:
+                            armor_bonus = 4
+                    elif item_data.get("slot") == "off_hand" and "Shield" in item_data["name"]:
+                        shield_bonus = 2
+
+            # Update AC: 10 + Dex + Armor + Shield
+            dex_bonus = (final_dex - 10) // 2
+            new_char.armor_class = 10 + dex_bonus + armor_bonus + shield_bonus
 
             return {
                 "id": new_char.id,
@@ -424,6 +480,7 @@ async def create_character(char: CharacterCreate):
                 "level": new_char.level,
                 "max_hp": new_char.max_hp,
                 "ac": new_char.armor_class,
+                "gold": new_char.gold,
             }
     except Exception as e:
         logger.error(f"Error creating character: {e}")
@@ -754,6 +811,133 @@ COMMON_ITEMS = [
     {"name": "Arrows (20)", "type": "ammunition", "weight": 3.0, "value": 1.0},
     {"name": "Bolts (20)", "type": "ammunition", "weight": 2.0, "value": 1.0},
 ]
+
+# Starting equipment and gold by class (Pathfinder 1e)
+STARTING_EQUIPMENT = {
+    "Fighter": {
+        "gold": 175,
+        "items": [
+            {"name": "Longsword", "weight": 4.0, "value": 15, "slot": "main_hand", "equipped": True},
+            {"name": "Chain Shirt", "weight": 25.0, "value": 100, "slot": "body", "equipped": True},
+            {"name": "Heavy Steel Shield", "weight": 15.0, "value": 20, "slot": "off_hand", "equipped": True},
+            {"name": "Backpack", "weight": 2.0, "value": 2},
+            {"name": "Bedroll", "weight": 5.0, "value": 0.1},
+            {"name": "Rations", "weight": 5.0, "value": 2.5, "quantity": 5},
+            {"name": "Waterskin", "weight": 4.0, "value": 1},
+        ]
+    },
+    "Rogue": {
+        "gold": 140,
+        "items": [
+            {"name": "Shortsword", "weight": 2.0, "value": 10, "slot": "main_hand", "equipped": True},
+            {"name": "Dagger", "weight": 1.0, "value": 2, "quantity": 2},
+            {"name": "Leather Armor", "weight": 15.0, "value": 10, "slot": "body", "equipped": True},
+            {"name": "Thieves' Tools", "weight": 1.0, "value": 30},
+            {"name": "Backpack", "weight": 2.0, "value": 2},
+            {"name": "Rope, Hemp (50 ft)", "weight": 10.0, "value": 1},
+            {"name": "Torch", "weight": 1.0, "value": 0.01, "quantity": 3},
+        ]
+    },
+    "Wizard": {
+        "gold": 70,
+        "items": [
+            {"name": "Quarterstaff", "weight": 4.0, "value": 0, "slot": "main_hand", "equipped": True},
+            {"name": "Dagger", "weight": 1.0, "value": 2},
+            {"name": "Spellbook", "weight": 3.0, "value": 15},
+            {"name": "Spell Component Pouch", "weight": 2.0, "value": 5},
+            {"name": "Backpack", "weight": 2.0, "value": 2},
+            {"name": "Ink and Quill", "weight": 0.1, "value": 8},
+            {"name": "Rations", "weight": 5.0, "value": 2.5, "quantity": 5},
+        ]
+    },
+    "Cleric": {
+        "gold": 140,
+        "items": [
+            {"name": "Heavy Mace", "weight": 8.0, "value": 12, "slot": "main_hand", "equipped": True},
+            {"name": "Scale Mail", "weight": 30.0, "value": 50, "slot": "body", "equipped": True},
+            {"name": "Heavy Steel Shield", "weight": 15.0, "value": 20, "slot": "off_hand", "equipped": True},
+            {"name": "Holy Symbol, Silver", "weight": 1.0, "value": 25},
+            {"name": "Backpack", "weight": 2.0, "value": 2},
+            {"name": "Healer's Kit", "weight": 1.0, "value": 50},
+        ]
+    },
+    "Barbarian": {
+        "gold": 105,
+        "items": [
+            {"name": "Greataxe", "weight": 12.0, "value": 20, "slot": "main_hand", "equipped": True},
+            {"name": "Hide Armor", "weight": 25.0, "value": 15, "slot": "body", "equipped": True},
+            {"name": "Javelin", "weight": 2.0, "value": 1, "quantity": 4},
+            {"name": "Backpack", "weight": 2.0, "value": 2},
+            {"name": "Bedroll", "weight": 5.0, "value": 0.1},
+            {"name": "Rations", "weight": 5.0, "value": 2.5, "quantity": 5},
+        ]
+    },
+    "Bard": {
+        "gold": 140,
+        "items": [
+            {"name": "Rapier", "weight": 2.0, "value": 20, "slot": "main_hand", "equipped": True},
+            {"name": "Leather Armor", "weight": 15.0, "value": 10, "slot": "body", "equipped": True},
+            {"name": "Shortbow", "weight": 2.0, "value": 30},
+            {"name": "Arrows", "weight": 3.0, "value": 1, "quantity": 20},
+            {"name": "Musical Instrument (Lute)", "weight": 3.0, "value": 5},
+            {"name": "Backpack", "weight": 2.0, "value": 2},
+        ]
+    },
+    "Paladin": {
+        "gold": 175,
+        "items": [
+            {"name": "Longsword", "weight": 4.0, "value": 15, "slot": "main_hand", "equipped": True},
+            {"name": "Scale Mail", "weight": 30.0, "value": 50, "slot": "body", "equipped": True},
+            {"name": "Heavy Steel Shield", "weight": 15.0, "value": 20, "slot": "off_hand", "equipped": True},
+            {"name": "Holy Symbol, Silver", "weight": 1.0, "value": 25},
+            {"name": "Backpack", "weight": 2.0, "value": 2},
+            {"name": "Waterskin", "weight": 4.0, "value": 1},
+        ]
+    },
+    "Ranger": {
+        "gold": 175,
+        "items": [
+            {"name": "Longbow", "weight": 3.0, "value": 75, "slot": "main_hand", "equipped": True},
+            {"name": "Arrows", "weight": 6.0, "value": 2, "quantity": 40},
+            {"name": "Shortsword", "weight": 2.0, "value": 10},
+            {"name": "Leather Armor", "weight": 15.0, "value": 10, "slot": "body", "equipped": True},
+            {"name": "Backpack", "weight": 2.0, "value": 2},
+            {"name": "Bedroll", "weight": 5.0, "value": 0.1},
+        ]
+    },
+    "Sorcerer": {
+        "gold": 70,
+        "items": [
+            {"name": "Quarterstaff", "weight": 4.0, "value": 0, "slot": "main_hand", "equipped": True},
+            {"name": "Dagger", "weight": 1.0, "value": 2, "quantity": 2},
+            {"name": "Backpack", "weight": 2.0, "value": 2},
+            {"name": "Rations", "weight": 5.0, "value": 2.5, "quantity": 5},
+            {"name": "Waterskin", "weight": 4.0, "value": 1},
+        ]
+    },
+    "Monk": {
+        "gold": 35,
+        "items": [
+            {"name": "Quarterstaff", "weight": 4.0, "value": 0, "slot": "main_hand", "equipped": True},
+            {"name": "Sling", "weight": 0.0, "value": 0},
+            {"name": "Sling Bullets", "weight": 5.0, "value": 0.1, "quantity": 10},
+            {"name": "Backpack", "weight": 2.0, "value": 2},
+            {"name": "Rope, Hemp (50 ft)", "weight": 10.0, "value": 1},
+            {"name": "Rations", "weight": 5.0, "value": 2.5, "quantity": 5},
+        ]
+    },
+    "Druid": {
+        "gold": 70,
+        "items": [
+            {"name": "Scimitar", "weight": 4.0, "value": 15, "slot": "main_hand", "equipped": True},
+            {"name": "Leather Armor", "weight": 15.0, "value": 10, "slot": "body", "equipped": True},
+            {"name": "Heavy Wooden Shield", "weight": 10.0, "value": 7, "slot": "off_hand", "equipped": True},
+            {"name": "Holly and Mistletoe", "weight": 0.0, "value": 0},
+            {"name": "Backpack", "weight": 2.0, "value": 2},
+            {"name": "Rations", "weight": 5.0, "value": 2.5, "quantity": 5},
+        ]
+    },
+}
 
 
 @app.get("/api/items")
