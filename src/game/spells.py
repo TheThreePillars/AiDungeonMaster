@@ -2,6 +2,8 @@
 
 from dataclasses import dataclass, field
 from enum import Enum
+import json
+from pathlib import Path
 from typing import Any
 
 from .dice import DiceRoller
@@ -64,8 +66,58 @@ class Spell:
         return self.level.get(class_name.lower())
 
 
-# Core spell list - common spells for each level
-SPELLS: dict[str, Spell] = {
+def _school_from_text(text: str) -> SpellSchool:
+    text = text.strip().upper()
+    for school in SpellSchool:
+        if school.name == text or school.value.upper() == text:
+            return school
+    return SpellSchool.UNIVERSAL
+
+
+def load_spells_from_srd(srd_path: Path | None = None) -> dict[str, Spell]:
+    """Load spells from SRD JSON if available."""
+    path = srd_path or Path("data/srd/spells.json")
+    if not path.exists():
+        return {}
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+    spells: dict[str, Spell] = {}
+    for bucket in ("cantrips", "spells"):
+        for entry in raw.get(bucket, []):
+            name = entry.get("name", "").strip()
+            if not name:
+                continue
+            level = entry.get("level", {})
+            if not isinstance(level, dict) or not level:
+                continue
+            components = entry.get("components", ["V", "S"])
+            if isinstance(components, str):
+                components = [c.strip() for c in components.split(",") if c.strip()]
+            spell = Spell(
+                name=name,
+                level={k.lower(): int(v) for k, v in level.items()},
+                school=_school_from_text(entry.get("school", "Universal")),
+                description=entry.get("description", ""),
+                casting_time=entry.get("casting_time", "1 standard action"),
+                components=components,
+                range=entry.get("range", "Close"),
+                target=entry.get("target", ""),
+                duration=entry.get("duration", "Instantaneous"),
+                saving_throw=entry.get("saving_throw", "None"),
+                spell_resistance=entry.get("spell_resistance", "") in ("yes", "true", True),
+                damage_dice=entry.get("damage_dice"),
+                damage_type=entry.get("damage_type"),
+                heal_dice=entry.get("heal_dice"),
+            )
+            spells[name.lower()] = spell
+    return spells
+
+
+# Core spell list - common spells for each level (fallback if SRD data missing)
+DEFAULT_SPELLS: dict[str, Spell] = {
     # Cantrips/Orisons (Level 0)
     "acid splash": Spell(
         name="Acid Splash",
@@ -304,6 +356,9 @@ SPELLS: dict[str, Spell] = {
         heal_dice="3d8",
     ),
 }
+
+
+SPELLS = load_spells_from_srd() or DEFAULT_SPELLS
 
 
 @dataclass

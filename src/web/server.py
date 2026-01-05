@@ -32,7 +32,11 @@ from ..database.session import init_db, session_scope
 from ..database.models import Campaign, Party, Character, InventoryItem, Session as DBSession
 from ..characters.races import RACES
 from ..characters.classes import CLASSES
+from ..characters.creator import SRDData
 from ..game.spells import SPELLS
+
+# Initialize SRD data loader
+srd_data = SRDData()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -1277,6 +1281,260 @@ async def get_item_list(item_type: str = None):
     if item_type:
         items = [i for i in items if i["type"] == item_type]
     return {"items": items}
+
+
+# ===== SRD DATA ENDPOINTS =====
+
+@app.get("/api/equipment")
+async def get_equipment(category: str = None, search: str = None):
+    """
+    Get equipment from SRD data.
+
+    Args:
+        category: Filter by category (weapons, armor, adventuring_gear, potions)
+        search: Search term to filter by name
+    """
+    equipment = srd_data.get_equipment()
+    result = []
+
+    # Flatten equipment into list
+    for cat_name, cat_data in equipment.items():
+        if category and cat_name != category:
+            continue
+
+        if isinstance(cat_data, dict):
+            # Nested categories (weapons, armor)
+            for subcat_name, items in cat_data.items():
+                if isinstance(items, list):
+                    for item in items:
+                        item_copy = dict(item)
+                        item_copy["category"] = cat_name
+                        item_copy["subcategory"] = subcat_name
+                        result.append(item_copy)
+        elif isinstance(cat_data, list):
+            # Flat category (adventuring_gear, potions)
+            for item in cat_data:
+                item_copy = dict(item)
+                item_copy["category"] = cat_name
+                result.append(item_copy)
+
+    # Apply search filter
+    if search:
+        search_lower = search.lower()
+        result = [i for i in result if search_lower in i.get("name", "").lower()]
+
+    return {"equipment": result, "total": len(result)}
+
+
+@app.get("/api/equipment/weapons")
+async def get_weapons(weapon_type: str = None, search: str = None):
+    """Get weapons from SRD data."""
+    equipment = srd_data.get_equipment()
+    weapons = equipment.get("weapons", {})
+    result = []
+
+    for subcat, items in weapons.items():
+        if weapon_type and subcat != weapon_type:
+            continue
+        for item in items:
+            item_copy = dict(item)
+            item_copy["weapon_category"] = subcat
+            if search and search.lower() not in item.get("name", "").lower():
+                continue
+            result.append(item_copy)
+
+    return {"weapons": result, "total": len(result)}
+
+
+@app.get("/api/equipment/armor")
+async def get_armor(armor_type: str = None, search: str = None):
+    """Get armor from SRD data."""
+    equipment = srd_data.get_equipment()
+    armor = equipment.get("armor", {})
+    result = []
+
+    for subcat, items in armor.items():
+        if armor_type and subcat != armor_type:
+            continue
+        for item in items:
+            item_copy = dict(item)
+            item_copy["armor_category"] = subcat
+            if search and search.lower() not in item.get("name", "").lower():
+                continue
+            result.append(item_copy)
+
+    return {"armor": result, "total": len(result)}
+
+
+@app.get("/api/equipment/gear")
+async def get_adventuring_gear(search: str = None):
+    """Get adventuring gear from SRD data."""
+    equipment = srd_data.get_equipment()
+    gear = equipment.get("adventuring_gear", [])
+
+    if search:
+        search_lower = search.lower()
+        gear = [i for i in gear if search_lower in i.get("name", "").lower()]
+
+    return {"gear": gear, "total": len(gear)}
+
+
+@app.get("/api/magic-items")
+async def get_magic_items(item_type: str = None, max_price: int = None, search: str = None):
+    """
+    Get magic items from SRD data.
+
+    Args:
+        item_type: Filter by type (wondrous, potions, weapons, rings, armor, rods)
+        max_price: Maximum price in GP
+        search: Search term to filter by name
+    """
+    data = srd_data.get_magic_items()
+    items = data.get("items", [])
+
+    result = []
+    for item in items:
+        # Filter by type
+        if item_type and item.get("type") != item_type:
+            continue
+
+        # Filter by price
+        if max_price:
+            price_str = item.get("price", "0")
+            try:
+                # Parse price like "36,000 gp" or "500"
+                price_num = int("".join(c for c in str(price_str).split()[0] if c.isdigit()))
+                if price_num > max_price:
+                    continue
+            except (ValueError, IndexError):
+                pass
+
+        # Filter by search
+        if search and search.lower() not in item.get("name", "").lower():
+            continue
+
+        result.append(item)
+
+    return {"items": result, "total": len(result)}
+
+
+@app.get("/api/feats")
+async def get_feats(search: str = None, has_prerequisites: bool = None):
+    """
+    Get feats from SRD data.
+
+    Args:
+        search: Search term to filter by name or benefit
+        has_prerequisites: If True, only feats with prerequisites; if False, only feats without
+    """
+    data = srd_data.get_feats()
+    feats = data.get("feats", [])
+
+    result = []
+    for feat in feats:
+        # Filter by prerequisites
+        if has_prerequisites is not None:
+            prereq = feat.get("prerequisites", "").strip()
+            if has_prerequisites and not prereq:
+                continue
+            if not has_prerequisites and prereq:
+                continue
+
+        # Filter by search
+        if search:
+            search_lower = search.lower()
+            name_match = search_lower in feat.get("name", "").lower()
+            benefit_match = search_lower in feat.get("benefit", "").lower()
+            if not (name_match or benefit_match):
+                continue
+
+        result.append(feat)
+
+    return {"feats": result, "total": len(result)}
+
+
+@app.get("/api/treasure/tables")
+async def get_treasure_tables():
+    """Get treasure generation tables."""
+    return srd_data.get_treasure_tables()
+
+
+@app.post("/api/treasure/generate")
+async def generate_treasure(cr: float = 1, treasure_type: str = "standard", count: int = 1):
+    """
+    Generate random treasure based on CR.
+
+    Args:
+        cr: Challenge Rating (0.125 to 20)
+        treasure_type: Type of treasure (none, incidental, standard, double, triple, npc_gear)
+        count: Number of treasure hoards to generate
+    """
+    tables = srd_data.get_treasure_tables()
+
+    if not tables:
+        raise HTTPException(status_code=500, detail="Treasure tables not loaded")
+
+    treasure_by_cr = tables.get("treasure_by_cr", {})
+    treasure_types = tables.get("treasure_types", {})
+    gems = tables.get("gems", [])
+    art_objects = tables.get("art_objects", [])
+    mundane_items = tables.get("mundane_items", [])
+
+    # Find appropriate CR tier
+    cr_str = str(cr)
+    if cr_str not in treasure_by_cr:
+        # Find nearest CR
+        cr_keys = sorted([float(k) for k in treasure_by_cr.keys()])
+        nearest = min(cr_keys, key=lambda x: abs(x - cr))
+        cr_str = str(nearest) if nearest != int(nearest) else str(int(nearest))
+
+    base = treasure_by_cr.get(cr_str, {"coins": {"min": 0, "max": 100}, "gems": 0, "items": 0})
+    type_mods = treasure_types.get(treasure_type, {"coins_multiplier": 1, "gems_multiplier": 1, "items_multiplier": 1})
+
+    results = []
+    for _ in range(count):
+        hoard = {"coins": 0, "gems": [], "art": [], "items": [], "total_value": 0}
+
+        # Generate coins
+        coin_range = base.get("coins", {"min": 0, "max": 100})
+        base_coins = random.randint(coin_range["min"], coin_range["max"])
+        hoard["coins"] = int(base_coins * type_mods.get("coins_multiplier", 1))
+        hoard["total_value"] = hoard["coins"]
+
+        # Generate gems
+        gem_chance = base.get("gems", 0) * type_mods.get("gems_multiplier", 1)
+        if random.random() < gem_chance and gems:
+            # Select gem tier based on CR
+            max_tier = min(6, max(1, int(cr / 3) + 1))
+            eligible_gems = [g for g in gems if g.get("tier", 1) <= max_tier]
+            if eligible_gems:
+                num_gems = random.randint(1, max(1, int(cr / 2)))
+                for _ in range(num_gems):
+                    gem = random.choice(eligible_gems)
+                    hoard["gems"].append(gem["name"])
+                    hoard["total_value"] += gem["value"]
+
+        # Generate art objects
+        if random.random() < gem_chance * 0.5 and art_objects:
+            max_tier = min(8, max(1, int(cr / 2) + 1))
+            eligible_art = [a for a in art_objects if a.get("tier", 1) <= max_tier]
+            if eligible_art:
+                art = random.choice(eligible_art)
+                hoard["art"].append(art["name"])
+                hoard["total_value"] += art["value"]
+
+        # Generate mundane items
+        item_chance = base.get("items", 0) * type_mods.get("items_multiplier", 1)
+        if random.random() < item_chance and mundane_items:
+            num_items = random.randint(1, max(1, int(cr / 3)))
+            for _ in range(num_items):
+                item = random.choice(mundane_items)
+                hoard["items"].append(item["name"])
+                hoard["total_value"] += item["value"]
+
+        results.append(hoard)
+
+    return {"treasure": results if count > 1 else results[0], "cr": cr, "type": treasure_type}
 
 
 # ===== PARTY ENDPOINTS =====

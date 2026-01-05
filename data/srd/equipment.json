@@ -1,126 +1,5088 @@
 {
   "weapons": {
     "simple_melee": [
-      {"name": "Dagger", "cost": 2, "damage_s": "1d3", "damage_m": "1d4", "critical": "19-20/x2", "range": 10, "weight": 1, "type": "P or S", "special": ["light", "thrown"]},
-      {"name": "Gauntlet", "cost": 2, "damage_s": "1d2", "damage_m": "1d3", "critical": "x2", "weight": 1, "type": "B"},
-      {"name": "Light Mace", "cost": 5, "damage_s": "1d4", "damage_m": "1d6", "critical": "x2", "weight": 4, "type": "B", "special": ["light"]},
-      {"name": "Sickle", "cost": 6, "damage_s": "1d4", "damage_m": "1d6", "critical": "x2", "weight": 2, "type": "S", "special": ["light", "trip"]},
-      {"name": "Club", "cost": 0, "damage_s": "1d4", "damage_m": "1d6", "critical": "x2", "range": 10, "weight": 3, "type": "B", "special": ["thrown"]},
-      {"name": "Heavy Mace", "cost": 12, "damage_s": "1d6", "damage_m": "1d8", "critical": "x2", "weight": 8, "type": "B"},
-      {"name": "Morningstar", "cost": 8, "damage_s": "1d6", "damage_m": "1d8", "critical": "x2", "weight": 6, "type": "B and P"},
-      {"name": "Shortspear", "cost": 1, "damage_s": "1d4", "damage_m": "1d6", "critical": "x2", "range": 20, "weight": 3, "type": "P", "special": ["thrown"]},
-      {"name": "Longspear", "cost": 5, "damage_s": "1d6", "damage_m": "1d8", "critical": "x3", "weight": 9, "type": "P", "special": ["brace", "reach"]},
-      {"name": "Quarterstaff", "cost": 0, "damage_s": "1d4/1d4", "damage_m": "1d6/1d6", "critical": "x2", "weight": 4, "type": "B", "special": ["double", "monk"]},
-      {"name": "Spear", "cost": 2, "damage_s": "1d6", "damage_m": "1d8", "critical": "x3", "range": 20, "weight": 6, "type": "P", "special": ["brace", "thrown"]}
+      {
+        "name": "Gauntlet",
+        "cost": 2,
+        "damage_s": "1d2",
+        "damage_m": "1d3",
+        "critical": "x2",
+        "range": 0,
+        "weight": 1,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Unarmed strike",
+        "cost": 0,
+        "damage_s": "1d2",
+        "damage_m": "1d3",
+        "critical": "x2",
+        "range": 0,
+        "weight": 0,
+        "type": "B",
+        "special": [
+          "nonlethal"
+        ]
+      },
+      {
+        "name": "Battle aspergillum",
+        "cost": 5,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 4,
+        "type": "B",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Brass knife",
+        "cost": 2,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "19-20/x2",
+        "range": 10,
+        "weight": 1,
+        "type": "P or S",
+        "special": [
+          "fragile"
+        ]
+      },
+      {
+        "name": "Brass knuckles",
+        "cost": 1,
+        "damage_s": "1d2",
+        "damage_m": "1d3",
+        "critical": "x2",
+        "range": 0,
+        "weight": 1,
+        "type": "B",
+        "special": [
+          "monk"
+        ]
+      },
+      {
+        "name": "Cestus",
+        "cost": 5,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 1,
+        "type": "B or P",
+        "special": [
+          "monk"
+        ]
+      },
+      {
+        "name": "Dagger",
+        "cost": 2,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "19-20/x2",
+        "range": 10,
+        "weight": 1,
+        "type": "P or S",
+        "special": []
+      },
+      {
+        "name": "Dagger, punching",
+        "cost": 2,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x3",
+        "range": 0,
+        "weight": 1,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Gauntlet, spiked",
+        "cost": 5,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 0,
+        "weight": 1,
+        "type": "P",
+        "special": [
+          "attached"
+        ]
+      },
+      {
+        "name": "Handwraps",
+        "cost": 1,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 0,
+        "type": "—",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Traveling kettle",
+        "cost": 5,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "×2",
+        "range": 0,
+        "weight": 2,
+        "type": "B",
+        "special": [
+          "monk",
+          "see text"
+        ]
+      },
+      {
+        "name": "Hook hand",
+        "cost": 10,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 0,
+        "weight": 1,
+        "type": "S",
+        "special": [
+          "disarm",
+          "attached",
+          "see text"
+        ]
+      },
+      {
+        "name": "Kunai",
+        "cost": 2,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 10,
+        "weight": 2,
+        "type": "B or P",
+        "special": [
+          "tool"
+        ]
+      },
+      {
+        "name": "Mace, light",
+        "cost": 5,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 4,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Sickle",
+        "cost": 6,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 2,
+        "type": "S",
+        "special": [
+          "trip"
+        ]
+      },
+      {
+        "name": "Spring blade",
+        "cost": 70,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 10,
+        "weight": 1,
+        "type": "P or S",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Wooden stake",
+        "cost": 0,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 10,
+        "weight": 1,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Club",
+        "cost": 0,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 10,
+        "weight": 3,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Club, mere",
+        "cost": 2,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 0,
+        "weight": 2,
+        "type": "B or P",
+        "special": [
+          "fragile"
+        ]
+      },
+      {
+        "name": "Mace, heavy",
+        "cost": 12,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x2",
+        "range": 0,
+        "weight": 8,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Morningstar",
+        "cost": 8,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x2",
+        "range": 0,
+        "weight": 6,
+        "type": "B and P",
+        "special": []
+      },
+      {
+        "name": "Shortspear",
+        "cost": 1,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 20,
+        "weight": 3,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Bayonet",
+        "cost": 5,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 1,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Boarding pike",
+        "cost": 8,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 0,
+        "weight": 9,
+        "type": "P",
+        "special": [
+          "brace",
+          "reach"
+        ]
+      },
+      {
+        "name": "Kumade",
+        "cost": 5,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x3",
+        "range": 0,
+        "weight": 4,
+        "type": "P",
+        "special": [
+          "grapple"
+        ]
+      },
+      {
+        "name": "Kumade, collapsible",
+        "cost": 10,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x3",
+        "range": 0,
+        "weight": 4,
+        "type": "P",
+        "special": [
+          "grapple"
+        ]
+      },
+      {
+        "name": "Lantern staff",
+        "cost": 15,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "×2",
+        "range": 0,
+        "weight": 9,
+        "type": "B",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Longspear",
+        "cost": 5,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 0,
+        "weight": 9,
+        "type": "P",
+        "special": [
+          "brace",
+          "reach"
+        ]
+      },
+      {
+        "name": "Quarterstaff",
+        "cost": 0,
+        "damage_s": "1d4/1d4",
+        "damage_m": "1d6/1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 4,
+        "type": "B",
+        "special": [
+          "double",
+          "monk"
+        ]
+      },
+      {
+        "name": "Spear",
+        "cost": 2,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 20,
+        "weight": 6,
+        "type": "P",
+        "special": [
+          "brace"
+        ]
+      },
+      {
+        "name": "Spear, boar",
+        "cost": 5,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x2",
+        "range": 0,
+        "weight": 8,
+        "type": "P",
+        "special": [
+          "brace",
+          "see text"
+        ]
+      },
+      {
+        "name": "Spear, weighted",
+        "cost": 10,
+        "damage_s": "1d6/1d4",
+        "damage_m": "1d8/1d6",
+        "critical": "x3/x2",
+        "range": 0,
+        "weight": 8,
+        "type": "B or P",
+        "special": [
+          "brace",
+          "double"
+        ]
+      }
     ],
     "simple_ranged": [
-      {"name": "Crossbow, Heavy", "cost": 50, "damage_s": "1d8", "damage_m": "1d10", "critical": "19-20/x2", "range": 120, "weight": 8, "type": "P"},
-      {"name": "Crossbow, Light", "cost": 35, "damage_s": "1d6", "damage_m": "1d8", "critical": "19-20/x2", "range": 80, "weight": 4, "type": "P"},
-      {"name": "Dart", "cost": 0.5, "damage_s": "1d3", "damage_m": "1d4", "critical": "x2", "range": 20, "weight": 0.5, "type": "P", "special": ["thrown"]},
-      {"name": "Javelin", "cost": 1, "damage_s": "1d4", "damage_m": "1d6", "critical": "x2", "range": 30, "weight": 2, "type": "P", "special": ["thrown"]},
-      {"name": "Sling", "cost": 0, "damage_s": "1d3", "damage_m": "1d4", "critical": "x2", "range": 50, "weight": 0, "type": "B"}
+      {
+        "name": "Blowgun",
+        "cost": 2,
+        "damage_s": "1",
+        "damage_m": "1d2",
+        "critical": "x2",
+        "range": 20,
+        "weight": 1,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Crossbow, heavy",
+        "cost": 50,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "19-20/x2",
+        "range": 120,
+        "weight": 8,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Crossbow, heavy (underwater)",
+        "cost": 100,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "19-20/x2",
+        "range": 120,
+        "weight": 8,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Crossbow, light",
+        "cost": 35,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "19-20/x2",
+        "range": 80,
+        "weight": 4,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Crossbow, light (underwater)",
+        "cost": 70,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "19-20/x2",
+        "range": 80,
+        "weight": 4,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Dart",
+        "cost": 5,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 20,
+        "weight": 1,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Javelin",
+        "cost": 1,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 30,
+        "weight": 2,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Sling",
+        "cost": 0,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 50,
+        "weight": 0,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Stingchuck",
+        "cost": 0,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 10,
+        "weight": 9,
+        "type": "B",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Stonebow",
+        "cost": 35,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 50,
+        "weight": 4,
+        "type": "B",
+        "special": []
+      }
+    ],
+    "simple_ammunition": [
+      {
+        "name": "Bolt(s), crossbow (10)",
+        "cost": 1,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 1,
+        "type": "—",
+        "special": []
+      },
+      {
+        "name": "Bolt(s), acid (1)",
+        "cost": 40,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 0.1,
+        "type": "—",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Bolt(s), Drow poison (1)",
+        "cost": 100,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 0.1,
+        "type": "—",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Bolt(s), fire (1)",
+        "cost": 50,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 0.1,
+        "type": "—",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Bullet(s), groaning (10)",
+        "cost": 2,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 5,
+        "type": "—",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Bullet(s), sling (10)",
+        "cost": 1,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 5,
+        "type": "—",
+        "special": []
+      },
+      {
+        "name": "Bullet(s), smoke (10)",
+        "cost": 100,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 5,
+        "type": "—",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Dart(s), blowgun (10)",
+        "cost": 5,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 1,
+        "type": "—",
+        "special": []
+      }
     ],
     "martial_melee": [
-      {"name": "Battleaxe", "cost": 10, "damage_s": "1d6", "damage_m": "1d8", "critical": "x3", "weight": 6, "type": "S"},
-      {"name": "Flail", "cost": 8, "damage_s": "1d6", "damage_m": "1d8", "critical": "x2", "weight": 5, "type": "B", "special": ["disarm", "trip"]},
-      {"name": "Longsword", "cost": 15, "damage_s": "1d6", "damage_m": "1d8", "critical": "19-20/x2", "weight": 4, "type": "S"},
-      {"name": "Heavy Pick", "cost": 8, "damage_s": "1d4", "damage_m": "1d6", "critical": "x4", "weight": 6, "type": "P"},
-      {"name": "Rapier", "cost": 20, "damage_s": "1d4", "damage_m": "1d6", "critical": "18-20/x2", "weight": 2, "type": "P", "special": ["finesse"]},
-      {"name": "Scimitar", "cost": 15, "damage_s": "1d4", "damage_m": "1d6", "critical": "18-20/x2", "weight": 4, "type": "S"},
-      {"name": "Trident", "cost": 15, "damage_s": "1d6", "damage_m": "1d8", "critical": "x2", "range": 10, "weight": 4, "type": "P", "special": ["brace", "thrown"]},
-      {"name": "Warhammer", "cost": 12, "damage_s": "1d6", "damage_m": "1d8", "critical": "x3", "weight": 5, "type": "B"},
-      {"name": "Falchion", "cost": 75, "damage_s": "1d6", "damage_m": "2d4", "critical": "18-20/x2", "weight": 8, "type": "S", "special": ["two-handed"]},
-      {"name": "Glaive", "cost": 8, "damage_s": "1d8", "damage_m": "1d10", "critical": "x3", "weight": 10, "type": "S", "special": ["reach", "two-handed"]},
-      {"name": "Greataxe", "cost": 20, "damage_s": "1d10", "damage_m": "1d12", "critical": "x3", "weight": 12, "type": "S", "special": ["two-handed"]},
-      {"name": "Greatsword", "cost": 50, "damage_s": "1d10", "damage_m": "2d6", "critical": "19-20/x2", "weight": 8, "type": "S", "special": ["two-handed"]},
-      {"name": "Halberd", "cost": 10, "damage_s": "1d8", "damage_m": "1d10", "critical": "x3", "weight": 12, "type": "P or S", "special": ["brace", "trip", "two-handed"]},
-      {"name": "Lance", "cost": 10, "damage_s": "1d6", "damage_m": "1d8", "critical": "x3", "weight": 10, "type": "P", "special": ["reach"]},
-      {"name": "Scythe", "cost": 18, "damage_s": "1d6", "damage_m": "2d4", "critical": "x4", "weight": 10, "type": "P or S", "special": ["trip", "two-handed"]},
-      {"name": "Handaxe", "cost": 6, "damage_s": "1d4", "damage_m": "1d6", "critical": "x3", "weight": 3, "type": "S", "special": ["light"]},
-      {"name": "Short Sword", "cost": 10, "damage_s": "1d4", "damage_m": "1d6", "critical": "19-20/x2", "weight": 2, "type": "P", "special": ["light"]}
+      {
+        "name": "Axe, boarding",
+        "cost": 6,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x3",
+        "range": 0,
+        "weight": 3,
+        "type": "P or S",
+        "special": []
+      },
+      {
+        "name": "Axe, throwing",
+        "cost": 8,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 10,
+        "weight": 2,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Blade boot",
+        "cost": 25,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 0,
+        "weight": 2,
+        "type": "P",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Cat-o’-nine-tails",
+        "cost": 1,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 0,
+        "weight": 1,
+        "type": "S",
+        "special": [
+          "disarm",
+          "nonlethal"
+        ]
+      },
+      {
+        "name": "Claw blades",
+        "cost": 305,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 0,
+        "weight": 2,
+        "type": "B or S",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Dagger, dueling",
+        "cost": 12,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "19–20/×2",
+        "range": 10,
+        "weight": 1,
+        "type": "P or S",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Dogslicer",
+        "cost": 8,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 1,
+        "type": "S",
+        "special": [
+          "fragile"
+        ]
+      },
+      {
+        "name": "Hammer, light",
+        "cost": 1,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 20,
+        "weight": 2,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Gladius",
+        "cost": 15,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 3,
+        "type": "P or S",
+        "special": [
+          "performance"
+        ]
+      },
+      {
+        "name": "Handaxe",
+        "cost": 6,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x3",
+        "range": 0,
+        "weight": 3,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Katar, tri-bladed",
+        "cost": 6,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "×4",
+        "range": 0,
+        "weight": 2,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Knife, switchblade",
+        "cost": 5,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "19-20/x2",
+        "range": 10,
+        "weight": 1,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Kobold tail attachment, long lash",
+        "cost": 15,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 1,
+        "type": "S",
+        "special": [
+          "reach"
+        ]
+      },
+      {
+        "name": "Kobold tail attachment, (pounder)",
+        "cost": 1,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x2",
+        "range": 0,
+        "weight": 4,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Kobold tail attachment, (razored)",
+        "cost": 3,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 2,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Kobold tail attachment, (spiked)",
+        "cost": 3,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 0,
+        "weight": 2,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Kobold tail attachment, (sweeper)",
+        "cost": 7,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 3,
+        "type": "B",
+        "special": [
+          "trip"
+        ]
+      },
+      {
+        "name": "Kukri",
+        "cost": 8,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "18–20/x2",
+        "range": 0,
+        "weight": 2,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Machete",
+        "cost": 10,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 2,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Pick, light",
+        "cost": 4,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x4",
+        "range": 0,
+        "weight": 3,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Ratfolk tailblade",
+        "cost": 11,
+        "damage_s": "1d2",
+        "damage_m": "1d3",
+        "critical": "x2",
+        "range": 0,
+        "weight": 1,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Sap",
+        "cost": 1,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 2,
+        "type": "B",
+        "special": [
+          "nonlethal"
+        ]
+      },
+      {
+        "name": "Sea-knife",
+        "cost": 8,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 1,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Shield, light",
+        "cost": 3,
+        "damage_s": "1d2",
+        "damage_m": "1d3",
+        "critical": "x2",
+        "range": 0,
+        "weight": 0,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Spiked armor",
+        "cost": 0,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 0,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Spiked shield, light",
+        "cost": 13,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 0,
+        "weight": 0,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Starknife",
+        "cost": 24,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x3",
+        "range": 20,
+        "weight": 3,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Sword, butterfly (2)",
+        "cost": 20,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 1,
+        "type": "S",
+        "special": [
+          "monk"
+        ]
+      },
+      {
+        "name": "Sword, short",
+        "cost": 10,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 2,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "War razor",
+        "cost": 8,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 1,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Ankus",
+        "cost": 8,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x2",
+        "range": 0,
+        "weight": 5,
+        "type": "P",
+        "special": [
+          "disarm",
+          "trip"
+        ]
+      },
+      {
+        "name": "Battleaxe",
+        "cost": 10,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 0,
+        "weight": 6,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Combat scabbard",
+        "cost": 1,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 1,
+        "type": "B",
+        "special": [
+          "improvised",
+          "see text"
+        ]
+      },
+      {
+        "name": "Cutlass",
+        "cost": 15,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "18-20/x2",
+        "range": 0,
+        "weight": 4,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Flail, light",
+        "cost": 8,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x2",
+        "range": 0,
+        "weight": 5,
+        "type": "B",
+        "special": [
+          "disarm",
+          "trip"
+        ]
+      },
+      {
+        "name": "Gandasa",
+        "cost": 15,
+        "damage_s": "1d6",
+        "damage_m": "2d4",
+        "critical": "x3",
+        "range": 0,
+        "weight": 4,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Klar",
+        "cost": 12,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 6,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Longsword",
+        "cost": 15,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 4,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Manople",
+        "cost": 17,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x2",
+        "range": 0,
+        "weight": 4,
+        "type": "P or S",
+        "special": [
+          "blocking",
+          "disarm"
+        ]
+      },
+      {
+        "name": "Pick, heavy",
+        "cost": 8,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x4",
+        "range": 0,
+        "weight": 6,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Rapier",
+        "cost": 20,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "18–20/x2",
+        "range": 0,
+        "weight": 2,
+        "type": "P",
+        "special": [
+          "finesse"
+        ]
+      },
+      {
+        "name": "Scabbard, combat (sharpened)",
+        "cost": 10,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 1,
+        "type": "S",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Scimitar",
+        "cost": 15,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "18–20/x2",
+        "range": 0,
+        "weight": 4,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Scizore",
+        "cost": 20,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x2",
+        "range": 0,
+        "weight": 3,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Shield, heavy",
+        "cost": 0,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 0,
+        "weight": 0,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Spiked shield, heavy",
+        "cost": 17,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 0,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Sword cane",
+        "cost": 45,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 4,
+        "type": "P",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Terbutje",
+        "cost": 5,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 2,
+        "type": "S",
+        "special": [
+          "fragile"
+        ]
+      },
+      {
+        "name": "Terbutje, steel",
+        "cost": 20,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 4,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Trident",
+        "cost": 15,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x2",
+        "range": 10,
+        "weight": 4,
+        "type": "P",
+        "special": [
+          "brace"
+        ]
+      },
+      {
+        "name": "Warhammer",
+        "cost": 12,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 0,
+        "weight": 5,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Bardiche",
+        "cost": 13,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 14,
+        "type": "S",
+        "special": [
+          "brace",
+          "reach",
+          "see text"
+        ]
+      },
+      {
+        "name": "Bec de corbin",
+        "cost": 15,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x3",
+        "range": 0,
+        "weight": 12,
+        "type": "B or P",
+        "special": [
+          "brace",
+          "reach",
+          "see text"
+        ]
+      },
+      {
+        "name": "Bill",
+        "cost": 11,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 0,
+        "weight": 11,
+        "type": "S",
+        "special": [
+          "brace",
+          "disarm",
+          "reach",
+          "see text"
+        ]
+      },
+      {
+        "name": "Earth breaker",
+        "cost": 40,
+        "damage_s": "1d10",
+        "damage_m": "2d6",
+        "critical": "x3",
+        "range": 0,
+        "weight": 14,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Falchion",
+        "cost": 75,
+        "damage_s": "1d6",
+        "damage_m": "2d4",
+        "critical": "18–20/x2",
+        "range": 0,
+        "weight": 8,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Flail, heavy",
+        "cost": 15,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 10,
+        "type": "B",
+        "special": [
+          "disarm",
+          "trip"
+        ]
+      },
+      {
+        "name": "Glaive",
+        "cost": 8,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x3",
+        "range": 0,
+        "weight": 10,
+        "type": "S",
+        "special": [
+          "reach"
+        ]
+      },
+      {
+        "name": "Glaive-guisarme",
+        "cost": 12,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x3",
+        "range": 0,
+        "weight": 10,
+        "type": "S",
+        "special": [
+          "brace",
+          "reach",
+          "see text"
+        ]
+      },
+      {
+        "name": "Greataxe",
+        "cost": 20,
+        "damage_s": "1d10",
+        "damage_m": "1d12",
+        "critical": "x3",
+        "range": 0,
+        "weight": 12,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Greatclub",
+        "cost": 5,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x2",
+        "range": 0,
+        "weight": 8,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Greatsword",
+        "cost": 50,
+        "damage_s": "1d10",
+        "damage_m": "2d6",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 8,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Guisarme",
+        "cost": 9,
+        "damage_s": "1d6",
+        "damage_m": "2d4",
+        "critical": "x3",
+        "range": 0,
+        "weight": 12,
+        "type": "S",
+        "special": [
+          "reach",
+          "trip"
+        ]
+      },
+      {
+        "name": "Halberd",
+        "cost": 10,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x3",
+        "range": 0,
+        "weight": 12,
+        "type": "P or S",
+        "special": [
+          "brace",
+          "trip"
+        ]
+      },
+      {
+        "name": "Hammer, lucerne",
+        "cost": 15,
+        "damage_s": "1d10",
+        "damage_m": "1d12",
+        "critical": "x2",
+        "range": 0,
+        "weight": 12,
+        "type": "B or P",
+        "special": [
+          "brace",
+          "reach",
+          "see text"
+        ]
+      },
+      {
+        "name": "Horsechopper",
+        "cost": 10,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x3",
+        "range": 0,
+        "weight": 12,
+        "type": "P or S",
+        "special": [
+          "reach",
+          "trip"
+        ]
+      },
+      {
+        "name": "Lance",
+        "cost": 10,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 0,
+        "weight": 10,
+        "type": "P",
+        "special": [
+          "reach"
+        ]
+      },
+      {
+        "name": "Ogre hook",
+        "cost": 24,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x3",
+        "range": 0,
+        "weight": 10,
+        "type": "P",
+        "special": [
+          "trip"
+        ]
+      },
+      {
+        "name": "Pickaxe",
+        "cost": 14,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x4",
+        "range": 0,
+        "weight": 12,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Planson",
+        "cost": 10,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x2",
+        "range": 0,
+        "weight": 10,
+        "type": "B or P",
+        "special": [
+          "brace"
+        ]
+      },
+      {
+        "name": "Ranseur",
+        "cost": 10,
+        "damage_s": "1d6",
+        "damage_m": "2d4",
+        "critical": "x3",
+        "range": 0,
+        "weight": 12,
+        "type": "P",
+        "special": [
+          "disarm",
+          "reach"
+        ]
+      },
+      {
+        "name": "Scythe",
+        "cost": 18,
+        "damage_s": "1d6",
+        "damage_m": "2d4",
+        "critical": "x4",
+        "range": 0,
+        "weight": 10,
+        "type": "P or S",
+        "special": [
+          "trip"
+        ]
+      },
+      {
+        "name": "Spear, syringe",
+        "cost": 100,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 20,
+        "weight": 6,
+        "type": "P",
+        "special": [
+          "brace",
+          "see text"
+        ]
+      }
     ],
     "martial_ranged": [
-      {"name": "Longbow", "cost": 75, "damage_s": "1d6", "damage_m": "1d8", "critical": "x3", "range": 100, "weight": 3, "type": "P"},
-      {"name": "Longbow, Composite", "cost": 100, "damage_s": "1d6", "damage_m": "1d8", "critical": "x3", "range": 110, "weight": 3, "type": "P"},
-      {"name": "Shortbow", "cost": 30, "damage_s": "1d4", "damage_m": "1d6", "critical": "x3", "range": 60, "weight": 2, "type": "P"},
-      {"name": "Shortbow, Composite", "cost": 75, "damage_s": "1d4", "damage_m": "1d6", "critical": "x3", "range": 70, "weight": 2, "type": "P"},
-      {"name": "Throwing Axe", "cost": 8, "damage_s": "1d4", "damage_m": "1d6", "critical": "x2", "range": 10, "weight": 2, "type": "S", "special": ["thrown"]}
+      {
+        "name": "Ammentum",
+        "cost": 0,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 50,
+        "weight": 1,
+        "type": "P",
+        "special": [
+          "performance"
+        ]
+      },
+      {
+        "name": "Chakram",
+        "cost": 1,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x2",
+        "range": 30,
+        "weight": 1,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Dart, jolting",
+        "cost": 100,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 20,
+        "weight": 1,
+        "type": "P",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Hunga munga",
+        "cost": 4,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 15,
+        "weight": 3,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Hurlbat",
+        "cost": 8,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x3",
+        "range": 10,
+        "weight": 2,
+        "type": "P and S",
+        "special": []
+      },
+      {
+        "name": "Longbow",
+        "cost": 75,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 100,
+        "weight": 3,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Longbow, composite (+0)",
+        "cost": 100,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 110,
+        "weight": 3,
+        "type": "P",
+        "special": [
+          "strength (-)"
+        ]
+      },
+      {
+        "name": "Longbow, composite (+1)",
+        "cost": 200,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 110,
+        "weight": 3,
+        "type": "P",
+        "special": [
+          "strength (12)"
+        ]
+      },
+      {
+        "name": "Longbow, composite (+2)",
+        "cost": 300,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 110,
+        "weight": 3,
+        "type": "P",
+        "special": [
+          "strength (14)"
+        ]
+      },
+      {
+        "name": "Longbow, composite (+3)",
+        "cost": 400,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 110,
+        "weight": 3,
+        "type": "P",
+        "special": [
+          "strength (16)"
+        ]
+      },
+      {
+        "name": "Longbow, composite (+4)",
+        "cost": 500,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 110,
+        "weight": 3,
+        "type": "P",
+        "special": [
+          "strength (18)"
+        ]
+      },
+      {
+        "name": "Longbow, composite (+5)",
+        "cost": 600,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 110,
+        "weight": 3,
+        "type": "P",
+        "special": [
+          "strength (20)"
+        ]
+      },
+      {
+        "name": "Pilum",
+        "cost": 5,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x2",
+        "range": 20,
+        "weight": 4,
+        "type": "P",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Shortbow",
+        "cost": 30,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x3",
+        "range": 60,
+        "weight": 2,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Shortbow, composite",
+        "cost": 75,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x3",
+        "range": 70,
+        "weight": 2,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Spear-sling",
+        "cost": 50,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 0,
+        "weight": 2,
+        "type": "P",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Throwing arrow cord",
+        "cost": 0,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 60,
+        "weight": 0,
+        "type": "P",
+        "special": []
+      }
+    ],
+    "martial_ammunition": [
+      {
+        "name": "Arrows, common (20)",
+        "cost": 1,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 3,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Arrows/bolts, barbed (20)",
+        "cost": 2,
+        "damage_s": "see text",
+        "damage_m": "see text",
+        "critical": "see text",
+        "range": 0,
+        "weight": 3,
+        "type": "P",
+        "special": [
+          "grapple"
+        ]
+      },
+      {
+        "name": "Arrow, bleeding (1)",
+        "cost": 360,
+        "damage_s": "see text",
+        "damage_m": "see text",
+        "critical": "see text",
+        "range": 0,
+        "weight": 0,
+        "type": "see text",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrows, blunt (20)",
+        "cost": 2,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 3,
+        "type": "B",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrow, distance (iron-tipped) (20)",
+        "cost": 1,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 4,
+        "type": "—",
+        "special": []
+      },
+      {
+        "name": "Arrow, durable (1)",
+        "cost": 1,
+        "damage_s": "see text",
+        "damage_m": "see text",
+        "critical": "see text",
+        "range": 0,
+        "weight": 0,
+        "type": "see text",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrow, dye (1)",
+        "cost": 1,
+        "damage_s": "see text",
+        "damage_m": "see text",
+        "critical": "see text",
+        "range": 0,
+        "weight": 4,
+        "type": "—",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrows, flight (20)",
+        "cost": 2,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 3,
+        "type": "P",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrows/bolts, incendiary (20)",
+        "cost": 10,
+        "damage_s": "see text",
+        "damage_m": "see text",
+        "critical": "see text",
+        "range": 0,
+        "weight": 3,
+        "type": "see text",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrow, lodestone (1)",
+        "cost": 10,
+        "damage_s": "see text",
+        "damage_m": "see text",
+        "critical": "see text",
+        "range": 0,
+        "weight": 0,
+        "type": "see text",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrow, pheromone (1)",
+        "cost": 15,
+        "damage_s": "see text",
+        "damage_m": "see text",
+        "critical": "see text",
+        "range": 0,
+        "weight": 0,
+        "type": "see text",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrows/bolts, pronged (20)",
+        "cost": 2,
+        "damage_s": "see text",
+        "damage_m": "see text",
+        "critical": "see text",
+        "range": 0,
+        "weight": 3,
+        "type": "see text",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrow, raining (1)",
+        "cost": 30,
+        "damage_s": "see text",
+        "damage_m": "see text",
+        "critical": "see text",
+        "range": 0,
+        "weight": 0,
+        "type": "see text",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrow, slow burn (1)",
+        "cost": 150,
+        "damage_s": "see text",
+        "damage_m": "see text",
+        "critical": "see text",
+        "range": 0,
+        "weight": 0,
+        "type": "see text",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrow, smoke (1)",
+        "cost": 10,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 0,
+        "type": "P",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrow, splintercloud (1)",
+        "cost": 25,
+        "damage_s": "see text",
+        "damage_m": "see text",
+        "critical": "see text",
+        "range": 0,
+        "weight": 0,
+        "type": "see text",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrow, tanglefoot (1)",
+        "cost": 20,
+        "damage_s": "see text",
+        "damage_m": "see text",
+        "critical": "see text",
+        "range": 0,
+        "weight": 0,
+        "type": "see text",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrow, thistle (1)",
+        "cost": 1,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 0.15,
+        "type": "P",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrow, throwing (1)",
+        "cost": 5,
+        "damage_s": "see text",
+        "damage_m": "see text",
+        "critical": "see text",
+        "range": 0,
+        "weight": 1,
+        "type": "see text",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrow, trip (1)",
+        "cost": 25,
+        "damage_s": "see text",
+        "damage_m": "see text",
+        "critical": "see text",
+        "range": 0,
+        "weight": 0,
+        "type": "see text",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Arrows, whistling (20)",
+        "cost": 2,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 3,
+        "type": "—",
+        "special": []
+      }
+    ],
+    "exotic_melee": [
+      {
+        "name": "Aklys",
+        "cost": 5,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 20,
+        "weight": 2,
+        "type": "B",
+        "special": [
+          "performance",
+          "trip"
+        ]
+      },
+      {
+        "name": "Axe-Gauntlet, Dwarven Light",
+        "cost": 16,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x3",
+        "range": 0,
+        "weight": 5,
+        "type": "S",
+        "special": [
+          "blocking",
+          "disarm"
+        ]
+      },
+      {
+        "name": "Axe, knuckle",
+        "cost": 9,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x3",
+        "range": 0,
+        "weight": 2,
+        "type": "S",
+        "special": [
+          "monk",
+          "performance"
+        ]
+      },
+      {
+        "name": "Barbazu beard",
+        "cost": 25,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 0,
+        "weight": 5,
+        "type": "S",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Battle poi",
+        "cost": 5,
+        "damage_s": "1d3 (fire)",
+        "damage_m": "1d4 (fire)",
+        "critical": "x2",
+        "range": 0,
+        "weight": 2,
+        "type": "fire",
+        "special": []
+      },
+      {
+        "name": "Dagger, swordbreaker",
+        "cost": 10,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 0,
+        "weight": 3,
+        "type": "S",
+        "special": [
+          "disarm",
+          "sunder"
+        ]
+      },
+      {
+        "name": "Flying Talon",
+        "cost": 15,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 10,
+        "weight": 5,
+        "type": "P",
+        "special": [
+          "disarm",
+          "trip"
+        ]
+      },
+      {
+        "name": "Gnome pincher",
+        "cost": 10,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 2,
+        "type": "B",
+        "special": [
+          "disarm",
+          "see text"
+        ]
+      },
+      {
+        "name": "Halfling rope-shot",
+        "cost": 1,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 1,
+        "type": "B",
+        "special": [
+          "disarm"
+        ]
+      },
+      {
+        "name": "Helmet, dwarven boulder",
+        "cost": 20,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 0,
+        "weight": 10,
+        "type": "B",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Kama",
+        "cost": 2,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 2,
+        "type": "S",
+        "special": [
+          "monk",
+          "trip"
+        ]
+      },
+      {
+        "name": "Knife, butterfly",
+        "cost": 5,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 1,
+        "type": "P or S",
+        "special": []
+      },
+      {
+        "name": "Knife, deer horn",
+        "cost": 10,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x3",
+        "range": 20,
+        "weight": 3,
+        "type": "P",
+        "special": [
+          "blocking",
+          "monk"
+        ]
+      },
+      {
+        "name": "Maulaxe, dwarven",
+        "cost": 25,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x3",
+        "range": 10,
+        "weight": 5,
+        "type": "B or S",
+        "special": []
+      },
+      {
+        "name": "Nunchaku",
+        "cost": 2,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 2,
+        "type": "B",
+        "special": [
+          "disarm",
+          "monk"
+        ]
+      },
+      {
+        "name": "Quadrens",
+        "cost": 8,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 2,
+        "type": "P",
+        "special": [
+          "performance"
+        ]
+      },
+      {
+        "name": "Razor, drow",
+        "cost": 25,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "18–20/×2",
+        "range": 0,
+        "weight": 2,
+        "type": "S",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Rope gauntlet",
+        "cost": 2,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 0,
+        "weight": 2,
+        "type": "B (or S)",
+        "special": []
+      },
+      {
+        "name": "Sabre, sawtoothAA1",
+        "cost": 35,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 2,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Sai",
+        "cost": 1,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 0,
+        "weight": 1,
+        "type": "B",
+        "special": [
+          "disarm",
+          "monk"
+        ]
+      },
+      {
+        "name": "Sanpkhang",
+        "cost": 60,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "19–20/×2",
+        "range": 0,
+        "weight": 1,
+        "type": "P or S",
+        "special": [
+          "monk",
+          "see text"
+        ]
+      },
+      {
+        "name": "Siangham",
+        "cost": 3,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 1,
+        "type": "P",
+        "special": [
+          "monk"
+        ]
+      },
+      {
+        "name": "Sica",
+        "cost": 10,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 2,
+        "type": "S",
+        "special": [
+          "performance"
+        ]
+      },
+      {
+        "name": "Thorn bracer",
+        "cost": 30,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 3,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "War-shield, dwarven",
+        "cost": 50,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "×2",
+        "range": 0,
+        "weight": 8,
+        "type": "P or S",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Waveblade",
+        "cost": 5,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "18–20/×2",
+        "range": 0,
+        "weight": 2,
+        "type": "P or S",
+        "special": [
+          "monk",
+          "see text"
+        ]
+      },
+      {
+        "name": "Whip, scorpion",
+        "cost": 5,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 0,
+        "weight": 3,
+        "type": "S",
+        "special": [
+          "disarm",
+          "performance",
+          "reach",
+          "trip"
+        ]
+      },
+      {
+        "name": "Axe-Gauntlet, Dwarven Heavy",
+        "cost": 21,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 0,
+        "weight": 5,
+        "type": "S",
+        "special": [
+          "blocking",
+          "disarm"
+        ]
+      },
+      {
+        "name": "Axe, hooked",
+        "cost": 20,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 0,
+        "weight": 7,
+        "type": "S",
+        "special": [
+          "disarm",
+          "performance",
+          "trip"
+        ]
+      },
+      {
+        "name": "Broken-back seax",
+        "cost": 40,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "19–20/×2",
+        "range": 0,
+        "weight": 4,
+        "type": "P & S",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Estoc",
+        "cost": 50,
+        "damage_s": "2d3",
+        "damage_m": "2d4",
+        "critical": "18–20/x2",
+        "range": 0,
+        "weight": 4,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Falcata",
+        "cost": 18,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "19-20/x3",
+        "range": 0,
+        "weight": 4,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Flickmace",
+        "cost": 20,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x2",
+        "range": 0,
+        "weight": 10,
+        "type": "B",
+        "special": [
+          "reach",
+          "trip"
+        ]
+      },
+      {
+        "name": "Flindbar",
+        "cost": 9,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x2",
+        "range": 0,
+        "weight": 6,
+        "type": "B and P",
+        "special": [
+          "disarm",
+          "trip"
+        ]
+      },
+      {
+        "name": "Khopesh",
+        "cost": 20,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 8,
+        "type": "S",
+        "special": [
+          "trip"
+        ]
+      },
+      {
+        "name": "Knobkerrie",
+        "cost": 5,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 20,
+        "weight": 4,
+        "type": "B",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Ram Hammer, Dwarven",
+        "cost": 25,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 10,
+        "weight": 5,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Rapier, spiral",
+        "cost": 80,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "18–20/×2",
+        "range": 0,
+        "weight": 3,
+        "type": "P",
+        "special": [
+          "blocking",
+          "disarm",
+          "see text"
+        ]
+      },
+      {
+        "name": "Rhoka",
+        "cost": 5,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "18-20/x2",
+        "range": 0,
+        "weight": 6,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Sabre, sawtoothAG",
+        "cost": 35,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 2,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Shotel",
+        "cost": 30,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 0,
+        "weight": 3,
+        "type": "P",
+        "special": [
+          "performance"
+        ]
+      },
+      {
+        "name": "Sickle-sword",
+        "cost": 20,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "19–20/×2",
+        "range": 0,
+        "weight": 4,
+        "type": "S",
+        "special": [
+          "distracting",
+          "see text"
+        ]
+      },
+      {
+        "name": "Split-blade sword",
+        "cost": 200,
+        "damage_s": "1d10",
+        "damage_m": "2d6",
+        "critical": "×2",
+        "range": 0,
+        "weight": 8,
+        "type": "S",
+        "special": [
+          "disarm",
+          "trip",
+          "see text"
+        ]
+      },
+      {
+        "name": "Sword, dueling",
+        "cost": 20,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 3,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Sword, bastard",
+        "cost": 35,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 6,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Tongi",
+        "cost": 18,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "19-20/x3",
+        "range": 0,
+        "weight": 4,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Waraxe, dwarven",
+        "cost": 30,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x3",
+        "range": 0,
+        "weight": 8,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Waraxe, dwarven double",
+        "cost": 60,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x3",
+        "range": 0,
+        "weight": 12,
+        "type": "S",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Whip",
+        "cost": 1,
+        "damage_s": "1d2",
+        "damage_m": "1d3",
+        "critical": "x2",
+        "range": 0,
+        "weight": 2,
+        "type": "S",
+        "special": [
+          "disarm",
+          "nonlethal",
+          "reach",
+          "trip"
+        ]
+      },
+      {
+        "name": "Axe, Orc Double",
+        "cost": 60,
+        "damage_s": "1d6/1d6",
+        "damage_m": "1d8/1d8",
+        "critical": "x3",
+        "range": 0,
+        "weight": 15,
+        "type": "S",
+        "special": [
+          "double"
+        ]
+      },
+      {
+        "name": "Axe, Butchering",
+        "cost": 65,
+        "damage_s": "1d12",
+        "damage_m": "3d6",
+        "critical": "×3",
+        "range": 0,
+        "weight": 25,
+        "type": "S",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Battle Ladder, gnome",
+        "cost": 20,
+        "damage_s": "1d4/1d4",
+        "damage_m": "1d6/1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 8,
+        "type": "B",
+        "special": [
+          "trip"
+        ]
+      },
+      {
+        "name": "Boarding gaff",
+        "cost": 8,
+        "damage_s": "1d4/1d4",
+        "damage_m": "1d6/1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 8,
+        "type": "S",
+        "special": [
+          "double",
+          "reach",
+          "trip"
+        ]
+      },
+      {
+        "name": "Chain-hammer",
+        "cost": 35,
+        "damage_s": "1d4/1d4",
+        "damage_m": "1d6/1d6",
+        "critical": "×2",
+        "range": 20,
+        "weight": 8,
+        "type": "B",
+        "special": [
+          "double",
+          "see text"
+        ]
+      },
+      {
+        "name": "Chain, spiked",
+        "cost": 25,
+        "damage_s": "1d6",
+        "damage_m": "2d4",
+        "critical": "x2",
+        "range": 0,
+        "weight": 10,
+        "type": "P",
+        "special": [
+          "disarm",
+          "trip"
+        ]
+      },
+      {
+        "name": "Crook",
+        "cost": 1,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 5,
+        "type": "B",
+        "special": [
+          "reach",
+          "trip"
+        ]
+      },
+      {
+        "name": "Curve blade, elven",
+        "cost": 80,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "18–20/x2",
+        "range": 0,
+        "weight": 7,
+        "type": "S",
+        "special": []
+      },
+      {
+        "name": "Dorn-Dergar, dwarven",
+        "cost": 50,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x2",
+        "range": 0,
+        "weight": 15,
+        "type": "B",
+        "special": [
+          "reach",
+          "see text"
+        ]
+      },
+      {
+        "name": "Double spear",
+        "cost": 25,
+        "damage_s": "1d6/1d6",
+        "damage_m": "1d8/1d8",
+        "critical": "×3",
+        "range": 0,
+        "weight": 12,
+        "type": "P",
+        "special": [
+          "double"
+        ]
+      },
+      {
+        "name": "Elven branched spear",
+        "cost": 20,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 0,
+        "weight": 10,
+        "type": "P",
+        "special": [
+          "brace",
+          "reach"
+        ]
+      },
+      {
+        "name": "Fauchard",
+        "cost": 14,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "18-20/x2",
+        "range": 0,
+        "weight": 10,
+        "type": "S",
+        "special": [
+          "reach",
+          "trip"
+        ]
+      },
+      {
+        "name": "Flail, dire",
+        "cost": 90,
+        "damage_s": "1d6/1d6",
+        "damage_m": "1d8/1d8",
+        "critical": "x2",
+        "range": 0,
+        "weight": 10,
+        "type": "B",
+        "special": [
+          "disarm",
+          "double",
+          "trip"
+        ]
+      },
+      {
+        "name": "Flailpole",
+        "cost": 15,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x2",
+        "range": 0,
+        "weight": 10,
+        "type": "B",
+        "special": [
+          "disarm",
+          "reach",
+          "trip"
+        ]
+      },
+      {
+        "name": "Flambard",
+        "cost": 50,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 6,
+        "type": "S",
+        "special": [
+          "sunder"
+        ]
+      },
+      {
+        "name": "Flying blade",
+        "cost": 40,
+        "damage_s": "1d10",
+        "damage_m": "1d12",
+        "critical": "x3",
+        "range": 0,
+        "weight": 12,
+        "type": "S",
+        "special": [
+          "performance",
+          "reach"
+        ]
+      },
+      {
+        "name": "Garrote",
+        "cost": 3,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 1,
+        "type": "S",
+        "special": [
+          "grapple",
+          "see text"
+        ]
+      },
+      {
+        "name": "Giant-Sticker, Dwarven",
+        "cost": 25,
+        "damage_s": "1d8",
+        "damage_m": "2d6",
+        "critical": "x3",
+        "range": 0,
+        "weight": 12,
+        "type": "P or S",
+        "special": [
+          "brace",
+          "reach"
+        ]
+      },
+      {
+        "name": "Hammer, Gnome hooked",
+        "cost": 20,
+        "damage_s": "1d6/1d4",
+        "damage_m": "1d8/1d6",
+        "critical": "x3/x4",
+        "range": 0,
+        "weight": 6,
+        "type": "B or P",
+        "special": [
+          "double",
+          "trip"
+        ]
+      },
+      {
+        "name": "Harpoon",
+        "cost": 5,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 10,
+        "weight": 16,
+        "type": "P",
+        "special": [
+          "grapple"
+        ]
+      },
+      {
+        "name": "Longaxe, dwarven",
+        "cost": 50,
+        "damage_s": "1d10",
+        "damage_m": "1d12",
+        "critical": "x3",
+        "range": 0,
+        "weight": 14,
+        "type": "S",
+        "special": [
+          "reach"
+        ]
+      },
+      {
+        "name": "Longhammer, dwarven",
+        "cost": 70,
+        "damage_s": "1d10",
+        "damage_m": "2d6",
+        "critical": "x3",
+        "range": 0,
+        "weight": 20,
+        "type": "B",
+        "special": [
+          "reach"
+        ]
+      },
+      {
+        "name": "Mancatcher",
+        "cost": 15,
+        "damage_s": "1",
+        "damage_m": "1d2",
+        "critical": "x2",
+        "range": 0,
+        "weight": 10,
+        "type": "P",
+        "special": [
+          "grapple",
+          "reach",
+          "see text"
+        ]
+      },
+      {
+        "name": "Orc skull ram",
+        "cost": 15,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x3",
+        "range": 0,
+        "weight": 20,
+        "type": "B",
+        "special": [
+          "reach"
+        ]
+      },
+      {
+        "name": "Piston maul, gnome",
+        "cost": 70,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x2",
+        "range": 0,
+        "weight": 15,
+        "type": "B",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Ripsaw glaive, gnome",
+        "cost": 30,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x3",
+        "range": 0,
+        "weight": 12,
+        "type": "S",
+        "special": [
+          "reach",
+          "see text"
+        ]
+      },
+      {
+        "name": "Scarf, bladed",
+        "cost": 12,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 2,
+        "type": "S",
+        "special": [
+          "disarm",
+          "trip"
+        ]
+      },
+      {
+        "name": "Spear, totem",
+        "cost": 25,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x3",
+        "range": 10,
+        "weight": 6,
+        "type": "P or S",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Sphinx Hammer, Dwarven",
+        "cost": 45,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "x3",
+        "range": 20,
+        "weight": 8,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Switchscythe",
+        "cost": 18,
+        "damage_s": "1d6",
+        "damage_m": "2d4",
+        "critical": "×4",
+        "range": 0,
+        "weight": 10,
+        "type": "P or S",
+        "special": [
+          "trip"
+        ]
+      },
+      {
+        "name": "Sword, two-bladed",
+        "cost": 100,
+        "damage_s": "1d6/1d6",
+        "damage_m": "1d8/1d8",
+        "critical": "19-20/x2",
+        "range": 0,
+        "weight": 10,
+        "type": "S",
+        "special": [
+          "double"
+        ]
+      },
+      {
+        "name": "Urgrosh, dwarven",
+        "cost": 50,
+        "damage_s": "1d6/1d4",
+        "damage_m": "1d8/1d6",
+        "critical": "x3",
+        "range": 0,
+        "weight": 12,
+        "type": "P or S",
+        "special": [
+          "brace",
+          "double"
+        ]
+      }
+    ],
+    "exotic_ranged": [
+      {
+        "name": "Darts, featherweight (10)",
+        "cost": 1,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 0,
+        "type": "—",
+        "special": []
+      },
+      {
+        "name": "Bola",
+        "cost": 5,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 10,
+        "weight": 2,
+        "type": "B",
+        "special": [
+          "nonlethal",
+          "trip"
+        ]
+      },
+      {
+        "name": "Bola, Brutal",
+        "cost": 15,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 10,
+        "weight": 2,
+        "type": "B and P",
+        "special": [
+          "trip"
+        ]
+      },
+      {
+        "name": "Boomerang",
+        "cost": 3,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 30,
+        "weight": 3,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Bow, thorn",
+        "cost": 50,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x3",
+        "range": 40,
+        "weight": 2,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Crossbow, crank (heavy)",
+        "cost": 400,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "19-20/x2",
+        "range": 120,
+        "weight": 12,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Crossbow, crank (light)",
+        "cost": 250,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "19-20/x2",
+        "range": 80,
+        "weight": 6,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Crossbow, double",
+        "cost": 300,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "19-20/x2",
+        "range": 80,
+        "weight": 18,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Crossbow, hand",
+        "cost": 100,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "19-20/x2",
+        "range": 30,
+        "weight": 2,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Crossbow, launching",
+        "cost": 75,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 30,
+        "weight": 8,
+        "type": "—",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Crossbow, repeating heavy",
+        "cost": 400,
+        "damage_s": "1d8",
+        "damage_m": "1d10",
+        "critical": "19-20/x2",
+        "range": 120,
+        "weight": 12,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Crossbow, repeating light",
+        "cost": 250,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "19-20/x2",
+        "range": 80,
+        "weight": 6,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Flask Thrower",
+        "cost": 25,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 20,
+        "weight": 4,
+        "type": "—",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Grappling hook",
+        "cost": 6,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 10,
+        "weight": 14,
+        "type": "P",
+        "special": [
+          "grapple"
+        ]
+      },
+      {
+        "name": "Hornbow, orc",
+        "cost": 130,
+        "damage_s": "1d8",
+        "damage_m": "2d6",
+        "critical": "×3",
+        "range": 80,
+        "weight": 7,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Javelin, stormshaft",
+        "cost": 35,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "×2",
+        "range": 30,
+        "weight": 3,
+        "type": "P",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Lasso",
+        "cost": 1,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 5,
+        "type": "—",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Net",
+        "cost": 20,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 10,
+        "weight": 6,
+        "type": "—",
+        "special": []
+      },
+      {
+        "name": "Net, snag",
+        "cost": 30,
+        "damage_s": "see text",
+        "damage_m": "see text",
+        "critical": "—",
+        "range": 10,
+        "weight": 10,
+        "type": "P",
+        "special": [
+          "trip",
+          "see text"
+        ]
+      },
+      {
+        "name": "Pelletbow, Dwarven Heavy",
+        "cost": 75,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "19-20/x3",
+        "range": 60,
+        "weight": 8,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Pelletbow, Dwarven Light",
+        "cost": 50,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "19-20/x3",
+        "range": 40,
+        "weight": 4,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Shield, throwing",
+        "cost": 50,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 20,
+        "weight": 0,
+        "type": "B",
+        "special": [
+          "performance",
+          "trip"
+        ]
+      },
+      {
+        "name": "Shrillshaft javelin",
+        "cost": 35,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 30,
+        "weight": 3,
+        "type": "P",
+        "special": [
+          "see text"
+        ]
+      },
+      {
+        "name": "Shuriken (5)",
+        "cost": 1,
+        "damage_s": "1",
+        "damage_m": "1d2",
+        "critical": "x2",
+        "range": 10,
+        "weight": 1,
+        "type": "P",
+        "special": [
+          "monk"
+        ]
+      },
+      {
+        "name": "Sling, double",
+        "cost": 10,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 50,
+        "weight": 1,
+        "type": "B",
+        "special": [
+          "double",
+          "see text"
+        ]
+      },
+      {
+        "name": "Sling glove",
+        "cost": 5,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "x2",
+        "range": 50,
+        "weight": 2,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Sling staff, halfling",
+        "cost": 20,
+        "damage_s": "1d6",
+        "damage_m": "1d8",
+        "critical": "x3",
+        "range": 80,
+        "weight": 3,
+        "type": "B",
+        "special": []
+      },
+      {
+        "name": "Sling, stitched",
+        "cost": 0,
+        "damage_s": "1d4",
+        "damage_m": "1d6",
+        "critical": "x2",
+        "range": 0,
+        "weight": 1,
+        "type": "B",
+        "special": [
+          "disarm",
+          "trip"
+        ]
+      },
+      {
+        "name": "Wrist launcher",
+        "cost": 200,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 20,
+        "weight": 1,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Wrist launcher, heavy",
+        "cost": 250,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "19–20/x2",
+        "range": 30,
+        "weight": 2,
+        "type": "P",
+        "special": []
+      }
+    ],
+    "exotic_ammunition": [
+      {
+        "name": "Crossbow bolt(s), heavy/light/hand (10)",
+        "cost": 1,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 1,
+        "type": "—",
+        "special": []
+      },
+      {
+        "name": "Crossbow bolt(s), repeating, heavy/light (5)",
+        "cost": 1,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 1,
+        "type": "—",
+        "special": []
+      },
+      {
+        "name": "Little starstones (10)",
+        "cost": 5,
+        "damage_s": "1",
+        "damage_m": "1",
+        "critical": "—",
+        "range": 0,
+        "weight": 2,
+        "type": "B",
+        "special": [
+          "nonlethal"
+        ]
+      },
+      {
+        "name": "Sharpstones (10)",
+        "cost": 1,
+        "damage_s": "1d3",
+        "damage_m": "1d4",
+        "critical": "—",
+        "range": 0,
+        "weight": 5,
+        "type": "P or S",
+        "special": []
+      },
+      {
+        "name": "Softstones (10)",
+        "cost": 1,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 4,
+        "type": "B",
+        "special": [
+          "nonlethal"
+        ]
+      },
+      {
+        "name": "Spongestones (10)",
+        "cost": 10,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 2,
+        "type": "P",
+        "special": []
+      },
+      {
+        "name": "Thorn (20)",
+        "cost": 1,
+        "damage_s": "—",
+        "damage_m": "—",
+        "critical": "—",
+        "range": 0,
+        "weight": 1,
+        "type": "—",
+        "special": []
+      }
     ]
   },
   "armor": {
     "light": [
-      {"name": "Padded", "cost": 5, "ac_bonus": 1, "max_dex": 8, "armor_check": 0, "spell_failure": 5, "speed_30": 30, "speed_20": 20, "weight": 10},
-      {"name": "Leather", "cost": 10, "ac_bonus": 2, "max_dex": 6, "armor_check": 0, "spell_failure": 10, "speed_30": 30, "speed_20": 20, "weight": 15},
-      {"name": "Studded Leather", "cost": 25, "ac_bonus": 3, "max_dex": 5, "armor_check": -1, "spell_failure": 15, "speed_30": 30, "speed_20": 20, "weight": 20},
-      {"name": "Chain Shirt", "cost": 100, "ac_bonus": 4, "max_dex": 4, "armor_check": -2, "spell_failure": 20, "speed_30": 30, "speed_20": 20, "weight": 25}
+      {
+        "name": "Armored kilt",
+        "cost": 20,
+        "ac_bonus": 1,
+        "max_dex": 6,
+        "armor_check": 0,
+        "spell_failure": 0,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 10
+      },
+      {
+        "name": "Dancing scarves",
+        "cost": 150,
+        "ac_bonus": 0,
+        "max_dex": 0,
+        "armor_check": 0,
+        "spell_failure": 0,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 8
+      },
+      {
+        "name": "Haramaki",
+        "cost": 3,
+        "ac_bonus": 1,
+        "max_dex": 0,
+        "armor_check": 0,
+        "spell_failure": 0,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 1
+      },
+      {
+        "name": "Padded",
+        "cost": 5,
+        "ac_bonus": 1,
+        "max_dex": 8,
+        "armor_check": 0,
+        "spell_failure": 5,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 10
+      },
+      {
+        "name": "Quilted cloth",
+        "cost": 100,
+        "ac_bonus": 1,
+        "max_dex": 8,
+        "armor_check": 0,
+        "spell_failure": 10,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 15
+      },
+      {
+        "name": "Reinforced tunic",
+        "cost": 1,
+        "ac_bonus": 1,
+        "max_dex": 5,
+        "armor_check": 0,
+        "spell_failure": 5,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 5
+      },
+      {
+        "name": "Silken ceremonial armor",
+        "cost": 30,
+        "ac_bonus": 1,
+        "max_dex": 0,
+        "armor_check": 0,
+        "spell_failure": 0,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 8
+      },
+      {
+        "name": "Lamellar cuirass",
+        "cost": 15,
+        "ac_bonus": 2,
+        "max_dex": 4,
+        "armor_check": 0,
+        "spell_failure": 5,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 8
+      },
+      {
+        "name": "Leather",
+        "cost": 10,
+        "ac_bonus": 2,
+        "max_dex": 6,
+        "armor_check": 0,
+        "spell_failure": 10,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 15
+      },
+      {
+        "name": "Rosewood armor",
+        "cost": 50,
+        "ac_bonus": 2,
+        "max_dex": 6,
+        "armor_check": 0,
+        "spell_failure": 10,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 15
+      },
+      {
+        "name": "Hell Knight leather",
+        "cost": 30,
+        "ac_bonus": 3,
+        "max_dex": 5,
+        "armor_check": -1,
+        "spell_failure": 15,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 25
+      },
+      {
+        "name": "Hide shirt",
+        "cost": 20,
+        "ac_bonus": 3,
+        "max_dex": 4,
+        "armor_check": -1,
+        "spell_failure": 15,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 18
+      },
+      {
+        "name": "Leaf armor",
+        "cost": 500,
+        "ac_bonus": 3,
+        "max_dex": 5,
+        "armor_check": 0,
+        "spell_failure": 15,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 20
+      },
+      {
+        "name": "Parade armor",
+        "cost": 25,
+        "ac_bonus": 3,
+        "max_dex": 5,
+        "armor_check": -1,
+        "spell_failure": 15,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 20
+      },
+      {
+        "name": "Spider-silk bodysuit",
+        "cost": 850,
+        "ac_bonus": 3,
+        "max_dex": 6,
+        "armor_check": -1,
+        "spell_failure": 10,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 4
+      },
+      {
+        "name": "Studded leather",
+        "cost": 25,
+        "ac_bonus": 3,
+        "max_dex": 5,
+        "armor_check": -1,
+        "spell_failure": 15,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 20
+      },
+      {
+        "name": "Wooden",
+        "cost": 20,
+        "ac_bonus": 3,
+        "max_dex": 3,
+        "armor_check": -1,
+        "spell_failure": 15,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 25
+      },
+      {
+        "name": "Chain shirt",
+        "cost": 100,
+        "ac_bonus": 4,
+        "max_dex": 4,
+        "armor_check": -2,
+        "spell_failure": 20,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 25
+      },
+      {
+        "name": "Lamellar (leather)",
+        "cost": 60,
+        "ac_bonus": 4,
+        "max_dex": 3,
+        "armor_check": -2,
+        "spell_failure": 20,
+        "speed_30": 30,
+        "speed_20": 20,
+        "weight": 25
+      }
     ],
     "medium": [
-      {"name": "Hide", "cost": 15, "ac_bonus": 4, "max_dex": 4, "armor_check": -3, "spell_failure": 20, "speed_30": 20, "speed_20": 15, "weight": 25},
-      {"name": "Scale Mail", "cost": 50, "ac_bonus": 5, "max_dex": 3, "armor_check": -4, "spell_failure": 25, "speed_30": 20, "speed_20": 15, "weight": 30},
-      {"name": "Chainmail", "cost": 150, "ac_bonus": 6, "max_dex": 2, "armor_check": -5, "spell_failure": 30, "speed_30": 20, "speed_20": 15, "weight": 40},
-      {"name": "Breastplate", "cost": 200, "ac_bonus": 6, "max_dex": 3, "armor_check": -4, "spell_failure": 25, "speed_30": 20, "speed_20": 15, "weight": 30}
+      {
+        "name": "Armored coat",
+        "cost": 50,
+        "ac_bonus": 4,
+        "max_dex": 3,
+        "armor_check": -2,
+        "spell_failure": 20,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 20
+      },
+      {
+        "name": "Chain coat",
+        "cost": 75,
+        "ac_bonus": 4,
+        "max_dex": 5,
+        "armor_check": -2,
+        "spell_failure": 30,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 40
+      },
+      {
+        "name": "Hide",
+        "cost": 15,
+        "ac_bonus": 4,
+        "max_dex": 4,
+        "armor_check": -3,
+        "spell_failure": 20,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 25
+      },
+      {
+        "name": "Ice coat",
+        "cost": 80,
+        "ac_bonus": 4,
+        "max_dex": 3,
+        "armor_check": -2,
+        "spell_failure": 20,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 24
+      },
+      {
+        "name": "Do-maru",
+        "cost": 200,
+        "ac_bonus": 5,
+        "max_dex": 4,
+        "armor_check": -4,
+        "spell_failure": 25,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 30
+      },
+      {
+        "name": "Kikko",
+        "cost": 250,
+        "ac_bonus": 5,
+        "max_dex": 4,
+        "armor_check": -3,
+        "spell_failure": 20,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 25
+      },
+      {
+        "name": "Lamellar (horn)",
+        "cost": 100,
+        "ac_bonus": 5,
+        "max_dex": 3,
+        "armor_check": -4,
+        "spell_failure": 25,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 30
+      },
+      {
+        "name": "Scale mail",
+        "cost": 50,
+        "ac_bonus": 5,
+        "max_dex": 3,
+        "armor_check": -4,
+        "spell_failure": 25,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 30
+      },
+      {
+        "name": "Breastplate",
+        "cost": 200,
+        "ac_bonus": 6,
+        "max_dex": 3,
+        "armor_check": -4,
+        "spell_failure": 25,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 30
+      },
+      {
+        "name": "Breastplate (agile)",
+        "cost": 400,
+        "ac_bonus": 6,
+        "max_dex": 3,
+        "armor_check": -4,
+        "spell_failure": 25,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 25
+      },
+      {
+        "name": "Chainmail",
+        "cost": 150,
+        "ac_bonus": 6,
+        "max_dex": 2,
+        "armor_check": -5,
+        "spell_failure": 30,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 40
+      },
+      {
+        "name": "Four mirror",
+        "cost": 125,
+        "ac_bonus": 6,
+        "max_dex": 2,
+        "armor_check": -5,
+        "spell_failure": 30,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 45
+      },
+      {
+        "name": "Lamellar (steel)",
+        "cost": 150,
+        "ac_bonus": 6,
+        "max_dex": 3,
+        "armor_check": -5,
+        "spell_failure": 25,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 35
+      },
+      {
+        "name": "Mountain pattern",
+        "cost": 250,
+        "ac_bonus": 6,
+        "max_dex": 3,
+        "armor_check": -4,
+        "spell_failure": 30,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 40
+      }
     ],
     "heavy": [
-      {"name": "Splint Mail", "cost": 200, "ac_bonus": 7, "max_dex": 0, "armor_check": -7, "spell_failure": 40, "speed_30": 20, "speed_20": 15, "weight": 45},
-      {"name": "Banded Mail", "cost": 250, "ac_bonus": 7, "max_dex": 1, "armor_check": -6, "spell_failure": 35, "speed_30": 20, "speed_20": 15, "weight": 35},
-      {"name": "Half-Plate", "cost": 600, "ac_bonus": 8, "max_dex": 0, "armor_check": -7, "spell_failure": 40, "speed_30": 20, "speed_20": 15, "weight": 50},
-      {"name": "Full Plate", "cost": 1500, "ac_bonus": 9, "max_dex": 1, "armor_check": -6, "spell_failure": 35, "speed_30": 20, "speed_20": 15, "weight": 50}
+      {
+        "name": "Banded mail",
+        "cost": 250,
+        "ac_bonus": 7,
+        "max_dex": 1,
+        "armor_check": -6,
+        "spell_failure": 35,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 35
+      },
+      {
+        "name": "Field plate",
+        "cost": 1200,
+        "ac_bonus": 7,
+        "max_dex": 1,
+        "armor_check": -5,
+        "spell_failure": 35,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 50
+      },
+      {
+        "name": "Kusari gusoku",
+        "cost": 350,
+        "ac_bonus": 7,
+        "max_dex": 1,
+        "armor_check": -7,
+        "spell_failure": 35,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 45
+      },
+      {
+        "name": "Lamellar (iron)",
+        "cost": 200,
+        "ac_bonus": 7,
+        "max_dex": 0,
+        "armor_check": -7,
+        "spell_failure": 40,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 50
+      },
+      {
+        "name": "Splint mail",
+        "cost": 200,
+        "ac_bonus": 7,
+        "max_dex": 0,
+        "armor_check": -7,
+        "spell_failure": 40,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 45
+      },
+      {
+        "name": "Tatami-do",
+        "cost": 1000,
+        "ac_bonus": 7,
+        "max_dex": 3,
+        "armor_check": -6,
+        "spell_failure": 35,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 45
+      },
+      {
+        "name": "Fortress plate",
+        "cost": 2100,
+        "ac_bonus": 8,
+        "max_dex": 0,
+        "armor_check": -7,
+        "spell_failure": 40,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 75
+      },
+      {
+        "name": "Half-plate",
+        "cost": 600,
+        "ac_bonus": 8,
+        "max_dex": 0,
+        "armor_check": -7,
+        "spell_failure": 40,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 50
+      },
+      {
+        "name": "Half-plate (agile)",
+        "cost": 850,
+        "ac_bonus": 8,
+        "max_dex": 0,
+        "armor_check": -7,
+        "spell_failure": 40,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 55
+      },
+      {
+        "name": "Hell Knight half-plate",
+        "cost": 850,
+        "ac_bonus": 8,
+        "max_dex": 0,
+        "armor_check": -7,
+        "spell_failure": 40,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 50
+      },
+      {
+        "name": "Lamellar (stone coat)",
+        "cost": 500,
+        "ac_bonus": 8,
+        "max_dex": 0,
+        "armor_check": -7,
+        "spell_failure": 40,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 45
+      },
+      {
+        "name": "O-yoroi",
+        "cost": 1700,
+        "ac_bonus": 8,
+        "max_dex": 2,
+        "armor_check": -6,
+        "spell_failure": 35,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 45
+      },
+      {
+        "name": "Full plate",
+        "cost": 1500,
+        "ac_bonus": 9,
+        "max_dex": 1,
+        "armor_check": -6,
+        "spell_failure": 35,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 50
+      },
+      {
+        "name": "Gray Maiden plate",
+        "cost": 1500,
+        "ac_bonus": 9,
+        "max_dex": 1,
+        "armor_check": -6,
+        "spell_failure": 35,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 50
+      },
+      {
+        "name": "Hell Knight plate",
+        "cost": 2000,
+        "ac_bonus": 9,
+        "max_dex": 1,
+        "armor_check": -5,
+        "spell_failure": 35,
+        "speed_30": 20,
+        "speed_20": 15,
+        "weight": 50
+      },
+      {
+        "name": "Stoneplate",
+        "cost": 1800,
+        "ac_bonus": 9,
+        "max_dex": 1,
+        "armor_check": -6,
+        "spell_failure": 35,
+        "speed_30": 15,
+        "speed_20": 10,
+        "weight": 75
+      }
     ],
     "shields": [
-      {"name": "Buckler", "cost": 5, "ac_bonus": 1, "armor_check": -1, "spell_failure": 5, "weight": 5},
-      {"name": "Shield, Light Wooden", "cost": 3, "ac_bonus": 1, "armor_check": -1, "spell_failure": 5, "weight": 5},
-      {"name": "Shield, Light Steel", "cost": 9, "ac_bonus": 1, "armor_check": -1, "spell_failure": 5, "weight": 6},
-      {"name": "Shield, Heavy Wooden", "cost": 7, "ac_bonus": 2, "armor_check": -2, "spell_failure": 15, "weight": 10},
-      {"name": "Shield, Heavy Steel", "cost": 20, "ac_bonus": 2, "armor_check": -2, "spell_failure": 15, "weight": 15},
-      {"name": "Shield, Tower", "cost": 30, "ac_bonus": 4, "max_dex": 2, "armor_check": -10, "spell_failure": 50, "weight": 45}
+      {
+        "name": "Buckler",
+        "cost": 5,
+        "ac_bonus": 1,
+        "max_dex": 0,
+        "armor_check": -1,
+        "spell_failure": 5,
+        "speed_30": 0,
+        "speed_20": 0,
+        "weight": 5
+      },
+      {
+        "name": "Klar",
+        "cost": 12,
+        "ac_bonus": 1,
+        "max_dex": 0,
+        "armor_check": -1,
+        "spell_failure": 5,
+        "speed_30": 0,
+        "speed_20": 0,
+        "weight": 6
+      },
+      {
+        "name": "Madu, leather",
+        "cost": 30,
+        "ac_bonus": 1,
+        "max_dex": 0,
+        "armor_check": -2,
+        "spell_failure": 5,
+        "speed_30": 0,
+        "speed_20": 0,
+        "weight": 5
+      },
+      {
+        "name": "Madu, steel",
+        "cost": 40,
+        "ac_bonus": 1,
+        "max_dex": 0,
+        "armor_check": -2,
+        "spell_failure": 5,
+        "speed_30": 0,
+        "speed_20": 0,
+        "weight": 6
+      },
+      {
+        "name": "Shield, light steel",
+        "cost": 9,
+        "ac_bonus": 1,
+        "max_dex": 0,
+        "armor_check": -1,
+        "spell_failure": 5,
+        "speed_30": 0,
+        "speed_20": 0,
+        "weight": 6
+      },
+      {
+        "name": "Shield, light steel (quickdraw)",
+        "cost": 59,
+        "ac_bonus": 1,
+        "max_dex": 0,
+        "armor_check": -2,
+        "spell_failure": 5,
+        "speed_30": 0,
+        "speed_20": 0,
+        "weight": 7
+      },
+      {
+        "name": "Shield, light wooden",
+        "cost": 3,
+        "ac_bonus": 1,
+        "max_dex": 0,
+        "armor_check": -1,
+        "spell_failure": 5,
+        "speed_30": 0,
+        "speed_20": 0,
+        "weight": 5
+      },
+      {
+        "name": "Shield, light wooden (quickdraw)",
+        "cost": 53,
+        "ac_bonus": 1,
+        "max_dex": 0,
+        "armor_check": -2,
+        "spell_failure": 5,
+        "speed_30": 0,
+        "speed_20": 0,
+        "weight": 6
+      },
+      {
+        "name": "Shield, heavy steel",
+        "cost": 20,
+        "ac_bonus": 2,
+        "max_dex": 0,
+        "armor_check": -2,
+        "spell_failure": 15,
+        "speed_30": 0,
+        "speed_20": 0,
+        "weight": 15
+      },
+      {
+        "name": "Shield, heavy wooden",
+        "cost": 7,
+        "ac_bonus": 2,
+        "max_dex": 0,
+        "armor_check": 2,
+        "spell_failure": 15,
+        "speed_30": 0,
+        "speed_20": 0,
+        "weight": 10
+      },
+      {
+        "name": "Shield, tower",
+        "cost": 30,
+        "ac_bonus": 43,
+        "max_dex": 2,
+        "armor_check": -10,
+        "spell_failure": 50,
+        "speed_30": 0,
+        "speed_20": 0,
+        "weight": 45
+      },
+      {
+        "name": "Snarlshield, steel",
+        "cost": 50,
+        "ac_bonus": 2,
+        "max_dex": 0,
+        "armor_check": -3,
+        "spell_failure": 15,
+        "speed_30": 0,
+        "speed_20": 0,
+        "weight": 20
+      },
+      {
+        "name": "Snarlshield, wooden",
+        "cost": 37,
+        "ac_bonus": 2,
+        "max_dex": 0,
+        "armor_check": -3,
+        "spell_failure": 15,
+        "speed_30": 0,
+        "speed_20": 0,
+        "weight": 15
+      },
+      {
+        "name": "War-shield, dwarven",
+        "cost": 50,
+        "ac_bonus": 1,
+        "max_dex": 0,
+        "armor_check": -1,
+        "spell_failure": 20,
+        "speed_30": 0,
+        "speed_20": 0,
+        "weight": 8
+      }
     ]
   },
   "adventuring_gear": [
-    {"name": "Backpack", "cost": 2, "weight": 2},
-    {"name": "Bedroll", "cost": 0.1, "weight": 5},
-    {"name": "Caltrops", "cost": 1, "weight": 2},
-    {"name": "Candle", "cost": 0.01, "weight": 0},
-    {"name": "Chain (10 ft.)", "cost": 30, "weight": 2},
-    {"name": "Chalk", "cost": 0.01, "weight": 0},
-    {"name": "Crowbar", "cost": 2, "weight": 5},
-    {"name": "Fishhook", "cost": 0.1, "weight": 0},
-    {"name": "Flint and Steel", "cost": 1, "weight": 0},
-    {"name": "Grappling Hook", "cost": 1, "weight": 4},
-    {"name": "Hammer", "cost": 0.5, "weight": 2},
-    {"name": "Ink (1 oz.)", "cost": 8, "weight": 0},
-    {"name": "Inkpen", "cost": 0.1, "weight": 0},
-    {"name": "Lantern, Bullseye", "cost": 12, "weight": 3},
-    {"name": "Lantern, Hooded", "cost": 7, "weight": 2},
-    {"name": "Lock, Simple", "cost": 20, "weight": 1},
-    {"name": "Lock, Average", "cost": 40, "weight": 1},
-    {"name": "Lock, Good", "cost": 80, "weight": 1},
-    {"name": "Manacles", "cost": 15, "weight": 2},
-    {"name": "Mirror, Small Steel", "cost": 10, "weight": 0.5},
-    {"name": "Oil (1-pint flask)", "cost": 0.1, "weight": 1},
-    {"name": "Paper (sheet)", "cost": 0.4, "weight": 0},
-    {"name": "Piton", "cost": 0.1, "weight": 0.5},
-    {"name": "Pole (10 ft.)", "cost": 0.05, "weight": 8},
-    {"name": "Pouch, Belt", "cost": 1, "weight": 0.5},
-    {"name": "Rations, Trail (per day)", "cost": 0.5, "weight": 1},
-    {"name": "Rope, Hemp (50 ft.)", "cost": 1, "weight": 10},
-    {"name": "Rope, Silk (50 ft.)", "cost": 10, "weight": 5},
-    {"name": "Sack", "cost": 0.1, "weight": 0.5},
-    {"name": "Spyglass", "cost": 1000, "weight": 1},
-    {"name": "Tent", "cost": 10, "weight": 20},
-    {"name": "Thieves' Tools", "cost": 30, "weight": 1},
-    {"name": "Thieves' Tools, Masterwork", "cost": 100, "weight": 2},
-    {"name": "Torch", "cost": 0.01, "weight": 1},
-    {"name": "Waterskin", "cost": 1, "weight": 4},
-    {"name": "Whetstone", "cost": 0.02, "weight": 1}
+    {
+      "name": "Acid (flask)",
+      "cost": 10,
+      "weight": 1,
+      "description": "1d6 acid damage"
+    },
+    {
+      "name": "Alchemist's Fire",
+      "cost": 20,
+      "weight": 1,
+      "description": "1d6 fire damage, burns for 2 rounds"
+    },
+    {
+      "name": "Alchemist's Lab",
+      "cost": 200,
+      "weight": 40,
+      "description": "+2 to Craft (alchemy) checks"
+    },
+    {
+      "name": "Ale (gallon)",
+      "cost": 0.2,
+      "weight": 8,
+      "description": "Common ale"
+    },
+    {
+      "name": "Ale (mug)",
+      "cost": 0.04,
+      "weight": 1,
+      "description": "Single serving of ale"
+    },
+    {
+      "name": "Antitoxin",
+      "cost": 50,
+      "weight": 0,
+      "description": "+5 alchemical bonus vs poison for 1 hour"
+    },
+    {
+      "name": "Artisan's Outfit",
+      "cost": 1,
+      "weight": 4,
+      "description": "Shirt, pants, boots, apron"
+    },
+    {
+      "name": "Artisan's Tools",
+      "cost": 5,
+      "weight": 5,
+      "description": "Tools for a specific craft"
+    },
+    {
+      "name": "Artisan's Tools, Masterwork",
+      "cost": 55,
+      "weight": 5,
+      "description": "+2 to specific Craft checks"
+    },
+    {
+      "name": "Backpack",
+      "cost": 2,
+      "weight": 2
+    },
+    {
+      "name": "Banquet (per person)",
+      "cost": 10,
+      "weight": 0,
+      "description": "Extravagant feast"
+    },
+    {
+      "name": "Barding, Chain",
+      "cost": 300,
+      "weight": 80,
+      "description": "Medium armor for mount"
+    },
+    {
+      "name": "Barding, Leather",
+      "cost": 40,
+      "weight": 30,
+      "description": "Light armor for mount"
+    },
+    {
+      "name": "Barrel",
+      "cost": 2,
+      "weight": 30,
+      "description": "Holds 10 cubic feet of liquid or dry goods"
+    },
+    {
+      "name": "Basket",
+      "cost": 0.4,
+      "weight": 1,
+      "description": "Holds 2 cubic feet of goods"
+    },
+    {
+      "name": "Bedroll",
+      "cost": 0.1,
+      "weight": 5
+    },
+    {
+      "name": "Bell",
+      "cost": 1,
+      "weight": 0,
+      "description": "Small bell"
+    },
+    {
+      "name": "Bit and Bridle",
+      "cost": 2,
+      "weight": 1,
+      "description": "For controlling mounts"
+    },
+    {
+      "name": "Blanket, Winter",
+      "cost": 0.5,
+      "weight": 3,
+      "description": "Heavy wool blanket"
+    },
+    {
+      "name": "Block and Tackle",
+      "cost": 5,
+      "weight": 5,
+      "description": "+5 to Strength for lifting"
+    },
+    {
+      "name": "Boots",
+      "cost": 1,
+      "weight": 1,
+      "description": "Leather boots"
+    },
+    {
+      "name": "Bottle, Wine Glass",
+      "cost": 2,
+      "weight": 0,
+      "description": "Holds 1.5 pints of liquid"
+    },
+    {
+      "name": "Bread (loaf)",
+      "cost": 0.02,
+      "weight": 0.5,
+      "description": "Standard loaf of bread"
+    },
+    {
+      "name": "Bucket",
+      "cost": 0.5,
+      "weight": 2,
+      "description": "Holds 1 cubic foot of liquid"
+    },
+    {
+      "name": "Caltrops",
+      "cost": 1,
+      "weight": 2
+    },
+    {
+      "name": "Candle",
+      "cost": 0.01,
+      "weight": 0
+    },
+    {
+      "name": "Candles (10)",
+      "cost": 0.1,
+      "weight": 0,
+      "description": "10 candles, each burns 1 hour, 5-ft dim light"
+    },
+    {
+      "name": "Case, Map or Scroll",
+      "cost": 1,
+      "weight": 0.5,
+      "description": "Leather tube for maps and scrolls"
+    },
+    {
+      "name": "Chain (10 ft.)",
+      "cost": 30,
+      "weight": 2
+    },
+    {
+      "name": "Chalk",
+      "cost": 0.01,
+      "weight": 0
+    },
+    {
+      "name": "Cheese (hunk)",
+      "cost": 0.1,
+      "weight": 0.5,
+      "description": "Wedge of cheese"
+    },
+    {
+      "name": "Chest, Large",
+      "cost": 10,
+      "weight": 100,
+      "description": "Holds 8 cubic feet of goods"
+    },
+    {
+      "name": "Chest, Medium",
+      "cost": 5,
+      "weight": 50,
+      "description": "Holds 4 cubic feet of goods"
+    },
+    {
+      "name": "Chest, Small",
+      "cost": 2,
+      "weight": 25,
+      "description": "Holds 2 cubic feet of goods"
+    },
+    {
+      "name": "Cleric's Vestments",
+      "cost": 5,
+      "weight": 6,
+      "description": "Religious ceremonial clothing"
+    },
+    {
+      "name": "Climber's Kit",
+      "cost": 80,
+      "weight": 5,
+      "description": "+2 to Climb checks"
+    },
+    {
+      "name": "Cloak",
+      "cost": 0.5,
+      "weight": 2,
+      "description": "Simple cloth cloak"
+    },
+    {
+      "name": "Cloak, Winter",
+      "cost": 5,
+      "weight": 3,
+      "description": "Heavy wool cloak"
+    },
+    {
+      "name": "Cold Weather Outfit",
+      "cost": 8,
+      "weight": 7,
+      "description": "Wool coat, linen shirt, wool cap, gloves, cloak, boots"
+    },
+    {
+      "name": "Compass",
+      "cost": 10,
+      "weight": 0.5,
+      "description": "+2 to avoid getting lost"
+    },
+    {
+      "name": "Courtier's Outfit",
+      "cost": 30,
+      "weight": 6,
+      "description": "Fancy clothing for noble courts"
+    },
+    {
+      "name": "Crowbar",
+      "cost": 2,
+      "weight": 5
+    },
+    {
+      "name": "Disguise Kit",
+      "cost": 50,
+      "weight": 8,
+      "description": "+2 to Disguise checks"
+    },
+    {
+      "name": "Entertainer's Outfit",
+      "cost": 3,
+      "weight": 4,
+      "description": "Flashy clothes for performers"
+    },
+    {
+      "name": "Explorer's Outfit",
+      "cost": 10,
+      "weight": 8,
+      "description": "Boots, breeches, belt, shirt, jacket, gloves, cloak"
+    },
+    {
+      "name": "Feed (per day)",
+      "cost": 0.05,
+      "weight": 10,
+      "description": "Animal feed for one day"
+    },
+    {
+      "name": "Firewood (per day)",
+      "cost": 0.01,
+      "weight": 20,
+      "description": "Bundle of firewood"
+    },
+    {
+      "name": "Fishhook",
+      "cost": 0.1,
+      "weight": 0
+    },
+    {
+      "name": "Fishing Net",
+      "cost": 4,
+      "weight": 5,
+      "description": "25 sq. ft. net"
+    },
+    {
+      "name": "Flask",
+      "cost": 0.03,
+      "weight": 0,
+      "description": "Holds 1 pint of liquid"
+    },
+    {
+      "name": "Flint and Steel",
+      "cost": 1,
+      "weight": 0
+    },
+    {
+      "name": "Gloves",
+      "cost": 1,
+      "weight": 0,
+      "description": "Leather gloves"
+    },
+    {
+      "name": "Grappling Hook",
+      "cost": 1,
+      "weight": 4
+    },
+    {
+      "name": "Hammer",
+      "cost": 0.5,
+      "weight": 2
+    },
+    {
+      "name": "Hat",
+      "cost": 0.1,
+      "weight": 0,
+      "description": "Simple hat"
+    },
+    {
+      "name": "Healer's Kit",
+      "cost": 50,
+      "weight": 1,
+      "description": "10 uses, +2 to Heal checks"
+    },
+    {
+      "name": "Hireling, Trained (per day)",
+      "cost": 0.3,
+      "weight": 0,
+      "description": "Scribe, teamster"
+    },
+    {
+      "name": "Hireling, Untrained (per day)",
+      "cost": 0.1,
+      "weight": 0,
+      "description": "Laborer, porter"
+    },
+    {
+      "name": "Holly and Mistletoe",
+      "cost": 0,
+      "weight": 0,
+      "description": "Druid divine focus"
+    },
+    {
+      "name": "Holy Symbol, Silver",
+      "cost": 25,
+      "weight": 1,
+      "description": "Silver divine focus"
+    },
+    {
+      "name": "Holy Symbol, Wooden",
+      "cost": 1,
+      "weight": 0,
+      "description": "Wooden divine focus"
+    },
+    {
+      "name": "Holy Water (flask)",
+      "cost": 25,
+      "weight": 1,
+      "description": "2d4 damage to undead/evil outsiders"
+    },
+    {
+      "name": "Hourglass",
+      "cost": 25,
+      "weight": 1,
+      "description": "Measures 1 hour"
+    },
+    {
+      "name": "Ink (1 oz.)",
+      "cost": 8,
+      "weight": 0
+    },
+    {
+      "name": "Inkpen",
+      "cost": 0.1,
+      "weight": 0
+    },
+    {
+      "name": "Inn Stay, Common (per night)",
+      "cost": 0.5,
+      "weight": 0,
+      "description": "Bed in common room"
+    },
+    {
+      "name": "Inn Stay, Good (per night)",
+      "cost": 2,
+      "weight": 0,
+      "description": "Small private room"
+    },
+    {
+      "name": "Inn Stay, Luxury (per night)",
+      "cost": 5,
+      "weight": 0,
+      "description": "Large suite"
+    },
+    {
+      "name": "Jug, Clay",
+      "cost": 0.03,
+      "weight": 1,
+      "description": "Holds 1 gallon of liquid"
+    },
+    {
+      "name": "Ladder, 10-ft.",
+      "cost": 0.05,
+      "weight": 20,
+      "description": "Wooden ladder"
+    },
+    {
+      "name": "Lamp, Common",
+      "cost": 0.1,
+      "weight": 1,
+      "description": "Burns 6 hours on 1 pint of oil, 15-ft radius"
+    },
+    {
+      "name": "Lantern, Bullseye",
+      "cost": 12,
+      "weight": 3
+    },
+    {
+      "name": "Lantern, Hooded",
+      "cost": 7,
+      "weight": 2
+    },
+    {
+      "name": "Lock, Average",
+      "cost": 40,
+      "weight": 1
+    },
+    {
+      "name": "Lock, Good",
+      "cost": 80,
+      "weight": 1
+    },
+    {
+      "name": "Lock, Simple",
+      "cost": 20,
+      "weight": 1
+    },
+    {
+      "name": "Magnifying Glass",
+      "cost": 100,
+      "weight": 0,
+      "description": "+2 to Appraise for small items"
+    },
+    {
+      "name": "Manacles",
+      "cost": 15,
+      "weight": 2
+    },
+    {
+      "name": "Meal, Common",
+      "cost": 0.3,
+      "weight": 0,
+      "description": "Bread, cheese, and drink"
+    },
+    {
+      "name": "Meal, Good",
+      "cost": 0.5,
+      "weight": 0,
+      "description": "Meat, bread, vegetables, and drink"
+    },
+    {
+      "name": "Meat, Chunk",
+      "cost": 0.3,
+      "weight": 0.5,
+      "description": "Chunk of cooked meat"
+    },
+    {
+      "name": "Messenger (per mile)",
+      "cost": 0.02,
+      "weight": 0,
+      "description": "Deliver a message"
+    },
+    {
+      "name": "Mirror, Small Steel",
+      "cost": 10,
+      "weight": 0.5
+    },
+    {
+      "name": "Monk's Outfit",
+      "cost": 5,
+      "weight": 2,
+      "description": "Simple loose clothing"
+    },
+    {
+      "name": "Musical Instrument, Common",
+      "cost": 5,
+      "weight": 3,
+      "description": "Flute, lute, mandolin, etc."
+    },
+    {
+      "name": "Musical Instrument, Masterwork",
+      "cost": 100,
+      "weight": 3,
+      "description": "+2 to Perform checks"
+    },
+    {
+      "name": "Noble's Outfit",
+      "cost": 75,
+      "weight": 10,
+      "description": "Silk, velvet, fur trim"
+    },
+    {
+      "name": "Oil (1-pint flask)",
+      "cost": 0.1,
+      "weight": 1
+    },
+    {
+      "name": "Paper (sheet)",
+      "cost": 0.4,
+      "weight": 0
+    },
+    {
+      "name": "Parchment (sheet)",
+      "cost": 0.2,
+      "weight": 0,
+      "description": "Animal skin writing surface"
+    },
+    {
+      "name": "Peasant's Outfit",
+      "cost": 0.1,
+      "weight": 2,
+      "description": "Loose shirt, breeches, sandals"
+    },
+    {
+      "name": "Perfume (dose)",
+      "cost": 5,
+      "weight": 0,
+      "description": "Fine perfume"
+    },
+    {
+      "name": "Piton",
+      "cost": 0.1,
+      "weight": 0.5
+    },
+    {
+      "name": "Pole (10 ft.)",
+      "cost": 0.05,
+      "weight": 8
+    },
+    {
+      "name": "Pouch, Belt",
+      "cost": 1,
+      "weight": 0.5
+    },
+    {
+      "name": "Powder (packet)",
+      "cost": 0.01,
+      "weight": 0,
+      "description": "Cosmetic powder"
+    },
+    {
+      "name": "Rations, Trail (per day)",
+      "cost": 0.5,
+      "weight": 1
+    },
+    {
+      "name": "Road/Gate Toll",
+      "cost": 0.01,
+      "weight": 0,
+      "description": "Typical toll"
+    },
+    {
+      "name": "Rope, Hemp (50 ft.)",
+      "cost": 1,
+      "weight": 10
+    },
+    {
+      "name": "Rope, Silk (50 ft.)",
+      "cost": 10,
+      "weight": 5
+    },
+    {
+      "name": "Royal Outfit",
+      "cost": 200,
+      "weight": 15,
+      "description": "Jeweled, finest materials"
+    },
+    {
+      "name": "Sack",
+      "cost": 0.1,
+      "weight": 0.5
+    },
+    {
+      "name": "Saddle, Military",
+      "cost": 20,
+      "weight": 30,
+      "description": "+2 to Ride checks to stay mounted"
+    },
+    {
+      "name": "Saddle, Pack",
+      "cost": 5,
+      "weight": 15,
+      "description": "For pack animals"
+    },
+    {
+      "name": "Saddle, Riding",
+      "cost": 10,
+      "weight": 25,
+      "description": "Standard riding saddle"
+    },
+    {
+      "name": "Saddlebags",
+      "cost": 4,
+      "weight": 8,
+      "description": "Holds 20 lbs. each side"
+    },
+    {
+      "name": "Saw",
+      "cost": 0.04,
+      "weight": 2,
+      "description": "Hand saw"
+    },
+    {
+      "name": "Scale, Merchant",
+      "cost": 2,
+      "weight": 1,
+      "description": "Balance and weights"
+    },
+    {
+      "name": "Scholar's Outfit",
+      "cost": 5,
+      "weight": 6,
+      "description": "Robe, belt, cap, soft shoes"
+    },
+    {
+      "name": "Sealing Wax",
+      "cost": 1,
+      "weight": 1,
+      "description": "For sealing letters"
+    },
+    {
+      "name": "Sewing Needle",
+      "cost": 0.5,
+      "weight": 0,
+      "description": "Steel needle"
+    },
+    {
+      "name": "Ship Passage (per mile)",
+      "cost": 0.1,
+      "weight": 0,
+      "description": "Standard passage"
+    },
+    {
+      "name": "Shovel",
+      "cost": 2,
+      "weight": 8,
+      "description": "Digging tool"
+    },
+    {
+      "name": "Signal Whistle",
+      "cost": 0.8,
+      "weight": 0,
+      "description": "Audible for 1/4 mile"
+    },
+    {
+      "name": "Signet Ring",
+      "cost": 5,
+      "weight": 0,
+      "description": "Personal seal"
+    },
+    {
+      "name": "Sledge",
+      "cost": 1,
+      "weight": 10,
+      "description": "Heavy hammer"
+    },
+    {
+      "name": "Smokestick",
+      "cost": 20,
+      "weight": 0.5,
+      "description": "Creates 10-ft cube of smoke"
+    },
+    {
+      "name": "Soap",
+      "cost": 0.5,
+      "weight": 1,
+      "description": "1 lb. bar of soap"
+    },
+    {
+      "name": "Spell Component Pouch",
+      "cost": 5,
+      "weight": 2,
+      "description": "Holds material components"
+    },
+    {
+      "name": "Spellbook, Blank",
+      "cost": 15,
+      "weight": 3,
+      "description": "100 pages for spells"
+    },
+    {
+      "name": "Spyglass",
+      "cost": 1000,
+      "weight": 1
+    },
+    {
+      "name": "Stabling (per day)",
+      "cost": 0.5,
+      "weight": 0,
+      "description": "Care and shelter for mount"
+    },
+    {
+      "name": "String (50 ft.)",
+      "cost": 0.01,
+      "weight": 0.5,
+      "description": "Light cord"
+    },
+    {
+      "name": "Sunrod",
+      "cost": 2,
+      "weight": 1,
+      "description": "Glows for 6 hours, 30-ft normal light"
+    },
+    {
+      "name": "Tanglefoot Bag",
+      "cost": 50,
+      "weight": 4,
+      "description": "Entangles target"
+    },
+    {
+      "name": "Tent",
+      "cost": 10,
+      "weight": 20
+    },
+    {
+      "name": "Thieves' Tools",
+      "cost": 30,
+      "weight": 1
+    },
+    {
+      "name": "Thieves' Tools, Masterwork",
+      "cost": 100,
+      "weight": 2
+    },
+    {
+      "name": "Thread (50 ft.)",
+      "cost": 0.01,
+      "weight": 0,
+      "description": "Sewing thread"
+    },
+    {
+      "name": "Thunderstone",
+      "cost": 30,
+      "weight": 1,
+      "description": "DC 15 Fort or deafened 1 hour"
+    },
+    {
+      "name": "Tindertwig",
+      "cost": 1,
+      "weight": 0,
+      "description": "Ignites as move action"
+    },
+    {
+      "name": "Torch",
+      "cost": 0.01,
+      "weight": 1
+    },
+    {
+      "name": "Torches (10)",
+      "cost": 0.1,
+      "weight": 10,
+      "description": "10 torches, each burns 1 hour, 20-ft normal light"
+    },
+    {
+      "name": "Traveler's Outfit",
+      "cost": 1,
+      "weight": 5,
+      "description": "Boots, wool breeches, sturdy belt, shirt, jacket"
+    },
+    {
+      "name": "Vial",
+      "cost": 1,
+      "weight": 0,
+      "description": "Holds 1 ounce of liquid"
+    },
+    {
+      "name": "Waterskin",
+      "cost": 1,
+      "weight": 4
+    },
+    {
+      "name": "Whetstone",
+      "cost": 0.02,
+      "weight": 1
+    },
+    {
+      "name": "Wine, Common (pitcher)",
+      "cost": 0.2,
+      "weight": 6,
+      "description": "Common table wine"
+    },
+    {
+      "name": "Wine, Fine (bottle)",
+      "cost": 10,
+      "weight": 1.5,
+      "description": "Quality vintage wine"
+    },
+    {
+      "name": "Wire (1 ft.)",
+      "cost": 5,
+      "weight": 0,
+      "description": "Metal wire"
+    },
+    {
+      "name": "Writing Kit",
+      "cost": 10,
+      "weight": 1,
+      "description": "Ink, inkpens, paper"
+    }
   ],
   "potions": [
-    {"name": "Potion of Cure Light Wounds", "cost": 50, "spell_level": 1, "caster_level": 1, "effect": "Heals 1d8+1 hit points"},
-    {"name": "Potion of Cure Moderate Wounds", "cost": 300, "spell_level": 2, "caster_level": 3, "effect": "Heals 2d8+3 hit points"},
-    {"name": "Potion of Cure Serious Wounds", "cost": 750, "spell_level": 3, "caster_level": 5, "effect": "Heals 3d8+5 hit points"},
-    {"name": "Potion of Bull's Strength", "cost": 300, "spell_level": 2, "caster_level": 3, "effect": "+4 enhancement bonus to Strength for 3 minutes"},
-    {"name": "Potion of Cat's Grace", "cost": 300, "spell_level": 2, "caster_level": 3, "effect": "+4 enhancement bonus to Dexterity for 3 minutes"},
-    {"name": "Potion of Bear's Endurance", "cost": 300, "spell_level": 2, "caster_level": 3, "effect": "+4 enhancement bonus to Constitution for 3 minutes"},
-    {"name": "Potion of Invisibility", "cost": 300, "spell_level": 2, "caster_level": 3, "effect": "Invisible for 3 minutes or until attack"},
-    {"name": "Potion of Haste", "cost": 750, "spell_level": 3, "caster_level": 5, "effect": "+1 attack, +1 AC, +30 ft speed for 5 rounds"}
+    {
+      "name": "Potion of Cure Light Wounds",
+      "cost": 50,
+      "spell_level": 1,
+      "caster_level": 1,
+      "effect": "Heals 1d8+1 hit points"
+    },
+    {
+      "name": "Potion of Cure Moderate Wounds",
+      "cost": 300,
+      "spell_level": 2,
+      "caster_level": 3,
+      "effect": "Heals 2d8+3 hit points"
+    },
+    {
+      "name": "Potion of Cure Serious Wounds",
+      "cost": 750,
+      "spell_level": 3,
+      "caster_level": 5,
+      "effect": "Heals 3d8+5 hit points"
+    },
+    {
+      "name": "Potion of Bull's Strength",
+      "cost": 300,
+      "spell_level": 2,
+      "caster_level": 3,
+      "effect": "+4 enhancement bonus to Strength for 3 minutes"
+    },
+    {
+      "name": "Potion of Cat's Grace",
+      "cost": 300,
+      "spell_level": 2,
+      "caster_level": 3,
+      "effect": "+4 enhancement bonus to Dexterity for 3 minutes"
+    },
+    {
+      "name": "Potion of Bear's Endurance",
+      "cost": 300,
+      "spell_level": 2,
+      "caster_level": 3,
+      "effect": "+4 enhancement bonus to Constitution for 3 minutes"
+    },
+    {
+      "name": "Potion of Invisibility",
+      "cost": 300,
+      "spell_level": 2,
+      "caster_level": 3,
+      "effect": "Invisible for 3 minutes or until attack"
+    },
+    {
+      "name": "Potion of Haste",
+      "cost": 750,
+      "spell_level": 3,
+      "caster_level": 5,
+      "effect": "+1 attack, +1 AC, +30 ft speed for 5 rounds"
+    }
   ]
 }

@@ -72,6 +72,22 @@ class SRDData:
         """Get spell data."""
         return self._load_file("spells.json")
 
+    def get_feats(self) -> dict[str, Any]:
+        """Get feat data."""
+        return self._load_file("feats.json")
+
+    def get_magic_items(self) -> dict[str, Any]:
+        """Get magic item data."""
+        return self._load_file("magic_items.json")
+
+    def get_artifacts(self) -> dict[str, Any]:
+        """Get artifact data."""
+        return self._load_file("artifacts.json")
+
+    def get_treasure_tables(self) -> dict[str, Any]:
+        """Get treasure table data."""
+        return self._load_file("treasure_tables.json")
+
 
 class CharacterCreator:
     """AI-guided character creation wizard."""
