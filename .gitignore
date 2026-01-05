@@ -77,3 +77,7 @@ credentials.json
 # Voice models (download separately)
 models/voices/*.onnx
 models/voices/*.onnx.json
+
+# SRD data cache and backups
+data/srd/_cache/
+*_backup.json
