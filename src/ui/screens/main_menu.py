@@ -120,7 +120,7 @@ class MainMenuScreen(Screen):
         """Compose the main menu."""
         with Center():
             with Vertical(id="menu-container"):
-                yield Label("🎲 AI Dungeon Master", id="main-title")
+                yield Label(f"{Icons.DICE} AI Dungeon Master", id="main-title")
                 yield Label("Pathfinder 1st Edition", id="subtitle")
 
                 with Container(id="button-group"):

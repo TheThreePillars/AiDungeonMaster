@@ -6,8 +6,69 @@ from textual.containers import Container, Horizontal, Vertical
 from textual.screen import ModalScreen
 from textual.widgets import Button, DataTable, Input, Label, Static
 
+from ..icons import Icons
 from ...database.session import session_scope
 from ...database.models import Campaign, Session, Party
+
+
+class DeleteConfirmDialog(ModalScreen):
+    """A confirmation dialog for deleting saves."""
+
+    CSS = """
+    DeleteConfirmDialog {
+        align: center middle;
+    }
+
+    #delete-dialog {
+        width: 50;
+        height: auto;
+        border: thick $error;
+        background: $surface;
+        padding: 1 2;
+    }
+
+    #delete-title {
+        text-style: bold;
+        color: $error;
+        text-align: center;
+        margin-bottom: 1;
+    }
+
+    #delete-message {
+        margin-bottom: 1;
+        text-align: center;
+    }
+
+    #delete-buttons {
+        height: 3;
+        align: center middle;
+    }
+
+    #delete-buttons Button {
+        margin: 0 1;
+    }
+    """
+
+    def __init__(self, save_name: str):
+        super().__init__()
+        self._save_name = save_name
+
+    def compose(self) -> ComposeResult:
+        with Container(id="delete-dialog"):
+            yield Label(f"{Icons.WARNING}  Delete Save", id="delete-title")
+            yield Static(
+                f"Are you sure you want to delete:\n\n[bold]{self._save_name}[/bold]\n\nThis cannot be undone!",
+                id="delete-message"
+            )
+            with Horizontal(id="delete-buttons"):
+                yield Button("Yes, Delete", id="btn-confirm", variant="error")
+                yield Button("Cancel", id="btn-cancel")
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "btn-confirm":
+            self.dismiss(True)
+        else:
+            self.dismiss(False)
 
 
 class SaveGameScreen(ModalScreen):
@@ -330,7 +391,7 @@ class LoadGameScreen(ModalScreen):
         if button_id == "btn-load":
             self._load_game()
         elif button_id == "btn-delete":
-            self._delete_save()
+            self._confirm_delete_save()
         elif button_id == "btn-cancel":
             self.dismiss(None)
 
@@ -386,10 +447,32 @@ class LoadGameScreen(ModalScreen):
         except Exception as e:
             self.app.notify(f"Error loading: {e}", title="Error", severity="error")
 
+    def _confirm_delete_save(self) -> None:
+        """Show confirmation dialog before deleting save."""
+        if not self.selected_campaign_id:
+            self.app.notify("Select a save first.", title="Delete")
+            return
+
+        # Get save name for the confirmation dialog
+        save_name = "Unknown"
+        for save_data in self._saves.values():
+            if save_data.get("id") == self.selected_campaign_id:
+                save_name = save_data.get("name", "Unknown")
+                break
+
+        self.app.push_screen(
+            DeleteConfirmDialog(save_name),
+            self._handle_delete_confirm
+        )
+
+    def _handle_delete_confirm(self, confirmed: bool) -> None:
+        """Handle delete confirmation result."""
+        if confirmed:
+            self._delete_save()
+
     def _delete_save(self) -> None:
         """Delete the selected save."""
         if not self.selected_campaign_id:
-            self.app.notify("Select a save first.", title="Delete")
             return
 
         try:

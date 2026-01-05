@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Dungeon Master - Pathfinder 1e</title>
     <style>
         :root {
@@ -23,6 +23,9 @@
             --hp-high: #3fb950;
             --hp-mid: #d29922;
             --hp-low: #f85149;
+            /* Accent colors for general use */
+            --accent: var(--accent-gold);
+            --accent-hover: #e6b31f;
         }
 
         * {
@@ -37,7 +40,8 @@
             color: var(--text-primary);
             min-height: 100vh;
             min-height: 100dvh; /* Dynamic viewport height for mobile */
-            overflow: hidden;
+            overflow-x: hidden; /* Prevent horizontal scroll but allow vertical */
+            overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -2185,13 +2189,40 @@
             <h2 class="modal-title">Add Item</h2>
 
             <div class="picker-tabs">
-                <button class="picker-tab active" data-picker="common">Common Items</button>
-                <button class="picker-tab" data-picker="custom">Custom Item</button>
+                <button class="picker-tab active" data-picker="weapons">Weapons</button>
+                <button class="picker-tab" data-picker="armor">Armor</button>
+                <button class="picker-tab" data-picker="gear">Gear</button>
+                <button class="picker-tab" data-picker="magic">Magic</button>
+                <button class="picker-tab" data-picker="custom">Custom</button>
             </div>
 
-            <div class="picker-content active" id="picker-common">
-                <input type="text" class="picker-search" id="item-search" placeholder="Search items...">
-                <div class="picker-list" id="common-items-list"></div>
+            <div class="picker-content active" id="picker-weapons">
+                <input type="text" class="picker-search" id="weapon-search" placeholder="Search weapons...">
+                <div class="picker-list" id="weapons-list"></div>
+            </div>
+
+            <div class="picker-content" id="picker-armor">
+                <input type="text" class="picker-search" id="armor-search" placeholder="Search armor...">
+                <div class="picker-list" id="armor-list"></div>
+            </div>
+
+            <div class="picker-content" id="picker-gear">
+                <input type="text" class="picker-search" id="gear-search" placeholder="Search gear...">
+                <div class="picker-list" id="gear-list"></div>
+            </div>
+
+            <div class="picker-content" id="picker-magic">
+                <input type="text" class="picker-search" id="magic-search" placeholder="Search magic items...">
+                <select class="picker-select" id="magic-type-filter">
+                    <option value="">All Types</option>
+                    <option value="wondrous">Wondrous Items</option>
+                    <option value="weapons">Magic Weapons</option>
+                    <option value="armor">Magic Armor</option>
+                    <option value="rings">Rings</option>
+                    <option value="potions">Potions</option>
+                    <option value="rods">Rods</option>
+                </select>
+                <div class="picker-list" id="magic-list"></div>
             </div>
 
             <div class="picker-content" id="picker-custom">
@@ -4090,44 +4121,155 @@
             }
         }
 
-        // Item picker
+        // Item picker - SRD data cache
+        let weaponsCache = [];
+        let armorCache = [];
+        let gearCache = [];
+        let magicItemsCache = [];
+
         async function openItemPicker(forPartyLoot = false) {
             addingToPartyLoot = forPartyLoot;
             itemPickerModal.classList.add('visible');
 
-            // Load common items if not loaded
-            if (commonItems.length === 0) {
+            // Load weapons if not cached
+            if (weaponsCache.length === 0) {
                 try {
-                    const res = await fetch('/api/items');
+                    const res = await fetch('/api/equipment/weapons');
                     const data = await res.json();
-                    commonItems = data.items;
+                    weaponsCache = data.weapons || [];
                 } catch (e) {
-                    console.error('Failed to load items:', e);
+                    console.error('Failed to load weapons:', e);
                 }
             }
-
-            renderCommonItems();
+            renderWeaponsList();
         }
 
-        function renderCommonItems(filter = '') {
-            const list = document.getElementById('common-items-list');
-            const filtered = commonItems.filter(item =>
+        async function loadArmorList() {
+            if (armorCache.length === 0) {
+                try {
+                    const res = await fetch('/api/equipment/armor');
+                    const data = await res.json();
+                    armorCache = data.armor || [];
+                } catch (e) {
+                    console.error('Failed to load armor:', e);
+                }
+            }
+            renderArmorList();
+        }
+
+        async function loadGearList() {
+            if (gearCache.length === 0) {
+                try {
+                    const res = await fetch('/api/equipment/gear');
+                    const data = await res.json();
+                    gearCache = data.gear || [];
+                } catch (e) {
+                    console.error('Failed to load gear:', e);
+                }
+            }
+            renderGearList();
+        }
+
+        async function loadMagicItemsList(typeFilter = '') {
+            const url = typeFilter ? `/api/magic-items?item_type=${typeFilter}` : '/api/magic-items';
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                magicItemsCache = data.items || [];
+            } catch (e) {
+                console.error('Failed to load magic items:', e);
+            }
+            renderMagicItemsList();
+        }
+
+        function renderWeaponsList(filter = '') {
+            const list = document.getElementById('weapons-list');
+            const filtered = weaponsCache.filter(item =>
                 item.name.toLowerCase().includes(filter.toLowerCase())
             );
 
-            list.innerHTML = filtered.map(item => `
-                <div class="picker-item" data-name="${escapeHtml(item.name)}" data-weight="${item.weight}" data-value="${item.value}">
-                    <span class="item-icon">${getItemIcon(item.category)}</span>
+            list.innerHTML = filtered.slice(0, 100).map(item => `
+                <div class="picker-item" data-name="${escapeHtml(item.name)}" data-weight="${item.weight || 0}" data-value="${item.cost || 0}">
+                    <span class="item-icon">&#9876;</span>
                     <div class="item-info">
                         <span class="item-name">${escapeHtml(item.name)}</span>
-                        <span class="item-meta">${item.weight}lb, ${item.value}gp</span>
+                        <span class="item-meta">${item.damage_m || ''} ${item.type || ''} | ${item.cost || 0}gp</span>
                     </div>
                 </div>
             `).join('');
 
-            document.querySelectorAll('.picker-item').forEach(item => {
+            list.querySelectorAll('.picker-item').forEach(item => {
                 item.addEventListener('click', () => addItemFromPicker(item));
             });
+        }
+
+        function renderArmorList(filter = '') {
+            const list = document.getElementById('armor-list');
+            const filtered = armorCache.filter(item =>
+                item.name.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            list.innerHTML = filtered.slice(0, 100).map(item => `
+                <div class="picker-item" data-name="${escapeHtml(item.name)}" data-weight="${item.weight || 0}" data-value="${item.cost || 0}">
+                    <span class="item-icon">&#128737;</span>
+                    <div class="item-info">
+                        <span class="item-name">${escapeHtml(item.name)}</span>
+                        <span class="item-meta">AC +${item.ac_bonus || 0} | ${item.cost || 0}gp</span>
+                    </div>
+                </div>
+            `).join('');
+
+            list.querySelectorAll('.picker-item').forEach(item => {
+                item.addEventListener('click', () => addItemFromPicker(item));
+            });
+        }
+
+        function renderGearList(filter = '') {
+            const list = document.getElementById('gear-list');
+            const filtered = gearCache.filter(item =>
+                item.name.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            list.innerHTML = filtered.slice(0, 100).map(item => `
+                <div class="picker-item" data-name="${escapeHtml(item.name)}" data-weight="${item.weight || 0}" data-value="${item.cost || 0}">
+                    <span class="item-icon">&#127890;</span>
+                    <div class="item-info">
+                        <span class="item-name">${escapeHtml(item.name)}</span>
+                        <span class="item-meta">${item.weight || 0}lb | ${item.cost || 0}gp</span>
+                    </div>
+                </div>
+            `).join('');
+
+            list.querySelectorAll('.picker-item').forEach(item => {
+                item.addEventListener('click', () => addItemFromPicker(item));
+            });
+        }
+
+        function renderMagicItemsList(filter = '') {
+            const list = document.getElementById('magic-list');
+            const filtered = magicItemsCache.filter(item =>
+                item.name.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            list.innerHTML = filtered.slice(0, 100).map(item => `
+                <div class="picker-item" data-name="${escapeHtml(item.name)}" data-weight="${item.weight ? parseFloat(item.weight) : 0}" data-value="${parsePrice(item.price)}">
+                    <span class="item-icon">&#10024;</span>
+                    <div class="item-info">
+                        <span class="item-name">${escapeHtml(item.name)}</span>
+                        <span class="item-meta">${item.slot || item.type || ''} | ${item.price || '?'}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            list.querySelectorAll('.picker-item').forEach(item => {
+                item.addEventListener('click', () => addItemFromPicker(item));
+            });
+        }
+
+        function parsePrice(priceStr) {
+            if (!priceStr) return 0;
+            const match = String(priceStr).replace(/,/g, '').match(/(\d+)/);
+            return match ? parseInt(match[1]) : 0;
         }
 
         async function addItemFromPicker(itemEl) {
@@ -4297,11 +4439,26 @@
 
         // Item picker tab switching
         document.querySelectorAll('.picker-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
+            tab.addEventListener('click', async () => {
                 document.querySelectorAll('.picker-tab').forEach(t => t.classList.remove('active'));
                 document.querySelectorAll('.picker-content').forEach(c => c.classList.remove('active'));
                 tab.classList.add('active');
                 document.getElementById(`picker-${tab.dataset.picker}`).classList.add('active');
+
+                // Load data for the selected tab
+                const picker = tab.dataset.picker;
+                if (picker === 'weapons' && weaponsCache.length === 0) {
+                    const res = await fetch('/api/equipment/weapons');
+                    const data = await res.json();
+                    weaponsCache = data.weapons || [];
+                    renderWeaponsList();
+                } else if (picker === 'armor') {
+                    await loadArmorList();
+                } else if (picker === 'gear') {
+                    await loadGearList();
+                } else if (picker === 'magic') {
+                    await loadMagicItemsList();
+                }
             });
         });
 
@@ -4322,8 +4479,21 @@
         document.getElementById('btn-close-picker').addEventListener('click', () => {
             itemPickerModal.classList.remove('visible');
         });
-        document.getElementById('item-search').addEventListener('input', (e) => {
-            renderCommonItems(e.target.value);
+        // Item picker search handlers
+        document.getElementById('weapon-search').addEventListener('input', (e) => {
+            renderWeaponsList(e.target.value);
+        });
+        document.getElementById('armor-search').addEventListener('input', (e) => {
+            renderArmorList(e.target.value);
+        });
+        document.getElementById('gear-search').addEventListener('input', (e) => {
+            renderGearList(e.target.value);
+        });
+        document.getElementById('magic-search').addEventListener('input', (e) => {
+            renderMagicItemsList(e.target.value);
+        });
+        document.getElementById('magic-type-filter').addEventListener('change', (e) => {
+            loadMagicItemsList(e.target.value);
         });
         document.getElementById('btn-add-custom-item').addEventListener('click', addCustomItem);
 

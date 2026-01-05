@@ -320,19 +320,9 @@ class MapViewScreen(Screen):
             self.app.notify("Select a location first.", title="Travel")
             return
 
-        row_key = table.get_row_at(table.cursor_row)
-        # Get location id from the data
-        loc_id = None
-        for key in self._get_table_keys():
-            if key == str(table.cursor_row):
-                loc_id = key
-                break
-
-        # Find selected location from cursor
-        cursor_row = table.cursor_row
-        loc_ids = list(LOCATIONS.keys())
-        if cursor_row < len(loc_ids):
-            loc_id = loc_ids[cursor_row]
+        # Get the row key from the cursor position - this is the location ID we set
+        row_key = table.get_row_key(table.cursor_row)
+        loc_id = row_key.value if row_key else None
 
         if not loc_id or loc_id not in LOCATIONS:
             self.app.notify("Invalid location.", title="Travel")
@@ -365,7 +355,3 @@ class MapViewScreen(Screen):
         self._populate_location_table()
         self._update_map()
         self._show_current_location()
-
-    def _get_table_keys(self) -> list[str]:
-        """Get all table row keys."""
-        return list(LOCATIONS.keys())

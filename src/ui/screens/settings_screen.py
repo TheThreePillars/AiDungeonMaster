@@ -1,12 +1,73 @@
 """Settings screen for configuring the application."""
 
+import json
+from pathlib import Path
+
 from textual.app import ComposeResult
 from textual.containers import Container, Horizontal, Vertical, VerticalScroll
-from textual.screen import Screen
+from textual.screen import Screen, ModalScreen
 from textual.widgets import Button, Checkbox, Input, Label, Select, Static
 
 from ..icons import Icons
 from ...config import get_config
+
+
+class ConfirmDialog(ModalScreen):
+    """A confirmation dialog for destructive actions."""
+
+    CSS = """
+    ConfirmDialog {
+        align: center middle;
+    }
+
+    #confirm-dialog {
+        width: 50;
+        height: auto;
+        border: thick $error;
+        background: $surface;
+        padding: 1 2;
+    }
+
+    #confirm-title {
+        text-style: bold;
+        color: $error;
+        text-align: center;
+        margin-bottom: 1;
+    }
+
+    #confirm-message {
+        margin-bottom: 1;
+        text-align: center;
+    }
+
+    #confirm-buttons {
+        height: 3;
+        align: center middle;
+    }
+
+    #confirm-buttons Button {
+        margin: 0 1;
+    }
+    """
+
+    def __init__(self, title: str, message: str):
+        super().__init__()
+        self._title = title
+        self._message = message
+
+    def compose(self) -> ComposeResult:
+        with Container(id="confirm-dialog"):
+            yield Label(f"{Icons.WARNING}  {self._title}", id="confirm-title")
+            yield Static(self._message, id="confirm-message")
+            with Horizontal(id="confirm-buttons"):
+                yield Button("Yes, Continue", id="btn-confirm", variant="error")
+                yield Button("Cancel", id="btn-cancel")
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "btn-confirm":
+            self.dismiss(True)
+        else:
+            self.dismiss(False)
 
 
 class SettingsScreen(Screen):
@@ -104,15 +165,36 @@ class SettingsScreen(Screen):
         super().__init__()
         self._load_current_settings()
 
+    def _get_user_config_path(self) -> Path:
+        """Get the user config file path for loading."""
+        return Path.home() / ".aidungeonmaster" / "settings.json"
+
     def _load_current_settings(self) -> None:
-        """Load current settings from config."""
+        """Load current settings from config file."""
+        # Default values
+        self.llm_model = "mistral:latest"
+        self.llm_base_url = "http://localhost:11434"
+
+        # Try to load from user config file first
+        user_config = self._get_user_config_path()
+        if user_config.exists():
+            try:
+                with open(user_config, "r", encoding="utf-8") as f:
+                    settings = json.load(f)
+                    llm = settings.get("llm", {})
+                    self.llm_model = llm.get("model", self.llm_model)
+                    self.llm_base_url = llm.get("base_url", self.llm_base_url)
+                    return
+            except Exception:
+                pass
+
+        # Fall back to app config
         try:
             config = get_config()
             self.llm_model = config.llm.model
             self.llm_base_url = config.llm.base_url
         except Exception:
-            self.llm_model = "mistral:latest"
-            self.llm_base_url = "http://localhost:11434"
+            pass
 
     def compose(self) -> ComposeResult:
         i = Icons
@@ -218,12 +300,18 @@ class SettingsScreen(Screen):
         elif button_id == "btn-test":
             self._test_connection()
         elif button_id == "btn-reset":
-            self._reset_settings()
+            self._confirm_reset_settings()
         elif button_id == "btn-clear-data":
-            self._clear_data()
+            self._confirm_clear_data()
+
+    def _get_config_path(self) -> Path:
+        """Get the user config file path."""
+        config_dir = Path.home() / ".aidungeonmaster"
+        config_dir.mkdir(exist_ok=True)
+        return config_dir / "settings.json"
 
     def _save_settings(self) -> None:
-        """Save settings to config."""
+        """Save settings to config file."""
         try:
             model = self.query_one("#input-model", Input).value.strip()
             url = self.query_one("#input-url", Input).value.strip()
@@ -237,7 +325,17 @@ class SettingsScreen(Screen):
                 self.app.llm_client.model = model
                 self.app.llm_client.base_url = url
 
-            # Note: In a real app, we'd persist these to a config file
+            # Persist settings to file
+            settings = {
+                "llm": {
+                    "model": model,
+                    "base_url": url
+                }
+            }
+            config_path = self._get_config_path()
+            with open(config_path, "w", encoding="utf-8") as f:
+                json.dump(settings, f, indent=2)
+
             self.app.notify("Settings saved!", title="Settings")
             self.app.pop_screen()
 
@@ -263,6 +361,36 @@ class SettingsScreen(Screen):
 
         except Exception as e:
             status.update(f"[red]Connection failed: {e}[/red]")
+
+    def _confirm_reset_settings(self) -> None:
+        """Show confirmation dialog before resetting settings."""
+        self.app.push_screen(
+            ConfirmDialog(
+                "Reset Settings",
+                "This will reset all settings to defaults.\nAre you sure?"
+            ),
+            self._handle_reset_confirm
+        )
+
+    def _handle_reset_confirm(self, confirmed: bool) -> None:
+        """Handle reset confirmation result."""
+        if confirmed:
+            self._reset_settings()
+
+    def _confirm_clear_data(self) -> None:
+        """Show confirmation dialog before clearing data."""
+        self.app.push_screen(
+            ConfirmDialog(
+                "Clear All Data",
+                "This will permanently delete ALL characters,\nparties, campaigns, and saves.\n\nThis cannot be undone!"
+            ),
+            self._handle_clear_confirm
+        )
+
+    def _handle_clear_confirm(self, confirmed: bool) -> None:
+        """Handle clear data confirmation result."""
+        if confirmed:
+            self._clear_data()
 
     def _reset_settings(self) -> None:
         """Reset all settings to defaults."""
