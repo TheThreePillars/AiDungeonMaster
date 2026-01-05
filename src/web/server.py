@@ -1825,7 +1825,8 @@ async def handle_player_action(websocket: WebSocket, player_name: str, data: dic
     # Build conversation history for context
     history_text = ""
     # Include last 8 exchanges to keep context manageable and TTS faster
-    recent_history = game_session.conversation_history[-8:]
+    # Convert deque to list for slicing (deque doesn't support slice notation)
+    recent_history = list(game_session.conversation_history)[-8:]
     for entry in recent_history:
         history_text += f"\n[{entry['player']}]: {entry['action']}\n"
         history_text += f"[DM]: {entry['response']}\n"
