@@ -1,6 +1,7 @@
 """FastAPI WebSocket server for AI Dungeon Master."""
 
 import asyncio
+import base64
 import json
 import logging
 import random
@@ -18,6 +19,7 @@ from pydantic import BaseModel, Field
 
 from ..llm.client import OllamaClient, GenerationConfig
 from .speech import transcribe_audio, is_available as speech_available
+from .tts import synthesize as tts_synthesize, is_available as tts_available, list_voices as tts_list_voices
 from ..game.dice import roll
 from ..database.session import init_db, session_scope
 from ..database.models import Campaign, Party, Character, InventoryItem
@@ -272,9 +274,16 @@ async def get_status():
         "ai_available": ai_available,
         "ai_model": "hermes3:3b" if ai_available else None,
         "speech_available": speech_available(),
+        "tts_available": tts_available(),
         "active_sessions": len(session_manager.sessions),
         "total_players": total_players,
     }
+
+
+@app.get("/api/voices")
+async def get_voices():
+    """Get available TTS voices."""
+    return {"voices": tts_list_voices(), "available": tts_available()}
 
 
 @app.post("/api/sessions")
@@ -1386,6 +1395,20 @@ Respond as the Dungeon Master:"""
                 "content": full_response,
                 "timestamp": datetime.now().isoformat(),
             })
+
+            # Generate and send TTS audio if available
+            if tts_available():
+                try:
+                    audio_bytes = await tts_synthesize(full_response, "dm")
+                    if audio_bytes:
+                        audio_b64 = base64.b64encode(audio_bytes).decode("utf-8")
+                        await game_session.broadcast({
+                            "type": "dm_audio",
+                            "audio": audio_b64,
+                            "format": "wav",
+                        })
+                except Exception as e:
+                    logger.warning(f"TTS generation failed: {e}")
 
             # Store in history
             game_session.conversation_history.append({

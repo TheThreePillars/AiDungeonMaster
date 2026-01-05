@@ -73,3 +73,7 @@ current-url.txt
 .env.local
 secrets.yaml
 credentials.json
+
+# Voice models (download separately)
+models/voices/*.onnx
+models/voices/*.onnx.json
