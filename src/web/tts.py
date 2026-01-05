@@ -214,6 +214,40 @@ def extract_voice_segments(text: str) -> list[tuple[str, str]]:
     return segments
 
 
+def split_into_sentences(text: str) -> list[str]:
+    """
+    Split text into sentences for streaming TTS.
+
+    Args:
+        text: Input text
+
+    Returns:
+        List of sentences
+    """
+    import re
+
+    # Pattern: sentence ends with .!? optionally followed by closing quote/paren
+    # But don't split on abbreviations like "Mr." or "Dr." or numbers like "3.5"
+    pattern = r'(?<![A-Z][a-z])(?<!\d)([.!?])(?=["\']?\s+[A-Z"]|\s*$)'
+
+    # Simple split on sentence-ending punctuation
+    sentences = []
+    current = ""
+
+    for char in text:
+        current += char
+        if char in '.!?' and len(current.strip()) > 1:
+            # Check if this looks like end of sentence (followed by space or end)
+            sentences.append(current.strip())
+            current = ""
+
+    # Add any remaining text
+    if current.strip():
+        sentences.append(current.strip())
+
+    return sentences
+
+
 async def synthesize_with_voices(text: str) -> list[tuple[str, bytes]]:
     """
     Synthesize text that may contain multiple voice segments.

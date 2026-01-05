@@ -19,7 +19,12 @@ from pydantic import BaseModel, Field
 
 from ..llm.client import OllamaClient, GenerationConfig
 from .speech import transcribe_audio, is_available as speech_available
-from .tts import synthesize as tts_synthesize, is_available as tts_available, list_voices as tts_list_voices
+from .tts import (
+    synthesize as tts_synthesize,
+    is_available as tts_available,
+    list_voices as tts_list_voices,
+    split_into_sentences,
+)
 from ..game.dice import roll
 from ..database.session import init_db, session_scope
 from ..database.models import Campaign, Party, Character, InventoryItem
@@ -1342,8 +1347,8 @@ async def handle_player_action(websocket: WebSocket, player_name: str, data: dic
 
     # Build conversation history for context
     history_text = ""
-    # Include last 10 exchanges to keep context manageable
-    recent_history = game_session.conversation_history[-10:]
+    # Include last 8 exchanges to keep context manageable and TTS faster
+    recent_history = game_session.conversation_history[-8:]
     for entry in recent_history:
         history_text += f"\n[{entry['player']}]: {entry['action']}\n"
         history_text += f"[DM]: {entry['response']}\n"
@@ -1372,10 +1377,29 @@ Respond as the Dungeon Master:"""
         try:
             # Stream response
             full_response = ""
+            sentence_buffer = ""
+            sent_sentences = 0
+            tts_enabled = tts_available()
+
             config = GenerationConfig(
                 temperature=0.8,
-                max_tokens=300,  # Keep responses concise for mobile
+                max_tokens=200,  # Shorter responses for faster TTS
             )
+
+            async def send_tts_chunk(text: str, chunk_index: int):
+                """Generate and send TTS for a sentence chunk."""
+                try:
+                    audio_bytes = await tts_synthesize(text, "dm")
+                    if audio_bytes:
+                        audio_b64 = base64.b64encode(audio_bytes).decode("utf-8")
+                        await game_session.broadcast({
+                            "type": "dm_audio_chunk",
+                            "audio": audio_b64,
+                            "format": "wav",
+                            "index": chunk_index,
+                        })
+                except Exception as e:
+                    logger.warning(f"TTS chunk failed: {e}")
 
             async for token in llm_client.agenerate_stream(
                 prompt=context,
@@ -1383,11 +1407,25 @@ Respond as the Dungeon Master:"""
                 config=config,
             ):
                 full_response += token
+                sentence_buffer += token
+
                 # Send streaming update
                 await websocket.send_json({
                     "type": "dm_response_stream",
                     "token": token,
                 })
+
+                # Check for sentence completion and generate TTS
+                if tts_enabled and token.rstrip().endswith(('.', '!', '?')):
+                    sentences = split_into_sentences(sentence_buffer)
+                    if len(sentences) > 1 or sentence_buffer.rstrip().endswith(('.', '!', '?')):
+                        # Send TTS for complete sentences
+                        text_to_speak = sentences[0] if len(sentences) > 1 else sentence_buffer.strip()
+                        if text_to_speak and len(text_to_speak) > 3:
+                            asyncio.create_task(send_tts_chunk(text_to_speak, sent_sentences))
+                            sent_sentences += 1
+                            # Keep remainder in buffer
+                            sentence_buffer = ' '.join(sentences[1:]) if len(sentences) > 1 else ""
 
             # Send complete response to all
             await game_session.broadcast({
@@ -1396,19 +1434,9 @@ Respond as the Dungeon Master:"""
                 "timestamp": datetime.now().isoformat(),
             })
 
-            # Generate and send TTS audio if available
-            if tts_available():
-                try:
-                    audio_bytes = await tts_synthesize(full_response, "dm")
-                    if audio_bytes:
-                        audio_b64 = base64.b64encode(audio_bytes).decode("utf-8")
-                        await game_session.broadcast({
-                            "type": "dm_audio",
-                            "audio": audio_b64,
-                            "format": "wav",
-                        })
-                except Exception as e:
-                    logger.warning(f"TTS generation failed: {e}")
+            # Generate TTS for any remaining text
+            if tts_enabled and sentence_buffer.strip():
+                asyncio.create_task(send_tts_chunk(sentence_buffer.strip(), sent_sentences))
 
             # Store in history
             game_session.conversation_history.append({

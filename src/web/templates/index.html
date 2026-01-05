@@ -2333,6 +2333,7 @@
                 <div class="input-area">
                     <div class="input-row">
                         <textarea class="action-input" id="action-input" rows="1" placeholder="What do you do?"></textarea>
+                        <button class="input-btn" id="stop-audio-btn" title="Stop audio" style="display: none;">&#x23F9;</button>
                         <button class="input-btn" id="voice-btn" title="Hold to speak">&#x1F3A4;</button>
                         <button class="input-btn" id="send-btn">&#x27A4;</button>
                     </div>
@@ -2405,10 +2406,33 @@
             speaking: false,
         };
 
-        // Audio element for Piper TTS playback
+        // Audio element and queue for Piper TTS playback
         const dmAudioElement = new Audio();
-        dmAudioElement.onended = () => { dmVoice.speaking = false; };
-        dmAudioElement.onerror = () => { dmVoice.speaking = false; };
+        const audioQueue = [];
+        let audioPlaying = false;
+
+        function playNextInQueue() {
+            if (audioQueue.length === 0) {
+                audioPlaying = false;
+                dmVoice.speaking = false;
+                document.getElementById('stop-audio-btn').style.display = 'none';
+                return;
+            }
+            audioPlaying = true;
+            const { audio, format } = audioQueue.shift();
+            dmAudioElement.src = `data:audio/${format};base64,${audio}`;
+            dmAudioElement.play().catch(e => {
+                console.warn('Audio playback error:', e);
+                playNextInQueue();  // Try next chunk
+            });
+        }
+
+        dmAudioElement.onended = () => {
+            playNextInQueue();
+        };
+        dmAudioElement.onerror = () => {
+            playNextInQueue();  // Skip to next on error
+        };
 
         // Elements
         const titleScreen = document.getElementById('title-screen');
@@ -2526,6 +2550,10 @@
                     playDMAudio(data.audio, data.format);
                     break;
 
+                case 'dm_audio_chunk':
+                    queueAudioChunk(data.audio, data.format, data.index);
+                    break;
+
                 case 'dice_roll':
                     addDiceEntry(data.player, data.notation, data.result, data.rolls);
                     break;
@@ -2626,30 +2654,61 @@
             return div.innerHTML;
         }
 
-        // Play Piper TTS audio from server
+        // Queue audio chunk for streaming TTS
+        function queueAudioChunk(audioBase64, format, index) {
+            if (!dmVoice.enabled) return;
+
+            audioQueue.push({ audio: audioBase64, format, index });
+            dmVoice.speaking = true;
+            document.getElementById('stop-audio-btn').style.display = 'block';
+
+            // Start playback if not already playing
+            if (!audioPlaying) {
+                playNextInQueue();
+            }
+        }
+
+        // Play Piper TTS audio from server (full response, legacy)
         function playDMAudio(audioBase64, format) {
             if (!dmVoice.enabled) return;
 
-            // Stop any current audio
-            dmAudioElement.pause();
-            dmAudioElement.currentTime = 0;
-
-            // Also cancel browser TTS if running
-            if ('speechSynthesis' in window) {
-                speechSynthesis.cancel();
-            }
+            // Stop any current audio and clear queue
+            stopDMAudio();
 
             try {
                 dmVoice.speaking = true;
+                audioPlaying = true;
+                document.getElementById('stop-audio-btn').style.display = 'block';
                 dmAudioElement.src = `data:audio/${format};base64,${audioBase64}`;
                 dmAudioElement.play().catch(e => {
                     console.warn('Audio autoplay blocked:', e);
                     dmVoice.speaking = false;
+                    audioPlaying = false;
+                    document.getElementById('stop-audio-btn').style.display = 'none';
                 });
             } catch (e) {
                 console.error('Failed to play DM audio:', e);
                 dmVoice.speaking = false;
+                audioPlaying = false;
+                document.getElementById('stop-audio-btn').style.display = 'none';
             }
+        }
+
+        // Stop all DM audio (Piper and browser TTS)
+        function stopDMAudio() {
+            // Stop Piper audio and clear queue
+            dmAudioElement.pause();
+            dmAudioElement.currentTime = 0;
+            audioQueue.length = 0;  // Clear pending chunks
+            audioPlaying = false;
+
+            // Stop browser TTS
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+            }
+
+            dmVoice.speaking = false;
+            document.getElementById('stop-audio-btn').style.display = 'none';
         }
 
         // Text-to-Speech for DM voice (fallback when Piper unavailable)
@@ -3179,6 +3238,7 @@
         });
 
         document.getElementById('send-btn').addEventListener('click', sendAction);
+        document.getElementById('stop-audio-btn').addEventListener('click', stopDMAudio);
         actionInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -3189,6 +3249,10 @@
         actionInput.addEventListener('input', () => {
             actionInput.style.height = 'auto';
             actionInput.style.height = Math.min(actionInput.scrollHeight, 120) + 'px';
+            // Stop audio when user starts typing
+            if (dmVoice.speaking) {
+                stopDMAudio();
+            }
         });
 
         // Voice button - tap to toggle recording with VAD
