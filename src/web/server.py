@@ -472,6 +472,14 @@ async def create_character(char: CharacterCreate):
             dex_bonus = (final_dex - 10) // 2
             new_char.armor_class = 10 + dex_bonus + armor_bonus + shield_bonus
 
+            # Add starting spells for caster classes
+            starting_spells = STARTING_SPELLS.get(char.character_class)
+            if starting_spells:
+                new_char.spellcaster = True
+                new_char.caster_level = starting_spells["caster_level"]
+                new_char.spell_slots = starting_spells["spell_slots"]
+                new_char.spells_known = starting_spells["spells_known"]
+
             return {
                 "id": new_char.id,
                 "name": new_char.name,
@@ -481,6 +489,7 @@ async def create_character(char: CharacterCreate):
                 "max_hp": new_char.max_hp,
                 "ac": new_char.armor_class,
                 "gold": new_char.gold,
+                "spellcaster": new_char.spellcaster if starting_spells else False,
             }
     except Exception as e:
         logger.error(f"Error creating character: {e}")
@@ -937,6 +946,82 @@ STARTING_EQUIPMENT = {
             {"name": "Rations", "weight": 5.0, "value": 2.5, "quantity": 5},
         ]
     },
+}
+
+# Starting spells and spell slots by class (Pathfinder 1e level 1)
+# Spell slots format: {"level": {"total": X, "used": 0}}
+STARTING_SPELLS = {
+    "Wizard": {
+        "caster_level": 1,
+        "spell_slots": {
+            "0": {"total": 3, "used": 0},  # Cantrips (at will, but track 3 prepared)
+            "1": {"total": 2, "used": 0},  # 1 base + 1 for Int 12+
+        },
+        "spells_known": [
+            # Cantrips - all available to wizards
+            "detect magic", "light", "ray of frost", "mage hand", "acid splash",
+            # 1st level - starting spellbook spells
+            "magic missile", "mage armor", "shield", "sleep", "burning hands",
+        ],
+    },
+    "Sorcerer": {
+        "caster_level": 1,
+        "spell_slots": {
+            "0": {"total": 99, "used": 0},  # Cantrips unlimited
+            "1": {"total": 3, "used": 0},
+        },
+        "spells_known": [
+            # 4 cantrips known
+            "detect magic", "light", "ray of frost", "acid splash",
+            # 2 1st-level spells known
+            "magic missile", "burning hands",
+        ],
+    },
+    "Cleric": {
+        "caster_level": 1,
+        "spell_slots": {
+            "0": {"total": 3, "used": 0},
+            "1": {"total": 2, "used": 0},  # 1 base + 1 domain
+        },
+        "spells_known": [
+            # Clerics prepare from full list, but give some starting ones
+            "detect magic", "light", "guidance", "stabilize",
+            "cure light wounds", "bless",
+        ],
+    },
+    "Druid": {
+        "caster_level": 1,
+        "spell_slots": {
+            "0": {"total": 3, "used": 0},
+            "1": {"total": 2, "used": 0},
+        },
+        "spells_known": [
+            # Druids prepare from full list
+            "detect magic", "light", "guidance", "stabilize",
+            "cure light wounds",
+        ],
+    },
+    "Bard": {
+        "caster_level": 1,
+        "spell_slots": {
+            "0": {"total": 99, "used": 0},  # Cantrips unlimited
+            "1": {"total": 1, "used": 0},
+        },
+        "spells_known": [
+            # 4 cantrips known
+            "detect magic", "light", "mage hand", "ghost sound",
+            # 2 1st-level spells known
+            "cure light wounds", "sleep",
+        ],
+    },
+    # Paladin and Ranger don't cast at level 1
+    "Paladin": None,
+    "Ranger": None,
+    # Non-casters
+    "Fighter": None,
+    "Rogue": None,
+    "Barbarian": None,
+    "Monk": None,
 }
 
 
