@@ -131,6 +131,23 @@ class SessionManager:
 session_manager = SessionManager()
 llm_client: Optional[OllamaClient] = None
 
+# Cached LLM availability check (avoid repeated model list calls)
+_llm_available_cache: dict = {"available": False, "checked_at": 0.0}
+_LLM_CACHE_TTL = 30.0  # seconds
+
+
+def is_llm_available() -> bool:
+    """Check if LLM is available, with caching to reduce latency."""
+    import time
+    now = time.time()
+    if now - _llm_available_cache["checked_at"] < _LLM_CACHE_TTL:
+        return _llm_available_cache["available"]
+
+    available = llm_client.is_available() if llm_client else False
+    _llm_available_cache["available"] = available
+    _llm_available_cache["checked_at"] = now
+    return available
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -248,7 +265,7 @@ async def get_index():
 @app.get("/api/status")
 async def get_status():
     """Get server and AI status."""
-    ai_available = llm_client.is_available() if llm_client else False
+    ai_available = is_llm_available()
     total_players = sum(len(s.players) for s in session_manager.sessions.values())
     return {
         "status": "online",
@@ -1229,7 +1246,7 @@ async def websocket_endpoint(websocket: WebSocket, session_code: str, player_nam
         "is_dm": is_dm,
         "session_code": game_session.code,
         "location": game_session.current_location,
-        "ai_available": llm_client.is_available() if llm_client else False,
+        "ai_available": is_llm_available(),
     })
 
     # Broadcast player joined
@@ -1337,7 +1354,7 @@ CURRENT ACTION:
 Respond as the Dungeon Master:"""
 
     # Get AI response (streaming)
-    if llm_client and llm_client.is_available():
+    if llm_client and is_llm_available():
         await websocket.send_json({
             "type": "dm_typing",
             "status": True,

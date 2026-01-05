@@ -161,10 +161,12 @@ class AIDungeonMasterApp(App):
 
     def action_save(self) -> None:
         """Save current game state."""
+        # TODO: Implement actual save persistence
+        # Currently game state is stored in database automatically during play
         if self.game_state.party_id or self.game_state.campaign_id:
-            self.notify("Game saved!", title="Save")
+            self.notify("Game state is saved automatically.", title="Save")
         else:
-            self.notify("Nothing to save.", title="Save")
+            self.notify("Start a game first to save.", title="Save")
 
 
 def run_app() -> None:
