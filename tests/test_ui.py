@@ -113,9 +113,8 @@ class TestScreenImports:
 
     def test_main_menu_import(self):
         """Test main menu screen import."""
-        from src.ui.screens.main_menu import MainMenuScreen, TitleArt
+        from src.ui.screens.main_menu import MainMenuScreen
         assert MainMenuScreen is not None
-        assert TitleArt is not None
 
     def test_character_creation_import(self):
         """Test character creation screen import."""

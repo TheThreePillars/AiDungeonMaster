@@ -25,7 +25,7 @@ class TestLLMConfig:
         """Test default LLM config values."""
         config = LLMConfig()
         assert config.provider == "ollama"
-        assert config.model == "hermes3:latest"
+        assert config.model == "hermes3:8b"
         assert config.temperature == 0.8
         assert config.max_tokens == 1024
 
@@ -123,7 +123,7 @@ class TestAppConfig:
     def test_nested_config(self):
         """Test nested configuration access."""
         config = AppConfig()
-        assert config.llm.model == "hermes3:latest"
+        assert config.llm.model == "hermes3:8b"
         assert config.game.ruleset == "pf1e"
         assert config.combat.confirm_criticals is True
 
@@ -157,7 +157,7 @@ class TestConfigFileOperations:
         config = load_config(Path("/nonexistent/path/config.yaml"))
 
         # Should return default config
-        assert config.llm.model == "hermes3:latest"
+        assert config.llm.model == "hermes3:8b"
         assert config.game.ruleset == "pf1e"
 
     def test_config_yaml_format(self):
