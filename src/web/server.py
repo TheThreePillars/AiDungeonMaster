@@ -5,6 +5,7 @@ import json
 import logging
 import random
 import string
+from collections import deque
 from datetime import datetime
 from typing import Optional
 from contextlib import asynccontextmanager
@@ -13,7 +14,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, Uplo
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from ..llm.client import OllamaClient, GenerationConfig
 from .speech import transcribe_audio, is_available as speech_available
@@ -45,24 +46,33 @@ class GameSession:
         self.current_location = "The Rusty Dragon Inn"
         self.location_description = "A warm and inviting tavern in Sandpoint."
         self.time_of_day = "evening"
-        self.conversation_history: list[dict] = []
+        # Use deque to automatically cap history and prevent memory leak
+        self.conversation_history: deque[dict] = deque(maxlen=50)
         self.initiative_order: list[str] = []
         self.current_turn: int = 0
         self.in_combat = False
         self.created_at = datetime.now()
 
     async def broadcast(self, message: dict):
-        """Send message to all connected clients."""
+        """Send message to all connected clients, removing dead sockets."""
+        dead_players = []
         for player_name, ws in self.players.items():
             try:
                 await ws.send_json(message)
-            except:
-                pass
+            except Exception as e:
+                logger.warning(f"[{self.code}] Failed to send to '{player_name}', removing: {e}")
+                dead_players.append(player_name)
+
+        # Remove dead sockets after iteration
+        for player_name in dead_players:
+            self.players.pop(player_name, None)
+
         if self.dm_socket:
             try:
                 await self.dm_socket.send_json(message)
-            except:
-                pass
+            except Exception as e:
+                logger.warning(f"[{self.code}] Failed to send to DM, removing: {e}")
+                self.dm_socket = None
 
     def is_empty(self) -> bool:
         """Check if session has no players."""
@@ -552,7 +562,7 @@ class ItemCreate(BaseModel):
     value: float = 0.0
     equipped: bool = False
     slot: str = ""
-    properties: dict = {}
+    properties: dict = Field(default_factory=dict)
 
 
 @app.post("/api/characters/{character_id}/inventory")

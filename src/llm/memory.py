@@ -156,6 +156,7 @@ class ConversationMemory:
             metadata=metadata or {},
         )
         self.messages.append(turn)
+        self._maybe_summarize()
 
     def add_system_message(self, content: str) -> None:
         """Add a system message (for injecting context).
@@ -165,6 +166,7 @@ class ConversationMemory:
         """
         turn = ConversationTurn(role="system", content=content)
         self.messages.append(turn)
+        self._maybe_summarize()
 
     def get_messages_for_llm(self, include_context: bool = True) -> list[Message]:
         """Get messages formatted for the LLM.
@@ -202,6 +204,10 @@ class ConversationMemory:
         """Check if we need to summarize older messages."""
         if len(self.messages) >= self.summary_threshold and self.client:
             self._generate_summary()
+        elif len(self.messages) > self.max_messages * 2:
+            # Hard cap: trim without summarization if no client available
+            # This prevents unbounded memory growth in UI/non-LLM usage
+            self.messages = self.messages[-self.max_messages:]
 
     def _generate_summary(self) -> None:
         """Generate a summary of older messages and trim the history."""
