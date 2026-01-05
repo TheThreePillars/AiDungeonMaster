@@ -19,9 +19,10 @@ from ..llm.client import OllamaClient, GenerationConfig
 from .speech import transcribe_audio, is_available as speech_available
 from ..game.dice import roll
 from ..database.session import init_db, session_scope
-from ..database.models import Campaign, Party, Character
+from ..database.models import Campaign, Party, Character, InventoryItem
 from ..characters.races import RACES
 from ..characters.classes import CLASSES
+from ..game.spells import SPELLS
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -444,6 +445,456 @@ async def delete_character(character_id: int):
     except Exception as e:
         logger.error(f"Error deleting character: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ===== INVENTORY ENDPOINTS =====
+
+@app.get("/api/characters/{character_id}/inventory")
+async def get_character_inventory(character_id: int):
+    """Get character's inventory items."""
+    with session_scope() as session:
+        char = session.query(Character).filter_by(id=character_id).first()
+        if not char:
+            raise HTTPException(status_code=404, detail="Character not found")
+
+        items = session.query(InventoryItem).filter_by(character_id=character_id).all()
+        return {
+            "items": [
+                {
+                    "id": item.id,
+                    "name": item.name,
+                    "description": item.description,
+                    "item_type": item.item_type,
+                    "quantity": item.quantity,
+                    "weight": item.weight,
+                    "value": item.value,
+                    "equipped": item.equipped,
+                    "slot": item.slot,
+                    "properties": item.properties,
+                }
+                for item in items
+            ]
+        }
+
+
+class ItemCreate(BaseModel):
+    name: str
+    description: str = ""
+    item_type: str = "gear"
+    quantity: int = 1
+    weight: float = 0.0
+    value: float = 0.0
+    equipped: bool = False
+    slot: str = ""
+    properties: dict = {}
+
+
+@app.post("/api/characters/{character_id}/inventory")
+async def add_inventory_item(character_id: int, item: ItemCreate):
+    """Add item to character's inventory."""
+    with session_scope() as session:
+        char = session.query(Character).filter_by(id=character_id).first()
+        if not char:
+            raise HTTPException(status_code=404, detail="Character not found")
+
+        new_item = InventoryItem(
+            character_id=character_id,
+            name=item.name,
+            description=item.description,
+            item_type=item.item_type,
+            quantity=item.quantity,
+            weight=item.weight,
+            value=item.value,
+            equipped=item.equipped,
+            slot=item.slot,
+            properties=item.properties,
+        )
+        session.add(new_item)
+        session.flush()
+        return {"id": new_item.id, "name": new_item.name}
+
+
+@app.put("/api/characters/{character_id}/inventory/{item_id}")
+async def update_inventory_item(character_id: int, item_id: int, updates: dict):
+    """Update an inventory item (equip, quantity, etc.)."""
+    with session_scope() as session:
+        item = session.query(InventoryItem).filter_by(
+            id=item_id, character_id=character_id
+        ).first()
+        if not item:
+            raise HTTPException(status_code=404, detail="Item not found")
+
+        for key, value in updates.items():
+            if hasattr(item, key):
+                setattr(item, key, value)
+
+        return {"updated": True}
+
+
+@app.delete("/api/characters/{character_id}/inventory/{item_id}")
+async def delete_inventory_item(character_id: int, item_id: int):
+    """Remove item from inventory."""
+    with session_scope() as session:
+        item = session.query(InventoryItem).filter_by(
+            id=item_id, character_id=character_id
+        ).first()
+        if not item:
+            raise HTTPException(status_code=404, detail="Item not found")
+
+        session.delete(item)
+        return {"deleted": True}
+
+
+# ===== CURRENCY ENDPOINTS =====
+
+@app.get("/api/characters/{character_id}/currency")
+async def get_character_currency(character_id: int):
+    """Get character's currency."""
+    with session_scope() as session:
+        char = session.query(Character).filter_by(id=character_id).first()
+        if not char:
+            raise HTTPException(status_code=404, detail="Character not found")
+
+        return {
+            "platinum": char.platinum or 0,
+            "gold": char.gold or 0,
+            "silver": char.silver or 0,
+            "copper": char.copper or 0,
+            "total_gold": (char.platinum or 0) * 10 + (char.gold or 0) +
+                         (char.silver or 0) / 10 + (char.copper or 0) / 100,
+        }
+
+
+class CurrencyUpdate(BaseModel):
+    platinum: int = 0
+    gold: int = 0
+    silver: int = 0
+    copper: int = 0
+    operation: str = "set"  # "set", "add", or "subtract"
+
+
+@app.put("/api/characters/{character_id}/currency")
+async def update_character_currency(character_id: int, update: CurrencyUpdate):
+    """Update character's currency."""
+    with session_scope() as session:
+        char = session.query(Character).filter_by(id=character_id).first()
+        if not char:
+            raise HTTPException(status_code=404, detail="Character not found")
+
+        if update.operation == "set":
+            char.platinum = update.platinum
+            char.gold = update.gold
+            char.silver = update.silver
+            char.copper = update.copper
+        elif update.operation == "add":
+            char.platinum = (char.platinum or 0) + update.platinum
+            char.gold = (char.gold or 0) + update.gold
+            char.silver = (char.silver or 0) + update.silver
+            char.copper = (char.copper or 0) + update.copper
+        elif update.operation == "subtract":
+            char.platinum = max(0, (char.platinum or 0) - update.platinum)
+            char.gold = max(0, (char.gold or 0) - update.gold)
+            char.silver = max(0, (char.silver or 0) - update.silver)
+            char.copper = max(0, (char.copper or 0) - update.copper)
+
+        return {
+            "platinum": char.platinum,
+            "gold": char.gold,
+            "silver": char.silver,
+            "copper": char.copper,
+        }
+
+
+# ===== SPELLS ENDPOINTS =====
+
+@app.get("/api/characters/{character_id}/spells")
+async def get_character_spells(character_id: int):
+    """Get character's known spells and spell slots."""
+    with session_scope() as session:
+        char = session.query(Character).filter_by(id=character_id).first()
+        if not char:
+            raise HTTPException(status_code=404, detail="Character not found")
+
+        return {
+            "spells_known": char.spells_known or [],
+            "spell_slots": char.spell_slots or {},
+            "caster_level": char.caster_level or 0,
+            "spellcaster": char.spellcaster or False,
+        }
+
+
+class SpellCast(BaseModel):
+    spell_name: str
+    spell_level: int
+
+
+@app.post("/api/characters/{character_id}/spells/cast")
+async def cast_spell(character_id: int, cast: SpellCast):
+    """Use a spell slot when casting a spell."""
+    with session_scope() as session:
+        char = session.query(Character).filter_by(id=character_id).first()
+        if not char:
+            raise HTTPException(status_code=404, detail="Character not found")
+
+        slots = char.spell_slots or {}
+        level_key = str(cast.spell_level)
+
+        if level_key not in slots:
+            raise HTTPException(status_code=400, detail="No slots at this level")
+
+        slot_info = slots[level_key]
+        used = slot_info.get("used", 0)
+        max_slots = slot_info.get("max", 0)
+
+        if used >= max_slots:
+            raise HTTPException(status_code=400, detail="No spell slots remaining")
+
+        slots[level_key]["used"] = used + 1
+        char.spell_slots = slots
+
+        return {
+            "cast": cast.spell_name,
+            "level": cast.spell_level,
+            "slots_remaining": max_slots - used - 1,
+        }
+
+
+@app.post("/api/characters/{character_id}/spells/rest")
+async def long_rest(character_id: int):
+    """Reset spell slots after a long rest."""
+    with session_scope() as session:
+        char = session.query(Character).filter_by(id=character_id).first()
+        if not char:
+            raise HTTPException(status_code=404, detail="Character not found")
+
+        slots = char.spell_slots or {}
+        for level in slots:
+            slots[level]["used"] = 0
+        char.spell_slots = slots
+
+        # Also heal to max HP
+        char.current_hp = char.max_hp
+
+        return {"rested": True, "hp": char.current_hp, "spell_slots": slots}
+
+
+class SpellLearn(BaseModel):
+    spell_name: str
+
+
+@app.post("/api/characters/{character_id}/spells/learn")
+async def learn_spell(character_id: int, learn: SpellLearn):
+    """Add a spell to character's known spells."""
+    with session_scope() as session:
+        char = session.query(Character).filter_by(id=character_id).first()
+        if not char:
+            raise HTTPException(status_code=404, detail="Character not found")
+
+        known = char.spells_known or []
+        if learn.spell_name not in known:
+            known.append(learn.spell_name)
+            char.spells_known = known
+
+        return {"spells_known": known}
+
+
+# ===== SPELL & ITEM LISTS =====
+
+@app.get("/api/spells")
+async def get_spell_list(character_class: str = None, max_level: int = 9):
+    """Get available spells, optionally filtered by class."""
+    result = []
+    for name, spell in SPELLS.items():
+        # Filter by class if specified
+        if character_class:
+            class_lower = character_class.lower()
+            if class_lower not in spell.level:
+                continue
+            spell_level = spell.level[class_lower]
+        else:
+            spell_level = min(spell.level.values()) if spell.level else 0
+
+        if spell_level > max_level:
+            continue
+
+        result.append({
+            "name": name,
+            "level": spell_level,
+            "school": spell.school.value if hasattr(spell.school, 'value') else str(spell.school),
+            "description": spell.description,
+            "casting_time": spell.casting_time,
+            "range": spell.range.value if hasattr(spell.range, 'value') else str(spell.range),
+            "duration": spell.duration.value if hasattr(spell.duration, 'value') else str(spell.duration),
+        })
+
+    return {"spells": sorted(result, key=lambda x: (x["level"], x["name"]))}
+
+
+# Common items for the item picker
+COMMON_ITEMS = [
+    {"name": "Longsword", "type": "weapon", "weight": 4.0, "value": 15.0, "properties": {"damage": "1d8", "damage_type": "slashing"}},
+    {"name": "Shortsword", "type": "weapon", "weight": 2.0, "value": 10.0, "properties": {"damage": "1d6", "damage_type": "piercing"}},
+    {"name": "Dagger", "type": "weapon", "weight": 1.0, "value": 2.0, "properties": {"damage": "1d4", "damage_type": "piercing"}},
+    {"name": "Longbow", "type": "weapon", "weight": 3.0, "value": 75.0, "properties": {"damage": "1d8", "damage_type": "piercing", "range": 100}},
+    {"name": "Crossbow, Light", "type": "weapon", "weight": 4.0, "value": 35.0, "properties": {"damage": "1d8", "damage_type": "piercing"}},
+    {"name": "Chain Shirt", "type": "armor", "weight": 25.0, "value": 100.0, "properties": {"ac_bonus": 4, "max_dex": 4}},
+    {"name": "Leather Armor", "type": "armor", "weight": 15.0, "value": 10.0, "properties": {"ac_bonus": 2, "max_dex": 6}},
+    {"name": "Scale Mail", "type": "armor", "weight": 30.0, "value": 50.0, "properties": {"ac_bonus": 5, "max_dex": 3}},
+    {"name": "Shield, Heavy Steel", "type": "shield", "weight": 15.0, "value": 20.0, "properties": {"ac_bonus": 2}},
+    {"name": "Potion of Healing", "type": "potion", "weight": 0.1, "value": 50.0, "properties": {"heal_dice": "1d8+1"}},
+    {"name": "Potion of Greater Healing", "type": "potion", "weight": 0.1, "value": 150.0, "properties": {"heal_dice": "2d8+2"}},
+    {"name": "Rope, Hemp (50 ft)", "type": "gear", "weight": 10.0, "value": 1.0},
+    {"name": "Torch", "type": "gear", "weight": 1.0, "value": 0.01},
+    {"name": "Rations (1 day)", "type": "gear", "weight": 1.0, "value": 0.5},
+    {"name": "Backpack", "type": "gear", "weight": 2.0, "value": 2.0},
+    {"name": "Bedroll", "type": "gear", "weight": 5.0, "value": 0.1},
+    {"name": "Waterskin", "type": "gear", "weight": 4.0, "value": 1.0},
+    {"name": "Thieves' Tools", "type": "tool", "weight": 1.0, "value": 30.0},
+    {"name": "Healer's Kit", "type": "tool", "weight": 1.0, "value": 50.0},
+    {"name": "Arrows (20)", "type": "ammunition", "weight": 3.0, "value": 1.0},
+    {"name": "Bolts (20)", "type": "ammunition", "weight": 2.0, "value": 1.0},
+]
+
+
+@app.get("/api/items")
+async def get_item_list(item_type: str = None):
+    """Get common items for the item picker."""
+    items = COMMON_ITEMS
+    if item_type:
+        items = [i for i in items if i["type"] == item_type]
+    return {"items": items}
+
+
+# ===== PARTY ENDPOINTS =====
+
+@app.get("/api/party/treasury")
+async def get_party_treasury(session_code: str):
+    """Get shared party gold."""
+    game_session = session_manager.get_session(session_code)
+    if not game_session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    # For now, use in-memory party treasury
+    if not hasattr(game_session, 'party_treasury'):
+        game_session.party_treasury = {"platinum": 0, "gold": 0, "silver": 0, "copper": 0}
+
+    return game_session.party_treasury
+
+
+@app.put("/api/party/treasury")
+async def update_party_treasury(session_code: str, update: CurrencyUpdate):
+    """Update shared party gold."""
+    game_session = session_manager.get_session(session_code)
+    if not game_session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    if not hasattr(game_session, 'party_treasury'):
+        game_session.party_treasury = {"platinum": 0, "gold": 0, "silver": 0, "copper": 0}
+
+    treasury = game_session.party_treasury
+    if update.operation == "add":
+        treasury["platinum"] += update.platinum
+        treasury["gold"] += update.gold
+        treasury["silver"] += update.silver
+        treasury["copper"] += update.copper
+    elif update.operation == "subtract":
+        treasury["platinum"] = max(0, treasury["platinum"] - update.platinum)
+        treasury["gold"] = max(0, treasury["gold"] - update.gold)
+        treasury["silver"] = max(0, treasury["silver"] - update.silver)
+        treasury["copper"] = max(0, treasury["copper"] - update.copper)
+    else:  # set
+        treasury["platinum"] = update.platinum
+        treasury["gold"] = update.gold
+        treasury["silver"] = update.silver
+        treasury["copper"] = update.copper
+
+    return treasury
+
+
+@app.get("/api/party/loot")
+async def get_party_loot(session_code: str):
+    """Get shared party loot bag."""
+    game_session = session_manager.get_session(session_code)
+    if not game_session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    if not hasattr(game_session, 'party_loot'):
+        game_session.party_loot = []
+
+    return {"items": game_session.party_loot}
+
+
+@app.post("/api/party/loot")
+async def add_party_loot(session_code: str, item: ItemCreate):
+    """Add item to party loot bag."""
+    game_session = session_manager.get_session(session_code)
+    if not game_session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    if not hasattr(game_session, 'party_loot'):
+        game_session.party_loot = []
+
+    loot_item = {
+        "id": len(game_session.party_loot) + 1,
+        "name": item.name,
+        "description": item.description,
+        "item_type": item.item_type,
+        "quantity": item.quantity,
+        "weight": item.weight,
+        "value": item.value,
+        "properties": item.properties,
+    }
+    game_session.party_loot.append(loot_item)
+
+    return loot_item
+
+
+class LootClaim(BaseModel):
+    loot_id: int
+    character_id: int
+
+
+@app.post("/api/party/loot/claim")
+async def claim_party_loot(session_code: str, claim: LootClaim):
+    """Move item from party loot to character inventory."""
+    game_session = session_manager.get_session(session_code)
+    if not game_session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    if not hasattr(game_session, 'party_loot'):
+        raise HTTPException(status_code=404, detail="No loot to claim")
+
+    # Find the loot item
+    loot_item = None
+    for i, item in enumerate(game_session.party_loot):
+        if item["id"] == claim.loot_id:
+            loot_item = game_session.party_loot.pop(i)
+            break
+
+    if not loot_item:
+        raise HTTPException(status_code=404, detail="Loot item not found")
+
+    # Add to character inventory
+    with session_scope() as session:
+        char = session.query(Character).filter_by(id=claim.character_id).first()
+        if not char:
+            # Put item back
+            game_session.party_loot.append(loot_item)
+            raise HTTPException(status_code=404, detail="Character not found")
+
+        new_item = InventoryItem(
+            character_id=claim.character_id,
+            name=loot_item["name"],
+            description=loot_item.get("description", ""),
+            item_type=loot_item.get("item_type", "gear"),
+            quantity=loot_item.get("quantity", 1),
+            weight=loot_item.get("weight", 0),
+            value=loot_item.get("value", 0),
+            properties=loot_item.get("properties", {}),
+        )
+        session.add(new_item)
+
+    return {"claimed": True, "item": loot_item["name"]}
 
 
 @app.websocket("/ws/{session_code}/{player_name}")
