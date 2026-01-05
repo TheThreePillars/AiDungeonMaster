@@ -747,6 +747,15 @@ async def get_character_inventory(character_id: int):
             raise HTTPException(status_code=404, detail="Character not found")
 
         items = session.query(InventoryItem).filter_by(character_id=character_id).all()
+
+        # Calculate total weight
+        total_weight = sum(item.weight * item.quantity for item in items)
+
+        # Calculate carrying capacity based on Strength
+        str_score = char.strength or 10
+        # Light load: Str * 3.33, Medium: Str * 6.66, Heavy: Str * 10
+        capacity = str_score * 10  # Heavy load max
+
         return {
             "items": [
                 {
@@ -762,7 +771,9 @@ async def get_character_inventory(character_id: int):
                     "properties": item.properties,
                 }
                 for item in items
-            ]
+            ],
+            "total_weight": total_weight,
+            "capacity": capacity,
         }
 
 
