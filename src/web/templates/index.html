@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Dungeon Master - Pathfinder 1e</title>
+    <title>Mobile DM - Pathfinder 1e</title>
     <style>
         :root {
             --bg-dark: #0d1117;
@@ -1820,7 +1820,7 @@
     <div id="title-screen">
         <div class="title-card">
             <div class="game-icon">&#x1F3B2;</div>
-            <h1 class="game-title">AI Dungeon Master</h1>
+            <h1 class="game-title">Mobile DM</h1>
             <p class="game-subtitle">Pathfinder 1st Edition</p>
 
             <button class="menu-btn primary" id="btn-new-game">&#x25B6; New Game</button>
@@ -1835,7 +1835,7 @@
             <div class="status-bar">
                 <div class="status-item">
                     <span class="status-dot" id="ai-status-dot"></span>
-                    <span id="ai-status-text">Checking AI...</span>
+                    <span id="ai-status-text">Checking server...</span>
                 </div>
                 <div class="status-item">
                     <span id="version-text">v0.2.0</span>
@@ -2274,7 +2274,7 @@
             </div>
             <div class="header-status">
                 <span class="status-dot" id="game-status-dot"></span>
-                <span id="game-status-text">AI Online</span>
+                <span id="game-status-text">Online</span>
             </div>
             <button class="header-btn" id="btn-players">&#x1F465;</button>
         </header>
@@ -2512,14 +2512,14 @@
                 const dot = document.getElementById('ai-status-dot');
                 const text = document.getElementById('ai-status-text');
                 dot.classList.toggle('offline', !data.ai_available);
-                text.textContent = data.ai_available ? 'AI Online' : 'AI Offline';
+                text.textContent = data.ai_available ? 'Online' : 'Offline';
 
                 // Update game screen status
                 const gameDot = document.getElementById('game-status-dot');
                 const gameText = document.getElementById('game-status-text');
                 if (gameDot) {
                     gameDot.classList.toggle('offline', !data.ai_available);
-                    gameText.textContent = data.ai_available ? 'AI Online' : 'AI Offline';
+                    gameText.textContent = data.ai_available ? 'Online' : 'Offline';
                 }
 
                 // Voice button
@@ -2542,6 +2542,8 @@
             state.ws.onopen = () => {
                 state.connected = true;
                 console.log('Connected to server');
+                // Send narrator voice preference
+                sendNarratorVoice();
             };
 
             state.ws.onmessage = (event) => {
@@ -2864,7 +2866,21 @@
             speechSynthesis.speak(utterance);
         }
 
-        function testDMVoice() {
+        async function testDMVoice() {
+            // Use server Piper TTS if available, otherwise browser TTS
+            if (dmVoice.usePiper && state.speechAvailable) {
+                try {
+                    const res = await fetch('/api/tts/test', { method: 'POST' });
+                    if (res.ok) {
+                        const data = await res.json();
+                        playDMAudio(data.audio, data.format);
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('Server TTS test failed, falling back to browser:', e);
+                }
+            }
+            // Fallback to browser TTS
             const testPhrases = [
                 "Welcome, brave adventurer, to the realm of endless possibilities.",
                 "Roll for initiative! The goblins are upon you!",
@@ -2872,7 +2888,11 @@
                 "The dragon's eyes gleam with ancient wisdom.",
             ];
             const phrase = testPhrases[Math.floor(Math.random() * testPhrases.length)];
-            speakDMText(phrase);
+            // Force browser TTS for test
+            const utterance = new SpeechSynthesisUtterance(phrase);
+            utterance.rate = 0.8;
+            utterance.pitch = 0.6;
+            speechSynthesis.speak(utterance);
         }
 
         // Initialize voices (needed for some browsers)
@@ -3859,8 +3879,20 @@
                 btn.classList.add('selected');
                 dmVoice.gender = btn.dataset.voice;
                 localStorage.setItem('dmVoiceGender', dmVoice.gender);
+                // Send preference to server
+                sendNarratorVoice();
             });
         });
+
+        // Send narrator voice preference to server
+        function sendNarratorVoice() {
+            if (state.ws && state.ws.readyState === WebSocket.OPEN) {
+                state.ws.send(JSON.stringify({
+                    type: 'set_narrator_voice',
+                    voice: dmVoice.gender  // 'male' or 'female'
+                }));
+            }
+        }
 
         // Test voice button
         document.getElementById('btn-test-voice').addEventListener('click', testDMVoice);

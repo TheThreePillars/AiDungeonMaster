@@ -1,4 +1,4 @@
-"""FastAPI WebSocket server for AI Dungeon Master."""
+"""FastAPI WebSocket server for Mobile DM."""
 
 import asyncio
 import base64
@@ -68,6 +68,8 @@ class GameSession:
         # Database linkage for save/load
         self.campaign_id: Optional[int] = None
         self.db_session_id: Optional[int] = None
+        # Narrator voice preference (dm_male = old wizard, dm_female = old witch)
+        self.narrator_voice: str = "dm_male"
 
     def to_world_state(self) -> dict:
         """Serialize world state for saving to database."""
@@ -238,8 +240,8 @@ async def lifespan(app: FastAPI):
 
 # Create FastAPI app
 app = FastAPI(
-    title="AI Dungeon Master",
-    description="Pathfinder 1e with AI-powered narration",
+    title="Mobile DM",
+    description="Pathfinder 1e tabletop companion",
     version="0.2.0",
     lifespan=lifespan,
 )
@@ -291,7 +293,7 @@ class CharacterCreate(BaseModel):
     charisma: int = 10
 
 
-# System prompt for DM AI
+# System prompt for Mobile DM narrator
 DM_SYSTEM_PROMPT = """You are an expert Dungeon Master running a Pathfinder 1st Edition tabletop RPG game. You speak like a wise, elderly storyteller.
 
 CORE RESPONSIBILITIES:
@@ -342,7 +344,7 @@ async def get_index():
     template_path = os.path.join(os.path.dirname(__file__), "templates", "index.html")
     if os.path.exists(template_path):
         return FileResponse(template_path)
-    return HTMLResponse("<h1>AI Dungeon Master</h1><p>Loading...</p>")
+    return HTMLResponse("<h1>Mobile DM</h1><p>Loading...</p>")
 
 
 @app.get("/api/status")
@@ -365,6 +367,29 @@ async def get_status():
 async def get_voices():
     """Get available TTS voices."""
     return {"voices": tts_list_voices(), "available": tts_available()}
+
+
+@app.post("/api/tts/test")
+async def test_tts():
+    """Generate test TTS audio."""
+    if not tts_available():
+        raise HTTPException(status_code=503, detail="TTS not available")
+
+    test_phrases = [
+        "Welcome, brave adventurer, to the realm of endless possibilities.",
+        "Roll for initiative! The goblins are upon you!",
+        "You find a dusty tome in the ancient library.",
+        "The dragon's eyes gleam with ancient wisdom.",
+    ]
+    import random
+    phrase = random.choice(test_phrases)
+
+    audio_bytes = await tts_synthesize(phrase)
+    if not audio_bytes:
+        raise HTTPException(status_code=500, detail="TTS generation failed")
+
+    audio_b64 = base64.b64encode(audio_bytes).decode("utf-8")
+    return {"audio": audio_b64, "format": "wav", "text": phrase}
 
 
 @app.post("/api/sessions")
@@ -1780,6 +1805,18 @@ async def websocket_endpoint(websocket: WebSocket, session_code: str, player_nam
                     "timestamp": datetime.now().isoformat(),
                 })
 
+            elif msg_type == "set_narrator_voice":
+                # Set the narrator voice preference (dm_male = wizard, dm_female = witch)
+                voice = data.get("voice", "dm_male")
+                if voice in ("dm_male", "dm_female", "male", "female"):
+                    # Normalize voice name
+                    if voice == "male":
+                        voice = "dm_male"
+                    elif voice == "female":
+                        voice = "dm_female"
+                    game_session.narrator_voice = voice
+                    logger.info(f"[{code}] Narrator voice set to: {voice}")
+
             elif msg_type == "voice_transcription":
                 # Voice input transcribed to text
                 text = data.get("text", "")
@@ -1867,8 +1904,8 @@ Respond as the Dungeon Master:"""
             async def send_tts_chunk(text: str, chunk_index: int):
                 """Generate and send TTS for a sentence chunk with voice detection."""
                 try:
-                    # Parse text for voice segments (e.g., [VOICE:elderly_male])
-                    segments = extract_voice_segments(text)
+                    # Parse text for voice segments, using session narrator voice preference
+                    segments = extract_voice_segments(text, game_session.narrator_voice)
                     sub_index = 0
                     for voice_name, segment_text in segments:
                         if not segment_text.strip():
@@ -1904,17 +1941,29 @@ Respond as the Dungeon Master:"""
                         "token": display_token,
                     })
 
-                # Check for sentence completion and generate TTS
-                if tts_enabled and token.rstrip().endswith(('.', '!', '?')):
-                    sentences = split_into_sentences(sentence_buffer)
-                    if len(sentences) > 1 or sentence_buffer.rstrip().endswith(('.', '!', '?')):
-                        # Send TTS for complete sentences (keep voice tags for TTS)
-                        text_to_speak = sentences[0] if len(sentences) > 1 else sentence_buffer.strip()
-                        if text_to_speak and len(text_to_speak) > 3:
-                            asyncio.create_task(send_tts_chunk(text_to_speak, sent_sentences))
-                            sent_sentences += 1
-                            # Keep remainder in buffer
+                # Check for TTS trigger points - start audio earlier for better UX
+                should_speak = False
+                text_to_speak = ""
+
+                if tts_enabled:
+                    # Trigger on sentence endings
+                    if token.rstrip().endswith(('.', '!', '?')):
+                        sentences = split_into_sentences(sentence_buffer)
+                        if len(sentences) > 1 or sentence_buffer.rstrip().endswith(('.', '!', '?')):
+                            text_to_speak = sentences[0] if len(sentences) > 1 else sentence_buffer.strip()
                             sentence_buffer = ' '.join(sentences[1:]) if len(sentences) > 1 else ""
+                            should_speak = True
+                    # For first chunk, also trigger on comma or after 80+ chars to start audio sooner
+                    elif sent_sentences == 0 and len(sentence_buffer) > 80:
+                        if ',' in sentence_buffer:
+                            comma_idx = sentence_buffer.rfind(',')
+                            text_to_speak = sentence_buffer[:comma_idx + 1].strip()
+                            sentence_buffer = sentence_buffer[comma_idx + 1:].strip()
+                            should_speak = True
+
+                if should_speak and text_to_speak and len(text_to_speak) > 3:
+                    asyncio.create_task(send_tts_chunk(text_to_speak, sent_sentences))
+                    sent_sentences += 1
 
             # Strip voice tags for display and history
             display_response = strip_voice_tags(full_response)
@@ -1954,7 +2003,7 @@ Respond as the Dungeon Master:"""
         # Offline mode - simple response
         await game_session.broadcast({
             "type": "dm_response",
-            "content": f"[AI Offline] {player_name} attempts to: {action}\n\nThe DM will respond shortly...",
+            "content": f"[Offline] {player_name} attempts to: {action}\n\nThe DM will respond shortly...",
             "timestamp": datetime.now().isoformat(),
         })
 

@@ -17,10 +17,12 @@ _voice_models: dict = {}
 
 # Voice profile mappings for NPCs
 VOICE_PROFILES = {
-    # Default/DM voices - distinguished British storyteller
-    "default": "en_GB-alan-medium",
-    "dm": "en_GB-alan-medium",
-    "narrator": "en_GB-alan-medium",
+    # Default narrator voices - elderly wizard/witch storyteller
+    "default": "en_US-john-medium",           # Old wizard by default
+    "dm": "en_US-john-medium",                # Old wizard narrator (male)
+    "dm_male": "en_US-john-medium",           # Old wizard narrator
+    "dm_female": "en_GB-southern_english_female-low",  # Old witch narrator
+    "narrator": "en_US-john-medium",          # Same as dm
 
     # Male character voices
     "elderly_male": "en_US-john-medium",      # Wise old sage, wizard
@@ -114,13 +116,14 @@ def get_voice(voice_name: str = "default"):
         return None
 
 
-def synthesize_sync(text: str, voice_name: str = "default") -> Optional[bytes]:
+def synthesize_sync(text: str, voice_name: str = "default", add_pause: bool = True) -> Optional[bytes]:
     """
     Synthesize text to speech (synchronous).
 
     Args:
         text: Text to synthesize
         voice_name: Voice profile name (default, dm, elderly_male, etc.)
+        add_pause: Add dramatic pause at end of sentences (default True)
 
     Returns:
         WAV audio bytes or None if failed
@@ -144,6 +147,12 @@ def synthesize_sync(text: str, voice_name: str = "default") -> Optional[bytes]:
             # Synthesize and write audio chunks
             for audio_chunk in voice.synthesize(text):
                 wav_file.writeframes(audio_chunk.audio_int16_bytes)
+
+            # Add dramatic pause at end (0.4 seconds of silence for storyteller effect)
+            if add_pause:
+                pause_samples = int(voice.config.sample_rate * 0.4)  # 400ms pause
+                silence = b'\x00\x00' * pause_samples  # 16-bit silence
+                wav_file.writeframes(silence)
 
         audio_buffer.seek(0)
         return audio_buffer.read()
@@ -171,7 +180,7 @@ async def synthesize(text: str, voice_name: str = "default") -> Optional[bytes]:
     return await loop.run_in_executor(None, synthesize_sync, text, voice_name)
 
 
-def extract_voice_segments(text: str) -> list[tuple[str, str]]:
+def extract_voice_segments(text: str, narrator_voice: str = "dm") -> list[tuple[str, str]]:
     """
     Extract voice-tagged segments from text.
 
@@ -179,6 +188,7 @@ def extract_voice_segments(text: str) -> list[tuple[str, str]]:
 
     Args:
         text: Text potentially containing [VOICE:name] tags
+        narrator_voice: Voice to use for narrator/DM segments (dm_male or dm_female)
 
     Returns:
         List of (voice_name, text_segment) tuples
@@ -190,7 +200,7 @@ def extract_voice_segments(text: str) -> list[tuple[str, str]]:
     import re
 
     segments = []
-    current_voice = "dm"
+    current_voice = narrator_voice  # Use the narrator voice preference
 
     # Pattern to match [VOICE:name] tags
     pattern = r'\[VOICE:(\w+)\]'
@@ -207,9 +217,9 @@ def extract_voice_segments(text: str) -> list[tuple[str, str]]:
             # This is a voice name
             current_voice = part.lower()
 
-    # If no segments found, return the whole text with default voice
+    # If no segments found, return the whole text with narrator voice
     if not segments and text.strip():
-        segments = [("dm", text.strip())]
+        segments = [(narrator_voice, text.strip())]
 
     return segments
 
