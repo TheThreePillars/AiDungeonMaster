@@ -710,6 +710,7 @@ async def get_character(character_id: int):
             "fortitude_base": char.fortitude_base,
             "reflex_base": char.reflex_base,
             "will_base": char.will_base,
+            "feats": char.feats or [],
         }
 
 
@@ -1953,17 +1954,19 @@ async def generate_opening_scene(game_session: GameSession):
     game_session.opening_scene_done = True
     party_list = ", ".join(game_session.all_characters)
 
-    opening_prompt = f"""Set the opening scene for a new adventure. The party has just arrived at the Rusty Dragon Inn in Sandpoint.
+    opening_prompt = f"""Set the opening scene for a new adventure.
 
-PARTY MEMBERS: {party_list}
+PLAYER CHARACTERS (these are the PLAYERS, not NPCs):
+{party_list}
 
-Create a vivid but SHORT opening (3-4 sentences max):
-1. Describe the scene briefly
-2. End by asking {game_session.all_characters[0]} what they do
+IMPORTANT: Do NOT create any NPCs that duplicate what the player characters are. The players ARE the heroes of this story.
 
-Example: "The warmth of the Rusty Dragon Inn washes over you as you push through its heavy oak doors. Locals chat over mugs of ale while a bard strums a lute in the corner. The innkeeper, a striking Tian woman with a knowing smile, looks up from polishing a glass. What do you do, {game_session.all_characters[0]}?"
+Create a SHORT opening scene (3-4 sentences):
+1. Describe the Rusty Dragon Inn - warm tavern, locals drinking, innkeeper Ameiko (Tian woman)
+2. Focus on atmosphere, not on other adventurers or performers
+3. End by directly addressing {game_session.all_characters[0]} and asking what they do
 
-Generate the opening scene now:"""
+Generate the opening now:"""
 
     try:
         # Broadcast typing indicator
@@ -2083,18 +2086,22 @@ async def handle_player_action(websocket: WebSocket, player_name: str, data: dic
 
     context = f"""CURRENT SITUATION:
 Location: {game_session.current_location}
-{game_session.location_description}
 Time: {game_session.time_of_day}
 In Combat: {"Yes" if game_session.in_combat else "No"}
 
-PARTY MEMBERS: {party_list}
+PLAYER CHARACTERS (these are the PLAYERS - never confuse them with NPCs):
+{party_list}
 
-CONVERSATION HISTORY:{history_text if history_text else " (This is the start of the adventure)"}
+WHAT HAS HAPPENED SO FAR:{history_text if history_text else " (Adventure just started)"}
 
 ACTIONS THIS ROUND:
 {actions_text}
 
-Narrate the results of ALL characters' actions together in a cohesive scene. After narrating, start a new round by asking {game_session.all_characters[0]} what they do next:"""
+INSTRUCTIONS:
+1. Narrate the results of the players' actions - make something HAPPEN
+2. ADVANCE the story - introduce new elements, NPCs responding, discoveries, etc.
+3. Do NOT repeat the opening scene or re-describe the location
+4. End by asking {game_session.all_characters[0]} what they do next"""
 
     # Get AI response (streaming)
     if llm_client and is_llm_available():
