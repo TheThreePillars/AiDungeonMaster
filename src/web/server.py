@@ -28,7 +28,10 @@ from .tts import (
     split_into_sentences,
     extract_voice_segments,
     strip_voice_tags,
+    prewarm_voices_async,
+    coalesce_segments,
 )
+from .timing import timed_async, get_tracker, record_timing
 from ..game.dice import roll
 from ..database.session import init_db, session_scope
 from ..database.models import Campaign, Party, Character, InventoryItem, Session as DBSession
@@ -400,6 +403,10 @@ async def lifespan(app: FastAPI):
     auto_save_task = asyncio.create_task(auto_save_loop())
     logger.info("Auto-save enabled (every 5 minutes)")
 
+    # Pre-warm TTS voice models in background
+    if tts_available():
+        asyncio.create_task(prewarm_voices_async())
+
     yield
 
     # Cleanup
@@ -467,6 +474,13 @@ class CharacterCreate(BaseModel):
 # System prompt for Mobile DM narrator
 DM_SYSTEM_PROMPT = """You are an expert Dungeon Master for Pathfinder 1st Edition. Be CONCISE and INTERACTIVE.
 
+CRITICAL - RESPONSE LENGTH:
+- STRICT LIMIT: 3-4 sentences maximum for normal responses
+- Opening scenes: 4-5 sentences maximum
+- Combat narration: 2-3 sentences per action
+- ALWAYS end with turn prompt: "[Name], what do you do?"
+- DO NOT ramble or over-describe
+
 CRITICAL - PLAYER CHARACTERS:
 - The PLAYER CHARACTERS listed are controlled by real players - they are NOT NPCs
 - NEVER describe what a PC looks like, thinks, or feels - the player controls that
@@ -483,8 +497,8 @@ When you receive "ACTIONS THIS ROUND" from multiple characters:
 
 SINGLE ACTION FLOW:
 When only one character acts:
-1. Narrate the result of their action
-2. State whose turn is next: "[Next Name], it's your turn. What do you do?"
+1. Narrate the result of their action briefly
+2. State whose turn is next: "[Next Name], what do you do?"
 
 STORY PROGRESSION:
 - If players talk to NPCs → NPCs respond with useful info or quests
@@ -492,11 +506,6 @@ STORY PROGRESSION:
 - If players fight → combat progresses with dice rolls
 - If players investigate → they discover clues
 - ALWAYS move the story forward - never stall
-
-RESPONSE FORMAT:
-- Keep responses SHORT (3-5 sentences)
-- Narrate what happens in the WORLD as a result of actions
-- ALWAYS end by saying whose turn it is: "[Name], it's your turn. What do you do?"
 
 DICE ROLLS:
 - Ask for rolls: "Roll [skill] (DC X)" when needed
@@ -544,6 +553,16 @@ async def get_status():
         "tts_available": tts_available(),
         "active_sessions": len(session_manager.sessions),
         "total_players": total_players,
+    }
+
+
+@app.get("/api/timing")
+async def get_timing():
+    """Get latency timing statistics for performance monitoring."""
+    tracker = get_tracker()
+    return {
+        "stats": tracker.get_all_stats(),
+        "stages": list(tracker._metrics.keys()),
     }
 
 
@@ -2622,15 +2641,29 @@ Generate the opening now:"""
         )
         await token_batcher.start_interval_flush()
 
+        # Track LLM timing
+        llm_start = time.perf_counter()
+        first_token_time = None
+        token_count = 0
+
         async for token in llm_client.agenerate_stream(
             prompt=opening_prompt,
             system_prompt=DM_SYSTEM_PROMPT,
             config=config,
         ):
+            if first_token_time is None:
+                first_token_time = time.perf_counter()
+                record_timing("llm.first_token", (first_token_time - llm_start) * 1000, context="opening")
+
+            token_count += 1
             full_response += token
             display_token = strip_voice_tags(token)
             if display_token:
                 await token_batcher.add_token(display_token)
+
+        # Record total LLM time
+        llm_total_ms = (time.perf_counter() - llm_start) * 1000
+        record_timing("llm.total", llm_total_ms, context="opening", tokens=token_count)
 
         # Flush any remaining batched tokens and stop the interval task
         token_batcher.stop_interval_flush()
@@ -2644,21 +2677,33 @@ Generate the opening now:"""
             "timestamp": datetime.now().isoformat(),
         })
 
-        # Generate TTS for opening
+        # Generate TTS for opening (parallel for faster audio delivery)
         if tts_available():
             segments = extract_voice_segments(full_response, game_session.narrator_voice)
-            for i, (voice_name, segment_text) in enumerate(segments):
-                if segment_text.strip():
-                    audio_bytes = await tts_synthesize(segment_text, voice_name)
-                    if audio_bytes:
-                        audio_b64 = base64.b64encode(audio_bytes).decode("utf-8")
-                        await game_session.broadcast({
-                            "type": "dm_audio_chunk",
-                            "audio": audio_b64,
-                            "format": "wav",
-                            "index": i,
-                            "voice": voice_name,
-                        })
+            # Coalesce short segments to reduce TTS calls
+            segments = coalesce_segments(segments)
+
+            async def synthesize_and_broadcast(idx: int, voice: str, text: str):
+                """Synthesize and broadcast a single TTS segment."""
+                if not text.strip():
+                    return
+                audio_bytes = await tts_synthesize(text, voice)
+                if audio_bytes:
+                    audio_b64 = base64.b64encode(audio_bytes).decode("utf-8")
+                    await game_session.broadcast({
+                        "type": "dm_audio_chunk",
+                        "audio": audio_b64,
+                        "format": "wav",
+                        "index": idx,
+                        "voice": voice,
+                    })
+
+            # Run TTS tasks in parallel (semaphore in tts.py limits concurrency)
+            tts_tasks = [
+                synthesize_and_broadcast(i, voice_name, segment_text)
+                for i, (voice_name, segment_text) in enumerate(segments)
+            ]
+            await asyncio.gather(*tts_tasks)
 
         # Store in history
         game_session.conversation_history.append({
@@ -2821,9 +2866,13 @@ INSTRUCTIONS:
             sent_sentences = 0
             tts_enabled = tts_available()
 
+            # Soft token cap for response length control
+            SOFT_TOKEN_CAP = 250   # Start looking for natural exit point
+            HARD_TOKEN_CAP = 350   # Absolute maximum
+
             config = GenerationConfig(
                 temperature=0.8,
-                max_tokens=400,  # Allow complete responses while keeping them concise
+                max_tokens=HARD_TOKEN_CAP,
             )
 
             # Token batcher for efficient mobile streaming (10 tokens or 150ms intervals)
@@ -2858,11 +2907,21 @@ INSTRUCTIONS:
                 except Exception as e:
                     logger.warning(f"TTS chunk failed: {e}")
 
+            # Track LLM timing
+            llm_start = time.perf_counter()
+            first_token_time = None
+            token_count = 0
+
             async for token in llm_client.agenerate_stream(
                 prompt=context,
                 system_prompt=DM_SYSTEM_PROMPT,
                 config=config,
             ):
+                if first_token_time is None:
+                    first_token_time = time.perf_counter()
+                    record_timing("llm.first_token", (first_token_time - llm_start) * 1000, context="action")
+
+                token_count += 1
                 full_response += token
                 sentence_buffer += token
 
@@ -2870,6 +2929,14 @@ INSTRUCTIONS:
                 display_token = strip_voice_tags(token)
                 if display_token:  # Only send if there's content after stripping
                     await token_batcher.add_token(display_token)
+
+                # Soft cap: stop at sentence boundary after SOFT_TOKEN_CAP
+                if token_count >= SOFT_TOKEN_CAP:
+                    if full_response.rstrip().endswith(('.', '!', '?')):
+                        # Check if we have a turn prompt in last 60 chars
+                        last_chunk = full_response.lower()[-60:]
+                        if "what do you do" in last_chunk or "your turn" in last_chunk:
+                            break
 
                 # Check for TTS trigger points - start audio earlier for better UX
                 should_speak = False
@@ -2894,6 +2961,10 @@ INSTRUCTIONS:
                 if should_speak and text_to_speak and len(text_to_speak) > 3:
                     asyncio.create_task(send_tts_chunk(text_to_speak, sent_sentences))
                     sent_sentences += 1
+
+            # Record total LLM time
+            llm_total_ms = (time.perf_counter() - llm_start) * 1000
+            record_timing("llm.total", llm_total_ms, context="action", tokens=token_count)
 
             # Flush any remaining batched tokens and stop the interval task
             token_batcher.stop_interval_flush()

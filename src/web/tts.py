@@ -1,19 +1,30 @@
 """Text-to-speech service using Piper TTS."""
 
+import asyncio
 import io
 import logging
-import os
+import threading
+import time
 import wave
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Set
+
+from .timing import timed_sync, record_timing
 
 logger = logging.getLogger(__name__)
 
 # Voice models directory
 VOICES_DIR = Path(__file__).parent.parent.parent / "models" / "voices"
 
-# Lazy loaded voice models
+# Thread-safe voice model cache
 _voice_models: dict = {}
+_voice_lock = threading.Lock()
+_prewarmed_voices: Set[str] = set()
+
+# TTS concurrency control
+_tts_semaphore: Optional[asyncio.Semaphore] = None
+_tts_executor: Optional[ThreadPoolExecutor] = None
 
 # Voice profile mappings for NPCs
 VOICE_PROFILES = {
@@ -43,6 +54,36 @@ VOICE_PROFILES = {
     "cheerful": "en_US-amy-medium",           # Friendly NPC, happy merchant
     "authoritative": "en_US-john-medium",     # King, commander, priest
 }
+
+# Core voices to pre-warm at startup (deduplicated from VOICE_PROFILES)
+CORE_VOICES = {
+    "en_US-john-medium",       # dm, narrator, elderly_male, authoritative
+    "en_US-danny-low",         # gruff, menacing, commoner_male
+    "en_US-amy-medium",        # young_female, cheerful, commoner_female
+    "en_GB-alan-medium",       # noble_male, mysterious
+    "en_GB-southern_english_female-low",  # dm_female, elderly_female, noble_female
+}
+
+# Minimum characters before emitting a TTS segment
+MIN_SEGMENT_CHARS = 20
+
+
+def get_tts_semaphore() -> asyncio.Semaphore:
+    """Get or create the TTS semaphore (lazy initialization)."""
+    global _tts_semaphore
+    if _tts_semaphore is None:
+        # Allow 2 concurrent TTS operations (balances latency vs resource usage)
+        _tts_semaphore = asyncio.Semaphore(2)
+    return _tts_semaphore
+
+
+def get_tts_executor() -> ThreadPoolExecutor:
+    """Get or create a dedicated thread pool for TTS."""
+    global _tts_executor
+    if _tts_executor is None:
+        # Dedicated pool with 3 workers for TTS
+        _tts_executor = ThreadPoolExecutor(max_workers=3, thread_name_prefix="tts")
+    return _tts_executor
 
 
 def is_available() -> bool:
@@ -77,43 +118,101 @@ def list_voices() -> list[dict]:
     return voices
 
 
-def get_voice(voice_name: str = "default"):
-    """Get or load a Piper voice model."""
-    global _voice_models
+def prewarm_voices(voices: Optional[Set[str]] = None) -> int:
+    """
+    Pre-load voice models to eliminate first-use latency.
 
+    Args:
+        voices: Set of model names to load. Defaults to CORE_VOICES.
+
+    Returns:
+        Number of voices successfully loaded
+    """
+    global _prewarmed_voices
+    voices = voices or CORE_VOICES
+    loaded = 0
+
+    for model_name in voices:
+        if model_name in _prewarmed_voices:
+            continue
+
+        with _voice_lock:
+            if model_name in _voice_models:
+                _prewarmed_voices.add(model_name)
+                continue
+
+            try:
+                from piper import PiperVoice
+
+                model_path = VOICES_DIR / f"{model_name}.onnx"
+                if model_path.exists():
+                    start = time.perf_counter()
+                    logger.info(f"Pre-warming voice: {model_name}")
+                    voice = PiperVoice.load(str(model_path))
+                    _voice_models[model_name] = voice
+                    _prewarmed_voices.add(model_name)
+                    duration_ms = (time.perf_counter() - start) * 1000
+                    record_timing("tts.prewarm", duration_ms, voice=model_name)
+                    loaded += 1
+                else:
+                    logger.warning(f"Voice model not found: {model_path}")
+            except Exception as e:
+                logger.warning(f"Failed to prewarm {model_name}: {e}")
+
+    logger.info(f"Pre-warmed {loaded} voice models")
+    return loaded
+
+
+async def prewarm_voices_async(voices: Optional[Set[str]] = None) -> int:
+    """Async wrapper for voice pre-warming."""
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, prewarm_voices, voices)
+
+
+def get_voice(voice_name: str = "default"):
+    """Get or load a Piper voice model (thread-safe)."""
     # Resolve voice profile to actual model name
     model_name = VOICE_PROFILES.get(voice_name, VOICE_PROFILES["default"])
 
-    # Check cache
+    # Fast path: check cache without lock
     if model_name in _voice_models:
         return _voice_models[model_name]
 
-    try:
-        from piper import PiperVoice
+    # Slow path: acquire lock and load
+    with _voice_lock:
+        # Double-check after acquiring lock
+        if model_name in _voice_models:
+            return _voice_models[model_name]
 
-        # Find the model file
-        model_path = VOICES_DIR / f"{model_name}.onnx"
-        if not model_path.exists():
-            # Try to find any available model as fallback
-            available = list(VOICES_DIR.glob("*.onnx"))
-            if available:
-                model_path = available[0]
-                logger.warning(f"Voice '{model_name}' not found, using {model_path.stem}")
-            else:
-                logger.error("No voice models found")
-                return None
+        try:
+            from piper import PiperVoice
 
-        logger.info(f"Loading Piper voice: {model_path.stem}")
-        voice = PiperVoice.load(str(model_path))
-        _voice_models[model_name] = voice
-        return voice
+            # Find the model file
+            model_path = VOICES_DIR / f"{model_name}.onnx"
+            if not model_path.exists():
+                # Try to find any available model as fallback
+                available = list(VOICES_DIR.glob("*.onnx"))
+                if available:
+                    model_path = available[0]
+                    logger.warning(f"Voice '{model_name}' not found, using {model_path.stem}")
+                else:
+                    logger.error("No voice models found")
+                    return None
 
-    except ImportError:
-        logger.warning("piper-tts not installed. Run: pip install piper-tts")
-        return None
-    except Exception as e:
-        logger.error(f"Failed to load voice model: {e}")
-        return None
+            start = time.perf_counter()
+            logger.info(f"Loading Piper voice: {model_path.stem}")
+            voice = PiperVoice.load(str(model_path))
+            _voice_models[model_name] = voice
+            duration_ms = (time.perf_counter() - start) * 1000
+            record_timing("tts.load_voice", duration_ms, voice=model_name)
+            return voice
+
+        except ImportError:
+            logger.warning("piper-tts not installed. Run: pip install piper-tts")
+            return None
+        except Exception as e:
+            logger.error(f"Failed to load voice model: {e}")
+            return None
 
 
 def synthesize_sync(text: str, voice_name: str = "default", add_pause: bool = True) -> Optional[bytes]:
@@ -130,6 +229,8 @@ def synthesize_sync(text: str, voice_name: str = "default", add_pause: bool = Tr
     """
     if not text or not text.strip():
         return None
+
+    start_time = time.perf_counter()
 
     voice = get_voice(voice_name)
     if voice is None:
@@ -155,7 +256,13 @@ def synthesize_sync(text: str, voice_name: str = "default", add_pause: bool = Tr
                 wav_file.writeframes(silence)
 
         audio_buffer.seek(0)
-        return audio_buffer.read()
+        result = audio_buffer.read()
+
+        # Record timing
+        duration_ms = (time.perf_counter() - start_time) * 1000
+        record_timing("tts.synthesize", duration_ms, chars=len(text), voice=voice_name)
+
+        return result
 
     except Exception as e:
         logger.error(f"TTS synthesis error: {e}")
@@ -164,7 +271,7 @@ def synthesize_sync(text: str, voice_name: str = "default", add_pause: bool = Tr
 
 async def synthesize(text: str, voice_name: str = "default") -> Optional[bytes]:
     """
-    Synthesize text to speech (async wrapper).
+    Synthesize text to speech (async wrapper with concurrency control).
 
     Args:
         text: Text to synthesize
@@ -173,11 +280,63 @@ async def synthesize(text: str, voice_name: str = "default") -> Optional[bytes]:
     Returns:
         WAV audio bytes or None if failed
     """
-    import asyncio
+    semaphore = get_tts_semaphore()
 
-    # Run synthesis in thread pool to avoid blocking
-    loop = asyncio.get_event_loop()
-    return await loop.run_in_executor(None, synthesize_sync, text, voice_name)
+    async with semaphore:
+        loop = asyncio.get_event_loop()
+        executor = get_tts_executor()
+        return await loop.run_in_executor(executor, synthesize_sync, text, voice_name)
+
+
+def coalesce_segments(segments: list[tuple[str, str]], min_chars: int = MIN_SEGMENT_CHARS) -> list[tuple[str, str]]:
+    """
+    Combine short segments with the same voice to reduce TTS calls.
+
+    Args:
+        segments: List of (voice_name, text) tuples
+        min_chars: Minimum character count before emitting a segment
+
+    Returns:
+        Coalesced segments
+    """
+    if not segments:
+        return segments
+
+    result = []
+    current_voice = None
+    current_text = ""
+
+    for voice, text in segments:
+        text = text.strip()
+        if not text:
+            continue
+
+        if voice == current_voice:
+            # Same voice: accumulate
+            current_text += " " + text
+        else:
+            # Voice change: emit current if long enough
+            if current_text and len(current_text) >= min_chars:
+                result.append((current_voice, current_text.strip()))
+            elif current_text and result:
+                # Too short but we have previous segments - append to last if same voice
+                if result[-1][0] == current_voice:
+                    prev_voice, prev_text = result[-1]
+                    result[-1] = (prev_voice, prev_text + " " + current_text.strip())
+                else:
+                    # Different voice, emit anyway
+                    result.append((current_voice, current_text.strip()))
+            elif current_text:
+                result.append((current_voice, current_text.strip()))
+
+            current_voice = voice
+            current_text = text
+
+    # Emit final segment
+    if current_text:
+        result.append((current_voice, current_text.strip()))
+
+    return result
 
 
 def extract_voice_segments(text: str, narrator_voice: str = "dm") -> list[tuple[str, str]]:
@@ -310,12 +469,6 @@ def split_into_sentences(text: str) -> list[str]:
     Returns:
         List of sentences
     """
-    import re
-
-    # Pattern: sentence ends with .!? optionally followed by closing quote/paren
-    # But don't split on abbreviations like "Mr." or "Dr." or numbers like "3.5"
-    pattern = r'(?<![A-Z][a-z])(?<!\d)([.!?])(?=["\']?\s+[A-Z"]|\s*$)'
-
     # Simple split on sentence-ending punctuation
     sentences = []
     current = ""
@@ -345,6 +498,7 @@ async def synthesize_with_voices(text: str) -> list[tuple[str, bytes]]:
         List of (voice_name, audio_bytes) tuples
     """
     segments = extract_voice_segments(text)
+    segments = coalesce_segments(segments)  # Combine short segments
     results = []
 
     for voice_name, segment_text in segments:
