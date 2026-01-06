@@ -2436,8 +2436,8 @@ async def websocket_endpoint(websocket: WebSocket, session_code: str, player_nam
         # Generate the opening scene (DM sets the stage)
         await generate_opening_scene(game_session)
 
-        # Now tell the first character it's their turn
-        first_char = game_session.get_current_character()
+        # Now tell the first character in initiative order it's their turn
+        first_char = game_session.initiative_order[0] if game_session.initiative_order else game_session.get_current_character()
         if first_char:
             await game_session.broadcast({
                 "type": "character_turn",
