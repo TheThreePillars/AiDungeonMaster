@@ -128,29 +128,51 @@ def parse_dm_response(raw_response: str) -> Tuple[str, Optional[dict]]:
     if response_match:
         player_text = response_match.group(1).strip()
 
-    # Try to extract [STATE_UPDATE] block
-    state_match = re.search(
+    # Try to extract [STATE_UPDATE] block (various formats)
+    state_patterns = [
         r'\[STATE_UPDATE\](.*?)\[/STATE_UPDATE\]',
-        raw_response,
-        re.DOTALL | re.IGNORECASE
-    )
-    if state_match:
-        try:
-            state_json = state_match.group(1).strip()
-            state_update = json.loads(state_json)
-        except json.JSONDecodeError:
-            # If JSON parsing fails, try to be more lenient
-            state_update = None
+        r'\[STATE_UPDATE\](.*?)$',  # No closing tag
+        r'STATE_UPDATE[:\s]*(\{.*?\})',  # Without brackets
+        r'\[STATE\](.*?)\[/STATE\]',  # Alternate tag name
+    ]
 
-    # If no [RESPONSE] tags, assume entire text (minus state) is the response
-    if not response_match:
-        # Remove state update block if present
-        player_text = re.sub(
-            r'\[STATE_UPDATE\].*?\[/STATE_UPDATE\]',
-            '',
-            raw_response,
-            flags=re.DOTALL | re.IGNORECASE
-        ).strip()
+    for pattern in state_patterns:
+        state_match = re.search(pattern, raw_response, re.DOTALL | re.IGNORECASE)
+        if state_match:
+            try:
+                state_json = state_match.group(1).strip()
+                state_update = json.loads(state_json)
+                break
+            except json.JSONDecodeError:
+                continue
+
+    # Always strip out state-related content from player text
+    # Remove [STATE_UPDATE]...[/STATE_UPDATE] blocks
+    player_text = re.sub(
+        r'\[STATE_UPDATE\].*?(\[/STATE_UPDATE\]|$)',
+        '',
+        player_text,
+        flags=re.DOTALL | re.IGNORECASE
+    ).strip()
+
+    # Remove [STATE]...[/STATE] blocks
+    player_text = re.sub(
+        r'\[STATE\].*?(\[/STATE\]|$)',
+        '',
+        player_text,
+        flags=re.DOTALL | re.IGNORECASE
+    ).strip()
+
+    # Remove any remaining JSON-like state blocks at the end
+    player_text = re.sub(
+        r'STATE_UPDATE[:\s]*\{.*$',
+        '',
+        player_text,
+        flags=re.DOTALL | re.IGNORECASE
+    ).strip()
+
+    # Remove [RESPONSE] tags if present
+    player_text = re.sub(r'\[/?RESPONSE\]', '', player_text, flags=re.IGNORECASE).strip()
 
     return player_text, state_update
 

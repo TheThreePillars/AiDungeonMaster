@@ -191,13 +191,18 @@ class GameSession:
         self.all_characters = chars
         return chars
 
+    def get_turn_order(self) -> list[str]:
+        """Get the current turn order - initiative order if set, otherwise all_characters."""
+        return self.initiative_order if self.initiative_order else self.all_characters
+
     def get_current_character(self) -> Optional[str]:
         """Get the character whose turn it is to act."""
-        if not self.all_characters:
+        turn_order = self.get_turn_order()
+        if not turn_order:
             return None
-        if self.current_character_index >= len(self.all_characters):
+        if self.current_character_index >= len(turn_order):
             return None
-        return self.all_characters[self.current_character_index]
+        return turn_order[self.current_character_index]
 
     def submit_action(self, character_name: str, action: str) -> bool:
         """Submit an action for a character. Returns True if all characters have acted."""
@@ -206,8 +211,9 @@ class GameSession:
         return len(self.pending_actions) >= len(self.all_characters)
 
     def get_all_pending_actions(self) -> list[tuple[str, str]]:
-        """Get all pending actions as (character_name, action) tuples in character order."""
-        return [(char, self.pending_actions.get(char, "")) for char in self.all_characters if char in self.pending_actions]
+        """Get all pending actions as (character_name, action) tuples in initiative order."""
+        turn_order = self.get_turn_order()
+        return [(char, self.pending_actions.get(char, "")) for char in turn_order if char in self.pending_actions]
 
     def reset_round(self):
         """Reset for a new round of actions."""
@@ -217,10 +223,11 @@ class GameSession:
 
     def advance_to_next_character(self) -> Optional[str]:
         """Move to the next character and return their name, or None if round complete."""
+        turn_order = self.get_turn_order()
         self.current_character_index += 1
-        if self.current_character_index >= len(self.all_characters):
+        if self.current_character_index >= len(turn_order):
             return None
-        return self.all_characters[self.current_character_index]
+        return turn_order[self.current_character_index]
 
     def to_world_state(self) -> dict:
         """Serialize world state for saving to database."""
