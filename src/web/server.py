@@ -392,10 +392,10 @@ async def lifespan(app: FastAPI):
     init_db("saves/campaign.db")
     logger.info("Database initialized")
 
-    # Initialize LLM client with faster 3B model
-    llm_client = OllamaClient(model="hermes3:3b")
+    # Initialize LLM client with fast 1.5B model (optimized for CPU)
+    llm_client = OllamaClient(model="qwen2.5:1.5b")
     if llm_client.is_available():
-        logger.info("AI connected: hermes3:3b")
+        logger.info("AI connected: qwen2.5:1.5b")
     else:
         logger.warning("AI not available - running in offline mode")
 
@@ -548,7 +548,7 @@ async def get_status():
     return {
         "status": "online",
         "ai_available": ai_available,
-        "ai_model": "hermes3:3b" if ai_available else None,
+        "ai_model": "qwen2.5:1.5b" if ai_available else None,
         "speech_available": speech_available(),
         "tts_available": tts_available(),
         "active_sessions": len(session_manager.sessions),
