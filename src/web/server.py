@@ -19,7 +19,7 @@ from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from ..llm.client import OllamaClient, GenerationConfig
+from ..llm.client import OpenAIClient, GenerationConfig
 from .speech import transcribe_audio, is_available as speech_available
 from .tts import (
     synthesize as tts_synthesize,
@@ -337,7 +337,7 @@ class SessionManager:
 
 # Global state
 session_manager = SessionManager()
-llm_client: Optional[OllamaClient] = None
+llm_client: Optional[OpenAIClient] = None
 
 # Cached LLM availability check (avoid repeated model list calls)
 _llm_available_cache: dict = {"available": False, "checked_at": 0.0}
@@ -392,12 +392,12 @@ async def lifespan(app: FastAPI):
     init_db("saves/campaign.db")
     logger.info("Database initialized")
 
-    # Initialize LLM client with fast 1.5B model (optimized for CPU)
-    llm_client = OllamaClient(model="qwen2.5:1.5b")
+    # Initialize LLM client with OpenAI GPT-5-mini (fast cloud inference)
+    llm_client = OpenAIClient(model="gpt-5-mini")
     if llm_client.is_available():
-        logger.info("AI connected: qwen2.5:1.5b")
+        logger.info("AI connected: gpt-5-mini (OpenAI)")
     else:
-        logger.warning("AI not available - running in offline mode")
+        logger.warning("AI not available - check OPENAI_API_KEY env variable")
 
     # Start auto-save background task
     auto_save_task = asyncio.create_task(auto_save_loop())
@@ -548,7 +548,7 @@ async def get_status():
     return {
         "status": "online",
         "ai_available": ai_available,
-        "ai_model": "qwen2.5:1.5b" if ai_available else None,
+        "ai_model": "gpt-5-mini" if ai_available else None,
         "speech_available": speech_available(),
         "tts_available": tts_available(),
         "active_sessions": len(session_manager.sessions),

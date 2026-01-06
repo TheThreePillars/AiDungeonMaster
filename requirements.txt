@@ -2,7 +2,8 @@
 # Install with: pip install -r requirements.txt
 
 # LLM Integration
-ollama>=0.3.0
+openai>=1.0.0
+ollama>=0.3.0  # Optional - for local fallback
 
 # Database
 sqlalchemy>=2.0.0
