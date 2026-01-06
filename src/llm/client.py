@@ -519,9 +519,9 @@ class OpenAIClient:
             model=self.model,
             messages=messages,
             temperature=config.temperature,
-            max_tokens=config.max_tokens,
+            max_completion_tokens=config.max_tokens,
             top_p=config.top_p,
-            frequency_penalty=config.repeat_penalty - 1.0,  # OpenAI uses 0-2 range
+            # Note: frequency_penalty not supported by all models
             stop=config.stop if config.stop else None,
         )
 
@@ -562,9 +562,9 @@ class OpenAIClient:
             messages=messages,
             stream=True,
             temperature=config.temperature,
-            max_tokens=config.max_tokens,
+            max_completion_tokens=config.max_tokens,
             top_p=config.top_p,
-            frequency_penalty=config.repeat_penalty - 1.0,
+            # frequency_penalty not supported by all models
             stop=config.stop if config.stop else None,
         )
 
@@ -592,9 +592,9 @@ class OpenAIClient:
             model=self.model,
             messages=[m.to_dict() for m in messages],
             temperature=config.temperature,
-            max_tokens=config.max_tokens,
+            max_completion_tokens=config.max_tokens,
             top_p=config.top_p,
-            frequency_penalty=config.repeat_penalty - 1.0,
+            # frequency_penalty not supported by all models
             stop=config.stop if config.stop else None,
         )
 
@@ -630,9 +630,9 @@ class OpenAIClient:
             messages=[m.to_dict() for m in messages],
             stream=True,
             temperature=config.temperature,
-            max_tokens=config.max_tokens,
+            max_completion_tokens=config.max_tokens,
             top_p=config.top_p,
-            frequency_penalty=config.repeat_penalty - 1.0,
+            # frequency_penalty not supported by all models
             stop=config.stop if config.stop else None,
         )
 
@@ -673,9 +673,9 @@ class OpenAIClient:
             model=self.model,
             messages=messages,
             temperature=config.temperature,
-            max_tokens=config.max_tokens,
+            max_completion_tokens=config.max_tokens,
             top_p=config.top_p,
-            frequency_penalty=config.repeat_penalty - 1.0,
+            # frequency_penalty not supported by all models
             stop=config.stop if config.stop else None,
         )
 
@@ -716,9 +716,9 @@ class OpenAIClient:
             messages=messages,
             stream=True,
             temperature=config.temperature,
-            max_tokens=config.max_tokens,
+            max_completion_tokens=config.max_tokens,
             top_p=config.top_p,
-            frequency_penalty=config.repeat_penalty - 1.0,
+            # frequency_penalty not supported by all models
             stop=config.stop if config.stop else None,
         )
 
@@ -746,9 +746,9 @@ class OpenAIClient:
             model=self.model,
             messages=[m.to_dict() for m in messages],
             temperature=config.temperature,
-            max_tokens=config.max_tokens,
+            max_completion_tokens=config.max_tokens,
             top_p=config.top_p,
-            frequency_penalty=config.repeat_penalty - 1.0,
+            # frequency_penalty not supported by all models
             stop=config.stop if config.stop else None,
         )
 
@@ -781,9 +781,9 @@ class OpenAIClient:
             messages=[m.to_dict() for m in messages],
             stream=True,
             temperature=config.temperature,
-            max_tokens=config.max_tokens,
+            max_completion_tokens=config.max_tokens,
             top_p=config.top_p,
-            frequency_penalty=config.repeat_penalty - 1.0,
+            # frequency_penalty not supported by all models
             stop=config.stop if config.stop else None,
         )
 

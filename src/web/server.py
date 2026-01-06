@@ -33,6 +33,15 @@ from .tts import (
 )
 from .timing import timed_async, get_tracker, record_timing
 from ..game.dice import roll
+from ..game.session_state import SessionState
+from ..game.scene_packet import ScenePacket, build_scene_from_game_state
+from ..prompts.builder import (
+    build_prompt,
+    build_opening_prompt,
+    build_action_prompt,
+    parse_dm_response,
+)
+from ..prompts.dm_contract import DM_CONTRACT
 from ..database.session import init_db, session_scope
 from ..database.models import Campaign, Party, Character, InventoryItem, Session as DBSession
 from ..characters.races import RACES
@@ -166,6 +175,10 @@ class GameSession:
         self.opening_scene_done: bool = False  # Has the DM set the opening scene?
         # Backpressure tracking for slow clients (removed after 3 consecutive timeouts)
         self.slow_client_counts: dict[str, int] = {}
+        # Structured prompt state management
+        self.session_state = SessionState()
+        self.visible_elements: list[str] = []  # Current scene visible elements
+        self.environmental: list[str] = []  # Current environmental factors
 
     def parse_characters_from_players(self):
         """Extract all individual character names from player names (handles 'Name1 & Name2' format)."""
@@ -392,10 +405,10 @@ async def lifespan(app: FastAPI):
     init_db("saves/campaign.db")
     logger.info("Database initialized")
 
-    # Initialize LLM client with OpenAI GPT-5-mini (fast cloud inference)
-    llm_client = OpenAIClient(model="gpt-5-mini")
+    # Initialize LLM client with OpenAI GPT-4o-mini (fast cloud inference)
+    llm_client = OpenAIClient(model="gpt-4o-mini")
     if llm_client.is_available():
-        logger.info("AI connected: gpt-5-mini (OpenAI)")
+        logger.info("AI connected: gpt-4o-mini (OpenAI)")
     else:
         logger.warning("AI not available - check OPENAI_API_KEY env variable")
 
@@ -471,64 +484,7 @@ class CharacterCreate(BaseModel):
     selected_spells: Optional[List[str]] = None  # Player-selected starting spells
 
 
-# System prompt for Mobile DM narrator
-DM_SYSTEM_PROMPT = """You are an expert Dungeon Master for Pathfinder 1st Edition. Be CONCISE and INTERACTIVE.
-
-CRITICAL - RESPONSE LENGTH:
-- STRICT LIMIT: 3-4 sentences maximum for normal responses
-- Opening scenes: 4-5 sentences maximum
-- Combat narration: 2-3 sentences per action
-- ALWAYS end with turn prompt: "[Name], what do you do?"
-- DO NOT ramble or over-describe
-
-CRITICAL - PLAYER CHARACTERS:
-- The PLAYER CHARACTERS listed are controlled by real players - they are NOT NPCs
-- NEVER describe what a PC looks like, thinks, or feels - the player controls that
-- NEVER narrate a PC's actions beyond what they stated - only describe RESULTS
-- NEVER ask a PC questions about themselves or describe them to themselves
-- Only describe the WORLD, NPCs, and OUTCOMES of player actions
-
-CRITICAL - ROUND STRUCTURE:
-When you receive "ACTIONS THIS ROUND" from multiple characters:
-1. Narrate the OUTCOME of EACH character's action (don't skip any!)
-2. Describe how NPCs and monsters react to those actions
-3. Move the story forward based on what happened
-4. State whose turn is next: "[Name], it's your turn. What do you do?"
-
-SINGLE ACTION FLOW:
-When only one character acts:
-1. Narrate the result of their action briefly
-2. State whose turn is next: "[Next Name], what do you do?"
-
-STORY PROGRESSION:
-- If players talk to NPCs → NPCs respond with useful info or quests
-- If players explore → they find something interesting
-- If players fight → combat progresses with dice rolls
-- If players investigate → they discover clues
-- ALWAYS move the story forward - never stall
-
-DICE ROLLS:
-- Ask for rolls: "Roll [skill] (DC X)" when needed
-- Wait for player to report result before narrating outcome
-
-NPC VOICE TAGS (for TTS):
-- Format: [VOICE:name] before NPC dialogue only
-- Voices: elderly_male, gruff, young_female, menacing, cheerful
-- Example: [VOICE:gruff] "Halt! Who goes there?" the guard demands.
-- Do NOT tag narration or PC dialogue
-
-EXPERIENCE POINTS:
-- Award XP when players defeat enemies or complete objectives
-- Format: [XP:amount] at the end of your response
-- Examples: [XP:200] for defeating a goblin, [XP:500] for completing a quest
-- XP is split among all party members automatically
-- Only award XP when something is actually accomplished
-
-RULES:
-- Present tense narration
-- Describe the world, not the players
-- Process ALL character actions each round
-- Be concise but make things happen"""
+# DM_CONTRACT is now imported from ..prompts.dm_contract
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -548,7 +504,7 @@ async def get_status():
     return {
         "status": "online",
         "ai_available": ai_available,
-        "ai_model": "gpt-5-mini" if ai_available else None,
+        "ai_model": "gpt-4o-mini" if ai_available else None,
         "speech_available": speech_available(),
         "tts_available": tts_available(),
         "active_sessions": len(session_manager.sessions),
@@ -2608,23 +2564,30 @@ async def generate_opening_scene(game_session: GameSession):
     first_player = game_session.initiative_order[0]
     first_roll = initiative_rolls[first_player]
 
-    opening_prompt = f"""Set the opening scene for a new adventure.
+    # Initialize session state with party info
+    game_session.session_state.party_summary = party_text
+    game_session.session_state.initiative_order = game_session.initiative_order
+    game_session.session_state.location = "The Rusty Dragon Inn"
+    game_session.session_state.location_detail = "Main hall, evening"
+    game_session.session_state.current_objective = "Begin your adventure"
 
-PLAYER CHARACTERS (these are the PLAYERS, not NPCs):
-{party_text}
+    # Set initial visible elements for the tavern
+    game_session.visible_elements = [
+        "Warm tavern with crackling fireplace",
+        "Local patrons drinking quietly",
+        "Bar counter with Ameiko polishing glasses",
+        "Stairs leading to guest rooms",
+    ]
+    game_session.environmental = ["Warm atmosphere", "Normal lighting"]
 
-INITIATIVE ROLLED:
-{init_text}
-
-IMPORTANT: Do NOT create any NPCs that duplicate what the player characters are. The players ARE the heroes of this story.
-
-Create the opening scene (4-5 sentences):
-1. Describe the Rusty Dragon Inn - warm tavern, locals drinking, innkeeper Ameiko (Tian woman)
-2. Focus on atmosphere, not on other adventurers or performers
-3. Announce the initiative order clearly (who goes first, second, etc.)
-4. End by saying: "{first_player}, you rolled a {first_roll} for initiative and go first. It's your turn. What do you do?"
-
-Generate the opening now:"""
+    # Build structured opening prompt
+    opening_prompt = build_opening_prompt(
+        session_state=game_session.session_state,
+        party_text=party_text,
+        initiative_text=init_text,
+        first_player=first_player,
+        first_roll=first_roll,
+    )
 
     try:
         # Broadcast typing indicator
@@ -2648,7 +2611,7 @@ Generate the opening now:"""
 
         async for token in llm_client.agenerate_stream(
             prompt=opening_prompt,
-            system_prompt=DM_SYSTEM_PROMPT,
+            system_prompt=DM_CONTRACT,
             config=config,
         ):
             if first_token_time is None:
@@ -2669,7 +2632,14 @@ Generate the opening now:"""
         token_batcher.stop_interval_flush()
         await token_batcher.flush()
 
-        display_response = strip_voice_tags(full_response)
+        # Parse structured response for player text and state update
+        player_text, state_update = parse_dm_response(full_response)
+        display_response = strip_voice_tags(player_text)
+
+        # Apply state update if present
+        if state_update:
+            game_session.session_state.apply_state_update(state_update)
+            logger.debug(f"[{game_session.code}] Applied state update: {state_update}")
 
         await game_session.broadcast({
             "type": "dm_response",
@@ -2792,65 +2762,47 @@ async def handle_player_action(websocket: WebSocket, player_name: str, data: dic
             "type": "all_actions_received",
         })
 
-    # Build conversation history for context
-    history_text = ""
-    recent_history = list(game_session.conversation_history)[-8:]
-    for entry in recent_history:
-        history_text += f"\n[{entry['player']}]: {entry['action']}\n"
-        history_text += f"[DM]: {entry['response']}\n"
-
     # Build combined actions from all characters
     all_actions = game_session.get_all_pending_actions()
-    actions_text = "\n".join([f"- {char}: \"{act}\"" for char, act in all_actions])
 
-    # Build detailed character info including alignment for roleplay context
+    # Build detailed character info for party summary
     party_details = []
     with session_scope() as db_session:
         for char_name in game_session.all_characters:
             char = db_session.query(Character).filter_by(name=char_name).first()
             if char:
-                align = char.alignment or "Unaligned"
-                party_details.append(f"- {char.name}: {char.race} {char.character_class} ({align})")
+                hp_str = f"{char.current_hp}/{char.max_hp} HP" if char.max_hp else "full HP"
+                party_details.append(f"{char.name} ({char.character_class} {hp_str})")
             else:
-                party_details.append(f"- {char_name}: Unknown")
+                party_details.append(char_name)
 
-    party_text = "\n".join(party_details) if party_details else ", ".join(game_session.all_characters)
+    # Update session state with current party info
+    game_session.session_state.party_summary = ", ".join(party_details)
+    game_session.session_state.in_combat = game_session.in_combat
+    game_session.session_state.initiative_order = game_session.initiative_order
+    game_session.session_state.time_of_day = game_session.time_of_day
+    game_session.session_state.location = game_session.current_location
 
     # Determine next player in initiative order
     initiative_order = game_session.initiative_order if game_session.initiative_order else game_session.all_characters
-    initiative_text = ", ".join(initiative_order) if initiative_order else "Not set"
-
-    # Find who goes next (first in initiative order after the round ends)
     next_player = initiative_order[0] if initiative_order else game_session.all_characters[0]
 
-    context = f"""CURRENT SITUATION:
-Location: {game_session.current_location}
-Time: {game_session.time_of_day}
-In Combat: {"Yes" if game_session.in_combat else "No"}
+    # Build scene packet with current context
+    scene = ScenePacket()
+    scene.immediate_location = f"{game_session.current_location} - {game_session.location_description}"
+    scene.visible_elements = game_session.visible_elements
+    scene.environmental = game_session.environmental
+    scene.in_combat = game_session.in_combat
+    scene.initiative_order = initiative_order
+    scene.current_turn = next_player
+    scene.player_actions = all_actions
 
-INITIATIVE ORDER: {initiative_text}
-NEXT TURN: {next_player}
-
-PLAYER CHARACTERS (these are the PLAYERS - never confuse them with NPCs):
-{party_text}
-
-ALIGNMENT GUIDANCE:
-- Lawful characters respect authority and keep promises
-- Chaotic characters value freedom and resist control
-- Good characters help others and protect the innocent
-- Evil characters are selfish and willing to harm others
-- Remind players when actions conflict with their alignment
-
-WHAT HAS HAPPENED SO FAR:{history_text if history_text else " (Adventure just started)"}
-
-ACTIONS THIS ROUND:
-{actions_text}
-
-INSTRUCTIONS:
-1. Narrate the results of EACH character's action listed above - make something HAPPEN
-2. ADVANCE the story - introduce new elements, NPCs responding, discoveries, etc.
-3. Do NOT repeat the opening scene or re-describe the location
-4. END with: "{next_player}, it's your turn. What do you do?" """
+    # Build structured action prompt
+    context = build_action_prompt(
+        session_state=game_session.session_state,
+        scene=scene,
+        next_player=next_player,
+    )
 
     # Get AI response (streaming)
     if llm_client and is_llm_available():
@@ -2914,7 +2866,7 @@ INSTRUCTIONS:
 
             async for token in llm_client.agenerate_stream(
                 prompt=context,
-                system_prompt=DM_SYSTEM_PROMPT,
+                system_prompt=DM_CONTRACT,
                 config=config,
             ):
                 if first_token_time is None:
@@ -2970,8 +2922,16 @@ INSTRUCTIONS:
             token_batcher.stop_interval_flush()
             await token_batcher.flush()
 
+            # Parse structured response for player text and state update
+            player_text, state_update = parse_dm_response(full_response)
+
+            # Apply state update if present
+            if state_update:
+                game_session.session_state.apply_state_update(state_update)
+                logger.debug(f"[{game_session.code}] Applied state update: {state_update}")
+
             # Strip voice tags and XP tags for display and history
-            display_response = strip_voice_tags(full_response)
+            display_response = strip_voice_tags(player_text)
             display_response = strip_xp_tags(display_response)
 
             # Extract and award XP if present
